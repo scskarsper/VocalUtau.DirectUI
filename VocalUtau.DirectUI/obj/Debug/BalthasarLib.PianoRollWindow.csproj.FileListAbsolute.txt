@@ -1,0 +1,13 @@
+D:\VocalUtau\IncludeLib\BalthasarLib.PianoRollWindow\bin\Debug\BalthasarLib.PianoRollWindow.dll
+D:\VocalUtau\IncludeLib\BalthasarLib.PianoRollWindow\bin\Debug\BalthasarLib.PianoRollWindow.pdb
+D:\VocalUtau\IncludeLib\BalthasarLib.PianoRollWindow\bin\Debug\BalthasarLib.D2DPainter.dll
+D:\VocalUtau\IncludeLib\BalthasarLib.PianoRollWindow\bin\Debug\SharpDX.Direct2D1.dll
+D:\VocalUtau\IncludeLib\BalthasarLib.PianoRollWindow\bin\Debug\SharpDX.dll
+D:\VocalUtau\IncludeLib\BalthasarLib.PianoRollWindow\bin\Debug\SharpDX.DXGI.dll
+D:\VocalUtau\IncludeLib\BalthasarLib.PianoRollWindow\bin\Debug\BalthasarLib.D2DPainter.pdb
+D:\VocalUtau\IncludeLib\BalthasarLib.PianoRollWindow\obj\Debug\BalthasarLib.PianoRollWindow.csprojResolveAssemblyReference.cache
+D:\VocalUtau\IncludeLib\BalthasarLib.PianoRollWindow\obj\Debug\BalthasarLib.PianoRollWindow.PianoRollWindow.resources
+D:\VocalUtau\IncludeLib\BalthasarLib.PianoRollWindow\obj\Debug\BalthasarLib.PianoRollWindow.csproj.GenerateResource.Cache
+D:\VocalUtau\IncludeLib\BalthasarLib.PianoRollWindow\obj\Debug\BalthasarLib.PianoRollWindow.dll
+D:\VocalUtau\IncludeLib\BalthasarLib.PianoRollWindow\obj\Debug\BalthasarLib.PianoRollWindow.pdb
+D:\VocalUtau\IncludeLib\BalthasarLib.PianoRollWindow\obj\Debug\BalthasarLib.PianoRollWindow.ParamCurveWindow.resources
