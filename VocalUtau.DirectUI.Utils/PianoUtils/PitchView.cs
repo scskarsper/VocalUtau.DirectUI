@@ -17,7 +17,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         IntPtr NoteListPtr = IntPtr.Zero;
         IntPtr PitchListPtr = IntPtr.Zero;
         PianoRollWindow PianoWindow;
-        bool _EarseModeV2 = false;
+        bool _EarseModeV2 = true;
 
         public bool EarseModeV2
         {
@@ -288,7 +288,9 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                         StartPoint = ret[ret.Count - 1].Tick+1;//Tick?
                     }
                 }
-                if (NextPitchIndex == -1 || NextPitchIndex == PitchList.Count || PitchList[NextPitchIndex].Tick >= MaxTick || PitchList[NextPitchIndex].Tick > EndPoint || PitchList[NextPitchIndex].Tick < StartPoint)
+                if (NextPitchIndex == -1 || NextPitchIndex == PitchList.Count || PitchList[NextPitchIndex].Tick >= MaxTick || 
+                    PitchList[NextPitchIndex].Tick > EndPoint
+                    )
                 {
                     //NoPitch
                     PitchNode PNS = new PitchNode(StartPoint, PN.PitchValue.PitchValue);
@@ -297,8 +299,8 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                     ret.Add(PNE);
                 }else
                 {
-                    PitchNode PNS = null; ;
-                    PitchNode PNE = null; ;
+                    PitchNode PNS = null;
+                    PitchNode PNE = null;
                     while (NextPitchIndex < PitchList.Count && PitchList[NextPitchIndex].Tick <= EndPoint && PitchList[NextPitchIndex].Tick < MaxTick)
                     {
                         if (PitchList[NextPitchIndex].Tick < StartPoint)
@@ -399,6 +401,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             {
                 if (NoteList[i].Tick > EndPoint) break;
                 int BNC = BaseNote.Count - 1;
+                if (BNC == -1) BNC = 0;
                 for (int j = BNC; j < newPitchLine.Count; j++)
                 {
                     if (newPitchLine[j].Tick < NoteList[i].Tick + NoteList[i].Length)
