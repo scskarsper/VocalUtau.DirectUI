@@ -81,5 +81,10 @@ namespace VocalUtau.DirectUI
 
             RollColor_NoteBorderColor = Color.FromArgb(125, 123, 124);
         }
+
+        public void setNoteHeight(uint NewValue)
+        {
+            if (NewValue < 13) Const_RollNoteHeight = 13; else Const_RollNoteHeight = (int)NewValue;
+        }
     }
 }

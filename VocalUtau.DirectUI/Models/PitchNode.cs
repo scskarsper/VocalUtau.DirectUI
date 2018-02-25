@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VocalUtau.DirectUI.Models
 {
-    public class PitchNode
+    public class PitchNode : IComparable, IComparer<PitchNode> 
     {
         public long Tick { get; set; }
         public long Length { get; set; }
@@ -37,5 +37,25 @@ namespace VocalUtau.DirectUI.Models
                 pvp = value;
             }
         }
+
+        public int CompareTo(Object o)
+        {
+            if (this.Tick > ((PitchNode)o).Tick)
+                return 1;
+            else if (this.Tick == ((PitchNode)o).Tick)
+                return 0;
+            else
+                return -1;
+        }
+
+        public int Compare(PitchNode x, PitchNode y)
+        {
+            if (x.Tick < y.Tick)
+                return -1;
+            else if (x.Tick == y.Tick)
+                return 0;
+            else
+                return 1;
+        }  
     }
 }

@@ -52,6 +52,11 @@ namespace VocalUtau.DirectUI
             pprops.CrotchetLengthPixel = Size;
             d2DPainterBox1.Refresh();
         }
+        public void setNoteHeight(uint Size=13)
+        {
+            rconf.setNoteHeight(Size);
+            d2DPainterBox1.Refresh();
+        }
         public void setPianoStartTick(long Tick)
         {
             PianoProps.PianoStartTick = Tick;

@@ -90,7 +90,7 @@
       <Project>{9ea2955f-3919-4939-bb75-0b38f4e6182d}</Project>
       <Name>VocalUtau.Formats</Name>
     </ProjectReference>
-    <ProjectReference Include="..\VocalUtau.DirectUI.Utils\VocalUtau.DirectUI.Utils\VocalUtau.DirectUI.Utils.csproj">
+    <ProjectReference Include="..\VocalUtau.DirectUI.Utils\VocalUtau.DirectUI.Utils.csproj">
       <Project>{10feb9fa-9308-42aa-b5fb-dac652508095}</Project>
       <Name>VocalUtau.DirectUI.Utils</Name>
     </ProjectReference>
@@ -99,7 +99,10 @@
       <Name>VocalUtau.DirectUI</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Model.Utils\" />
+    <Folder Include="Model.Views\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

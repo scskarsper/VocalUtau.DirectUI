@@ -99,7 +99,11 @@ namespace VocalUtau.DirectUI.DrawUtils
 
             D2DGraphics g = baseEvent.D2DGraphics;
             g.FillRectangle(NoteRect, NoteColor);
-            g.DrawText(Note.Lyric, LyricRect, LyricColor, new System.Drawing.Font("Tahoma", 9));
+            try
+            {
+                g.DrawText(Note.Lyric, LyricRect, LyricColor, new System.Drawing.Font("Tahoma", 9));
+            }
+            catch { ;}
             g.DrawRectangle(NoteRect, rconf.RollColor_NoteBorderColor);
         }
 
@@ -183,8 +187,8 @@ namespace VocalUtau.DirectUI.DrawUtils
             }
 
             uint NoteDistance = MaxNote - Node.PitchValue.NoteNumber;
-            double PitchDistance=(double)Node.PitchValue.PitchValue-Node.PitchValue.NoteNumber-0.5;
-            int NodeYPixel=baseEvent.ClipRectangle.Top +  (int)(((double)NoteDistance+PitchDistance+1) * rconf.Const_RollNoteHeight);
+            double PitchDistance=(double)Node.PitchValue.PitchValue-Node.PitchValue.NoteNumber;
+            int NodeYPixel=baseEvent.ClipRectangle.Top +  (int)(((double)NoteDistance-PitchDistance+0.5) * rconf.Const_RollNoteHeight);
             return new Point(NodeXPixel,NodeYPixel);
         }
         public void DrawPitchLine(List<PitchNode> SortedPitchPointSilk, Color LineColor, float LineWidth, System.Drawing.Drawing2D.DashStyle LineStyle)

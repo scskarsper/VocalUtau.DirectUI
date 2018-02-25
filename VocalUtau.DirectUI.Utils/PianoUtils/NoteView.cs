@@ -58,9 +58,6 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             PianoWindow.TrackMouseDoubleClick += PianoWindow_TrackMouseDoubleClick;
         }
 
-        /*public int Const_RollNoteHeight = 13;//琴键高
-        public int Const_RollWidth = 82;//琴键宽
-        public int Const_TitleHeight = 28;//标题头大小*/
         void PianoWindow_TrackMouseDoubleClick(object sender, PianoMouseEventArgs e)
         {
             if (NoteDragingWork == NoteDragingType.NoteMove)
@@ -246,7 +243,10 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
 
         private void PianoWindow_TrackMouseUp(object sender, VocalUtau.DirectUI.PianoMouseEventArgs e)
         {
-            if (!_HandleEvents) return;
+            if (!_HandleEvents)
+            {
+                return;
+            }
             if (NoteDragingWork != NoteDragingType.None)
             {
                 if (NoteDragingWork == NoteDragingType.NoteLength)
@@ -323,7 +323,12 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
 
         private void PianoWindow_TrackMouseMove(object sender, VocalUtau.DirectUI.PianoMouseEventArgs e)
         {
-            if (!_HandleEvents) return;
+            if (!_HandleEvents)
+            {
+                NoteDragingWork = NoteDragingType.None;
+                NoteDias.Clear();
+                return;
+            }
             if (NoteDragingWork == NoteDragingType.AreaSelect)
             {
                 NoteDias[0].setEndPoint(e.Tick, e.PitchValue.NoteNumber);
