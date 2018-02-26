@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
 namespace VocalUtau.DirectUI.Models
 {
-    public class PianoNote : IComparable, IComparer<PianoNote> 
+    [Serializable]
+    public class PianoNote : IComparable, IComparer<PianoNote> ,ICloneable
     {
         /// <summary>
         /// INIT 初始化
@@ -118,6 +122,16 @@ namespace VocalUtau.DirectUI.Models
             }
         }
 
+        public object Clone()
+        {
+            BinaryFormatter Formatter = new BinaryFormatter(null, new StreamingContext(StreamingContextStates.Clone));
+            MemoryStream stream = new MemoryStream();
+            Formatter.Serialize(stream, this);
+            stream.Position = 0;
+            object clonedObj = Formatter.Deserialize(stream);
+            stream.Close();
+            return clonedObj;
+        }
 
         public int CompareTo(Object o)
         {

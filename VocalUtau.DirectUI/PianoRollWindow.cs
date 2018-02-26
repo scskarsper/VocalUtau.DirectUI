@@ -544,5 +544,31 @@ namespace VocalUtau.DirectUI
             this.OnMouseLeave(e);
         }
         #endregion
+
+        /// <summary>
+        /// 键盘事件逻辑
+        /// </summary>
+        #region
+        private void d2DPainterBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            OnKeyDown(e);
+        }
+
+        private void d2DPainterBox1_KeyUp(object sender, KeyEventArgs e)
+        {
+            OnKeyUp(e);
+        }
+
+        private void d2DPainterBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            OnKeyPress(e);
+        }
+        #endregion
+
+        private void d2DPainterBox1_Load(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }

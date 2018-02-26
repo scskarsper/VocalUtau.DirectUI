@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using VocalUtau.DirectUI;
 using VocalUtau.DirectUI.Models;
+using VocalUtau.DirectUI.Utils.ActionUtils;
 
 namespace VocalUtau.DirectUI.Utils.PianoUtils
 {
@@ -24,7 +25,10 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         }
 
         IntPtr NoteListPtr = IntPtr.Zero;
+        IntPtr PitchListPtr = IntPtr.Zero;
         PianoRollWindow PianoWindow;
+
+      //  List<PitchNode> Tmp = new List<PitchNode>();
 
         long _TickStepTick = 1;
 
@@ -34,7 +38,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             set { if (value < 0)_TickStepTick = 1;else _TickStepTick = value; }
         }
 
-        public NoteView(IntPtr NoteListPtr, PianoRollWindow PianoWindow)
+        public NoteView(IntPtr NoteListPtr, IntPtr PitchListPtr, PianoRollWindow PianoWindow)
         {
             this.PianoWindow = PianoWindow;
             setNoteListPtr(NoteListPtr);
@@ -43,6 +47,10 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         public void setNoteListPtr(IntPtr NoteListPtr)
         {
             this.NoteListPtr = NoteListPtr;
+        }
+        public void setPitchListPtr(IntPtr PitchListPtr)
+        {
+            this.PitchListPtr = PitchListPtr;
         }
         public void setPianoWindowPtr(PianoRollWindow PianoWindow)
         {
@@ -56,6 +64,21 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             PianoWindow.TrackMouseMove += PianoWindow_TrackMouseMove;
             PianoWindow.TrackMouseClick += PianoWindow_TrackMouseClick;
             PianoWindow.TrackMouseDoubleClick += PianoWindow_TrackMouseDoubleClick;
+            PianoWindow.KeyUp += PianoWindow_KeyUp;
+        }
+
+        void PianoWindow_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (!HandleEvents) return;
+            if (e.KeyCode == Keys.Delete && NoteSelectIndexs.Count > 0)
+            {
+                NoteSelectIndexs.Sort();
+                for (int i = 0; i < NoteSelectIndexs.Count; i++)
+                {
+                    NoteList.RemoveAt(NoteSelectIndexs[i]-i);
+                }
+                NoteSelectIndexs.Clear();
+            }
         }
 
         void PianoWindow_TrackMouseDoubleClick(object sender, PianoMouseEventArgs e)
@@ -109,11 +132,24 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             if (NoteDragingWork == NoteDragingType.NoteMove)
             {
                 if (CurrentNoteIndex > -1)
-                {
+                {   
                     if (e.Tick-NoteTempTick==NoteList[CurrentNoteIndex].Tick)
                     {
-                        NoteSelectIndexs.Clear();
-                        NoteSelectIndexs.Add(CurrentNoteIndex);
+                        if (Control.ModifierKeys != Keys.Control 
+                            &&Control.ModifierKeys != Keys.Shift)
+                            NoteSelectIndexs.Clear();
+                        if (Control.ModifierKeys == Keys.Shift && NoteSelectIndexs.Count>0)
+                        {
+                            for (int i = Math.Min(NoteSelectIndexs[NoteSelectIndexs.Count - 1], CurrentNoteIndex); i <= Math.Max(NoteSelectIndexs[NoteSelectIndexs.Count - 1], CurrentNoteIndex); i++)
+                            {
+                                if(!NoteSelectIndexs.Contains(i))NoteSelectIndexs.Add(i);
+                            }
+                        }
+                        else
+                        {
+                            NoteSelectIndexs.Add(CurrentNoteIndex);
+                        }
+
                     }
                 }
             }
@@ -135,14 +171,29 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                 return ret;
             }
         }
-    
+        private List<PitchNode> PitchList
+        {
+            get
+            {
+                List<PitchNode> ret = new List<PitchNode>();
+                try
+                {
+                    GCHandle handle = GCHandle.FromIntPtr(PitchListPtr);
+                    ret = (List<PitchNode>)handle.Target;
+                    if (ret == null) ret = new List<PitchNode>();
+                }
+                catch { ;}
+                return ret;
+            }
+        }
     
         public enum NoteDragingType
         {
             None,
             NoteMove,
             NoteLength,
-            AreaSelect
+            AreaSelect,
+            NoteAdd
         }
         public class BlockDia
         {
@@ -188,13 +239,68 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                 N2=NoteNum;
             }
         }
-        
+
+        public enum NoteToolsType
+        {
+            None,
+            Add,
+            Edit
+        }
+        NoteToolsType _NoteToolsStatus = NoteToolsType.Edit;
+
+        public NoteToolsType NoteToolsStatus
+        {
+            get { return _NoteToolsStatus; }
+            set { _NoteToolsStatus = value; }
+        }
+
         List<int> NoteSelectIndexs = new List<int>();
         int CurrentNoteIndex = -1;
         long NoteTempTick = 0;
         NoteDragingType NoteDragingWork = NoteDragingType.None;
         List<BlockDia> NoteDias = new List<BlockDia>();
 
+        public List<PianoNote> getSelectNotes(bool independentBlock=false)
+        {
+            List<PianoNote> ret = new List<PianoNote>();
+            long RL = NoteSelectIndexs.Count > 0 ? NoteList[NoteSelectIndexs[0]].Tick: -1;
+            if (RL == -1) return ret;
+            for (int i = 0; i < NoteSelectIndexs.Count; i++)
+            {
+                PianoNote PNN = (PianoNote)NoteList[NoteSelectIndexs[i]].Clone();
+                PNN.Tick -= RL;
+                ret.Add(PNN);
+            }
+            return ret;
+        }
+        public bool AddNotes(long LeftTick,List<PianoNote> Notes)
+        {
+            if (Notes.Count <= 0) return false;
+            Notes.Sort();
+            long RL = LeftTick+Notes[0].Tick;
+            long RR = LeftTick+Notes[Notes.Count - 1].Tick + Notes[Notes.Count - 1].Length;
+            bool isAvaliable = true;
+            for (int i = 0; i < NoteList.Count; i++)
+            {
+                PianoNote PN = NoteList[i];
+                if (PN.Tick > RR) break;
+                if (PN.Tick + PN.Length < RL) continue;
+                isAvaliable = false;
+            }
+            if (isAvaliable)
+            {
+                for(int i=0;i<Notes.Count;i++)
+                {
+                    PianoNote PNN = (PianoNote)Notes[i].Clone();
+                    PNN.Tick += LeftTick;
+                    NoteList.Add(PNN);
+                }
+                NoteList.Sort();
+                NoteSelectIndexs.Clear();
+                PianoWindow.RedrawPiano();
+            }
+            return isAvaliable;
+        }
 
         private void PianoWindow_TrackPaint(object sender, VocalUtau.DirectUI.DrawUtils.TrackDrawUtils utils)
         {
@@ -219,25 +325,37 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         private void PianoWindow_TrackMouseDown(object sender, VocalUtau.DirectUI.PianoMouseEventArgs e)
         {
             if (!_HandleEvents) return;
-            if (CurrentNoteIndex != -1)
+            if (NoteToolsStatus == NoteToolsType.Add)
             {
-                if (e.Tick > NoteList[CurrentNoteIndex].Tick + NoteList[CurrentNoteIndex].Length - 20)
-                {
-                    NoteDragingWork = NoteDragingType.NoteLength;
-                }
-                else
-                {
-                    NoteDragingWork = NoteDragingType.NoteMove;
-                    NoteTempTick = e.Tick - NoteList[CurrentNoteIndex].Tick;
-                }
-            }
-            else
-            {
-                NoteDragingWork = NoteDragingType.AreaSelect;
+                NoteDias.Clear();
                 BlockDia NoteDia = new BlockDia();
                 NoteDia.setStartPoint(e.Tick, e.PitchValue.NoteNumber);
                 NoteDia.setEndPoint(e.Tick, e.PitchValue.NoteNumber);
                 NoteDias.Add(NoteDia);
+                NoteDragingWork = NoteDragingType.NoteAdd;
+            }
+            else if (NoteToolsStatus == NoteToolsType.Edit)
+            {
+                if (CurrentNoteIndex != -1)
+                {
+                    if (e.Tick > NoteList[CurrentNoteIndex].Tick + NoteList[CurrentNoteIndex].Length - 20)
+                    {
+                        NoteDragingWork = NoteDragingType.NoteLength;
+                    }
+                    else
+                    {
+                        NoteDragingWork = NoteDragingType.NoteMove;
+                        NoteTempTick = e.Tick - NoteList[CurrentNoteIndex].Tick;
+                    }
+                }
+                else
+                {
+                    NoteDragingWork = NoteDragingType.AreaSelect;
+                    BlockDia NoteDia = new BlockDia();
+                    NoteDia.setStartPoint(e.Tick, e.PitchValue.NoteNumber);
+                    NoteDia.setEndPoint(e.Tick, e.PitchValue.NoteNumber);
+                    NoteDias.Add(NoteDia);
+                }
             }
         }
 
@@ -247,78 +365,152 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             {
                 return;
             }
-            if (NoteDragingWork != NoteDragingType.None)
+            if (NoteToolsStatus == NoteToolsType.Add)
             {
-                if (NoteDragingWork == NoteDragingType.NoteLength)
+                if (NoteDragingWork == NoteDragingType.NoteAdd)
                 {
-                    long NewSize = e.Tick - NoteList[CurrentNoteIndex].Tick;
-                    NewSize = (long)(NewSize / _TickStepTick) * _TickStepTick;
-                    if (NewSize >= 32)
+                    PianoNote nPN = new PianoNote(NoteDias[0].TickStart, NoteDias[0].TickEnd - NoteDias[0].TickStart, NoteDias[0].TopNoteNum);
+                    //判断是否是重叠的
+                    #region
+                    /*bool isAvaliable = false;
+                    long mt = PianoWindow.MaxShownTick+480;
+                    long nt = PianoWindow.MinShownTick-480;
+                    if(nt<0)nt=0;
+                    List<PianoNote> EmptyArea = new List<PianoNote>();
+                    for (int i = 0; i < NoteList.Count; i++)
                     {
-                        NoteList[CurrentNoteIndex].Length = NewSize;
+                        PianoNote RPN = i==0?null:NoteList[i-1];
+                        PianoNote PN = NoteList[i];
+                        if (PN.Tick >= mt) break;
+                        if (PN.Tick <= nt) continue;
+                        if (PN.Tick > 0 && RPN == null)
+                        {
+                            EmptyArea.Add(new PianoNote(0, PN.Tick - 1, 60));//A1;
+                        }else if(i==NoteList.Count-1)
+                        {
+                            long ABL=mt-PN.Tick-PN.Length;
+                            EmptyArea.Add(new PianoNote(PN.Tick+PN.Length,ABL<=0?1:ABL, 60));//AN;
+                        }
+                        else
+                        {
+                            long S=RPN.Tick + RPN.Length;
+                            long L = PN.Tick - S;
+                            if (L > 32)
+                            {
+                                EmptyArea.Add(new PianoNote(S, L, 60));//A1;
+                            }
+                        }
+                    }
+                        long nPNL = nPN.Tick;
+                        long nPNR = nPN.Tick + nPN.Length;
+                    for (int i = 0; i < EmptyArea.Count; i++)
+                    {
+                        long EAL = EmptyArea[i].Tick;
+                        long EAR = EmptyArea[i].Tick + EmptyArea[i].Length;
+                        if (EAL<=nPNL && EAR>=nPNR)
+                        {
+                            //PN in EA
+                            isAvaliable = true;
+                        }
+                        else if (nPNL <= EAL && nPNR >= EAR)
+                        {
+                            //EA in PN
+                            isAvaliable = true;
+                        }else if(nPNL<EAR && nPNL>EAL)
+                        {
+                            isAvaliable = true;
+                        }
+                        else if (nPNR > EAL && nPNR < EAR)
+                        {
+                            isAvaliable = true;
+                        }
+                    }
+                    if (true || isAvaliable)
+                    */
+                    #endregion
+                    {
+                        NoteList.Add(nPN);
+                        NoteList.Sort();
                     }
                     NoteDias.Clear();
                 }
-                else if (NoteDragingWork == NoteDragingType.NoteMove)
+            }
+            else if (NoteToolsStatus == NoteToolsType.Edit)
+            {
+                if (NoteDragingWork != NoteDragingType.None)
                 {
-                    long minTickChange = (long)PianoWindow.PianoProps.dertPixel2dertTick(AntiShakePixel);
-                    if (NoteSelectIndexs.IndexOf(CurrentNoteIndex) == -1)
+                    if (NoteDragingWork == NoteDragingType.NoteLength)
                     {
-                        long NewTick = e.Tick - NoteTempTick;
-                        NewTick = (long)(NewTick / _TickStepTick) * _TickStepTick;
-                        long TickDert = NoteList[CurrentNoteIndex].Tick - NewTick;
-                        if (NoteList[CurrentNoteIndex].PitchValue.NoteNumber != e.PitchValue.NoteNumber)
+                        long NewSize = e.Tick - NoteList[CurrentNoteIndex].Tick;
+                        NewSize = (long)(NewSize / _TickStepTick) * _TickStepTick;
+                        if (NewSize >= 32)
                         {
-                            NoteList[CurrentNoteIndex].PitchValue = new VocalUtau.DirectUI.PitchValuePair(e.PitchValue.NoteNumber, NoteList[CurrentNoteIndex].PitchValue.PitchWheel);
+                            NoteList[CurrentNoteIndex].Length = NewSize;
                         }
-                        if (Math.Abs(TickDert) > minTickChange)
-                        {
-                            NoteList[CurrentNoteIndex].Tick = NoteList[CurrentNoteIndex].Tick - TickDert;
-                        }
+                        NoteDias.Clear();
                     }
-                    else
+                    else if (NoteDragingWork == NoteDragingType.NoteMove)
                     {
-                        long NewTick = e.Tick - NoteTempTick;
-                        NewTick = (long)(NewTick / _TickStepTick) * _TickStepTick;
-                        long TickDert = NoteList[CurrentNoteIndex].Tick - NewTick;
-                        long NoteDert = NoteList[CurrentNoteIndex].PitchValue.NoteNumber - e.PitchValue.NoteNumber;
-                        for (int i = 0; i < NoteSelectIndexs.Count; i++)
+                        long minTickChange = (long)PianoWindow.PianoProps.dertPixel2dertTick(AntiShakePixel);
+                        if (NoteSelectIndexs.IndexOf(CurrentNoteIndex) == -1)
                         {
-                            uint NewNoteNumber = (uint)(NoteList[NoteSelectIndexs[i]].PitchValue.NoteNumber - NoteDert);
-                            if (NoteList[NoteSelectIndexs[i]].PitchValue.NoteNumber != NewNoteNumber)
+                            long NewTick = e.Tick - NoteTempTick;
+                            NewTick = (long)(NewTick / _TickStepTick) * _TickStepTick;
+                            long TickDert = NoteList[CurrentNoteIndex].Tick - NewTick;
+
+                            if (NoteList[CurrentNoteIndex].PitchValue.NoteNumber != e.PitchValue.NoteNumber)
                             {
-                                NoteList[NoteSelectIndexs[i]].PitchValue = new VocalUtau.DirectUI.PitchValuePair(NewNoteNumber, NoteList[NoteSelectIndexs[i]].PitchValue.PitchWheel);
+                                NoteList[CurrentNoteIndex].PitchValue = new VocalUtau.DirectUI.PitchValuePair(e.PitchValue.NoteNumber, NoteList[CurrentNoteIndex].PitchValue.PitchWheel);
                             }
                             if (Math.Abs(TickDert) > minTickChange)
                             {
-                                NoteList[NoteSelectIndexs[i]].Tick = NoteList[NoteSelectIndexs[i]].Tick - TickDert;
+                                NoteList[CurrentNoteIndex].Tick = NoteList[CurrentNoteIndex].Tick - TickDert;
                             }
                         }
-                    }
-                    NoteDias.Clear();
-                }
-                else if (NoteDragingWork == NoteDragingType.AreaSelect)
-                {
-                    NoteSelectIndexs.Clear();
-                    long mt = NoteDias[0].TickEnd;
-                    long nt = NoteDias[0].TickStart;
-                    if (e.Tick >= nt && e.Tick <= mt)
-                    {
-                        for (int i = 0; i < NoteList.Count; i++)
+                        else
                         {
-                            PianoNote PN = NoteList[i];
-                            if (PN.Tick >= mt) break;
-                            if (PN.Tick + PN.Length < nt) continue;
-                            if (PN.PitchValue.NoteNumber >= NoteDias[0].BottomNoteNum && PN.PitchValue.NoteNumber <= NoteDias[0].TopNoteNum)
+                            long NewTick = e.Tick - NoteTempTick;
+                            NewTick = (long)(NewTick / _TickStepTick) * _TickStepTick;
+                            long TickDert = NoteList[CurrentNoteIndex].Tick - NewTick;
+                            long NoteDert = NoteList[CurrentNoteIndex].PitchValue.NoteNumber - e.PitchValue.NoteNumber;
+                            for (int i = 0; i < NoteSelectIndexs.Count; i++)
                             {
-                                NoteSelectIndexs.Add(i);
+                                uint NewNoteNumber = (uint)(NoteList[NoteSelectIndexs[i]].PitchValue.NoteNumber - NoteDert);
+                                if (NoteList[NoteSelectIndexs[i]].PitchValue.NoteNumber != NewNoteNumber)
+                                {
+                                    NoteList[NoteSelectIndexs[i]].PitchValue = new VocalUtau.DirectUI.PitchValuePair(NewNoteNumber, NoteList[NoteSelectIndexs[i]].PitchValue.PitchWheel);
+                                }
+                                if (Math.Abs(TickDert) > minTickChange)
+                                {
+                                    NoteList[NoteSelectIndexs[i]].Tick = NoteList[NoteSelectIndexs[i]].Tick - TickDert;
+                                }
                             }
                         }
+                        NoteDias.Clear();
                     }
-                    NoteDias.Clear();
+                    else if (NoteDragingWork == NoteDragingType.AreaSelect)
+                    {
+                        NoteSelectIndexs.Clear();
+                        long mt = NoteDias[0].TickEnd;
+                        long nt = NoteDias[0].TickStart;
+                        if (e.Tick >= nt && e.Tick <= mt)
+                        {
+                            for (int i = 0; i < NoteList.Count; i++)
+                            {
+                                PianoNote PN = NoteList[i];
+                                if (PN.Tick >= mt) break;
+                                if (PN.Tick + PN.Length < nt) continue;
+                                if (PN.PitchValue.NoteNumber >= NoteDias[0].BottomNoteNum && PN.PitchValue.NoteNumber <= NoteDias[0].TopNoteNum)
+                                {
+                                    NoteSelectIndexs.Add(i);
+                                }
+                            }
+                        }
+                        NoteDias.Clear();
+                    }
                 }
-                NoteDragingWork = NoteDragingType.None;
             }
+            NoteDragingWork = NoteDragingType.None;
         }
 
         private void PianoWindow_TrackMouseMove(object sender, VocalUtau.DirectUI.PianoMouseEventArgs e)
@@ -329,94 +521,104 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                 NoteDias.Clear();
                 return;
             }
-            if (NoteDragingWork == NoteDragingType.AreaSelect)
+            if (NoteToolsStatus == NoteToolsType.Add)
             {
-                NoteDias[0].setEndPoint(e.Tick, e.PitchValue.NoteNumber);
-            }
-            else if (NoteDragingWork == NoteDragingType.NoteMove)
-            {
-                long minTickChange = (long)PianoWindow.PianoProps.dertPixel2dertTick(AntiShakePixel);
-                if (NoteSelectIndexs.IndexOf(CurrentNoteIndex) == -1)
+                if (NoteDragingWork == NoteDragingType.NoteAdd)
                 {
-                    long NewTick = e.Tick - NoteTempTick;
-                    NewTick = (long)(NewTick / _TickStepTick) * _TickStepTick;
-                    long TickDert = NoteList[CurrentNoteIndex].Tick - NewTick;
-                    if (NoteDias.Count == 0) NoteDias.Add(new BlockDia());
-
-                    if (Math.Abs(TickDert) <= minTickChange)
-                    {
-                        TickDert = 0;
-                    }
-                    long CurNewTick = NoteList[CurrentNoteIndex].Tick - TickDert;
-                    NoteDias[0].setStartPoint(CurNewTick, e.PitchValue.NoteNumber);
-                    NoteDias[0].setEndPoint(CurNewTick + NoteList[CurrentNoteIndex].Length, e.PitchValue.NoteNumber);
+                    NoteDias[0].setEndPoint(e.Tick, e.PitchValue.NoteNumber);
+                    NoteDias[0].setStartPoint(NoteDias[0].TickStart == e.Tick ? NoteDias[0].TickEnd : NoteDias[0].TickStart, e.PitchValue.NoteNumber);
                 }
-                else
-                {
-                    long NewTick = e.Tick - NoteTempTick;
-                    NewTick = (long)(NewTick / _TickStepTick) * _TickStepTick;
-                    long TickDert = NoteList[CurrentNoteIndex].Tick - NewTick;
-                    if (Math.Abs(TickDert) <= minTickChange)
-                    {
-                        TickDert = 0;
-                    }
-                    long NoteDert = NoteList[CurrentNoteIndex].PitchValue.NoteNumber - e.PitchValue.NoteNumber;
-                    for (int i = 0; i < NoteSelectIndexs.Count; i++)
-                    {
-                        uint NewNoteNumber = (uint)(NoteList[NoteSelectIndexs[i]].PitchValue.NoteNumber - NoteDert);
-
-                        if (NoteDias.Count < NoteSelectIndexs.Count) NoteDias.Add(new BlockDia());
-
-                        long CurNewTick = NoteList[NoteSelectIndexs[i]].Tick - TickDert;
-                        NoteDias[i].setStartPoint(CurNewTick, NewNoteNumber);
-                        NoteDias[i].setEndPoint(CurNewTick + NoteList[NoteSelectIndexs[i]].Length, NewNoteNumber);
-                    }
-                }
-            }
-            else if (NoteDragingWork == NoteDragingType.NoteLength)
+            }else if (NoteToolsStatus == NoteToolsType.Edit)
             {
-                long NewSize = e.Tick - NoteList[CurrentNoteIndex].Tick;
-                NewSize = (long)(NewSize / _TickStepTick) * _TickStepTick;
-                if (NewSize >= 32)
+                if (NoteDragingWork == NoteDragingType.AreaSelect)
                 {
-                    if (NoteDias.Count == 0) NoteDias.Add(new BlockDia());
-                    NoteDias[0].setStartPoint(NoteList[CurrentNoteIndex].Tick, e.PitchValue.NoteNumber);
-                    NoteDias[0].setEndPoint(NoteList[CurrentNoteIndex].Tick + NewSize, e.PitchValue.NoteNumber);
+                    NoteDias[0].setEndPoint(e.Tick, e.PitchValue.NoteNumber);
                 }
-            }
-            else if (NoteDragingWork == NoteDragingType.None)
-            {
-                int cnn = -1;
-                long mt = PianoWindow.MaxShownTick;
-                long nt = PianoWindow.MinShownTick;
-                if (e.Tick >= nt && e.Tick <= mt)
+                else if (NoteDragingWork == NoteDragingType.NoteMove)
                 {
-                    for (int i = 0; i < NoteList.Count; i++)
+                    long minTickChange = (long)PianoWindow.PianoProps.dertPixel2dertTick(AntiShakePixel);
+                    if (NoteSelectIndexs.IndexOf(CurrentNoteIndex) == -1)
                     {
-                        PianoWindow.ParentForm.Cursor = Cursors.Arrow;
-                        PianoNote PN = NoteList[i];
-                        if (PN.Tick >= mt) break;
-                        if (PN.Tick + PN.Length < nt) continue;
-                        if (e.PitchValue.NoteNumber == PN.PitchValue.NoteNumber)
+                        long NewTick = e.Tick - NoteTempTick;
+                        NewTick = (long)(NewTick / _TickStepTick) * _TickStepTick;
+                        long TickDert = NoteList[CurrentNoteIndex].Tick - NewTick;
+                        if (NoteDias.Count == 0) NoteDias.Add(new BlockDia());
+
+                        if (Math.Abs(TickDert) <= minTickChange)
                         {
-                            if (e.Tick >= PN.Tick && e.Tick <= PN.Tick + PN.Length)
-                            {
-                                Console.WriteLine("Mouse in Note " + PN.Lyric);
-                                cnn = i;
-                                if (e.Tick > PN.Tick + PN.Length - 20)
-                                {
-                                    PianoWindow.ParentForm.Cursor = Cursors.SizeWE;
-                                }
-                                else
-                                {
-                                    PianoWindow.ParentForm.Cursor = Cursors.SizeAll;
-                                }
-                                break;
-                            }
+                            TickDert = 0;
+                        }
+                        long CurNewTick = NoteList[CurrentNoteIndex].Tick - TickDert;
+                        NoteDias[0].setStartPoint(CurNewTick, e.PitchValue.NoteNumber);
+                        NoteDias[0].setEndPoint(CurNewTick + NoteList[CurrentNoteIndex].Length, e.PitchValue.NoteNumber);
+                    }
+                    else
+                    {
+                        long NewTick = e.Tick - NoteTempTick;
+                        NewTick = (long)(NewTick / _TickStepTick) * _TickStepTick;
+                        long TickDert = NoteList[CurrentNoteIndex].Tick - NewTick;
+                        if (Math.Abs(TickDert) <= minTickChange)
+                        {
+                            TickDert = 0;
+                        }
+                        long NoteDert = NoteList[CurrentNoteIndex].PitchValue.NoteNumber - e.PitchValue.NoteNumber;
+                        for (int i = 0; i < NoteSelectIndexs.Count; i++)
+                        {
+                            uint NewNoteNumber = (uint)(NoteList[NoteSelectIndexs[i]].PitchValue.NoteNumber - NoteDert);
+
+                            if (NoteDias.Count < NoteSelectIndexs.Count) NoteDias.Add(new BlockDia());
+
+                            long CurNewTick = NoteList[NoteSelectIndexs[i]].Tick - TickDert;
+                            NoteDias[i].setStartPoint(CurNewTick, NewNoteNumber);
+                            NoteDias[i].setEndPoint(CurNewTick + NoteList[NoteSelectIndexs[i]].Length, NewNoteNumber);
                         }
                     }
                 }
-                CurrentNoteIndex = cnn;
+                else if (NoteDragingWork == NoteDragingType.NoteLength)
+                {
+                    long NewSize = e.Tick - NoteList[CurrentNoteIndex].Tick;
+                    NewSize = (long)(NewSize / _TickStepTick) * _TickStepTick;
+                    if (NewSize >= 32)
+                    {
+                        if (NoteDias.Count == 0) NoteDias.Add(new BlockDia());
+                        NoteDias[0].setStartPoint(NoteList[CurrentNoteIndex].Tick, e.PitchValue.NoteNumber);
+                        NoteDias[0].setEndPoint(NoteList[CurrentNoteIndex].Tick + NewSize, e.PitchValue.NoteNumber);
+                    }
+                }
+                else if (NoteDragingWork == NoteDragingType.None)
+                {
+                    int cnn = -1;
+                    long mt = PianoWindow.MaxShownTick;
+                    long nt = PianoWindow.MinShownTick;
+                    if (e.Tick >= nt && e.Tick <= mt)
+                    {
+                        for (int i = 0; i < NoteList.Count; i++)
+                        {
+                            PianoWindow.ParentForm.Cursor = Cursors.Arrow;
+                            PianoNote PN = NoteList[i];
+                            if (PN.Tick >= mt) break;
+                            if (PN.Tick + PN.Length < nt) continue;
+                            if (e.PitchValue.NoteNumber == PN.PitchValue.NoteNumber)
+                            {
+                                if (e.Tick >= PN.Tick && e.Tick <= PN.Tick + PN.Length)
+                                {
+                                    Console.WriteLine("Mouse in Note " + PN.Lyric);
+                                    cnn = i;
+                                    if (e.Tick > PN.Tick + PN.Length - 20)
+                                    {
+                                        PianoWindow.ParentForm.Cursor = Cursors.SizeWE;
+                                    }
+                                    else
+                                    {
+                                        PianoWindow.ParentForm.Cursor = Cursors.SizeAll;
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    CurrentNoteIndex = cnn;
+                }
             }
         }
     

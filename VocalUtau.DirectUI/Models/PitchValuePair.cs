@@ -5,6 +5,7 @@ using System.Text;
 
 namespace VocalUtau.DirectUI
 {
+    [Serializable]
     public class PitchValuePair
     {
         private string[] KeyChar = { "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B" };

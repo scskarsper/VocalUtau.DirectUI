@@ -56,9 +56,9 @@ namespace Demo.USTViewer
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-            LoadUST(@"D:\VocalUtau\IncludeLib\UTAUMixer\DemoUSTS\Sakurane2.Tracks\Track-4b158252-eb7f-4223-b7b0-d78f32e044ec.ust");
+            LoadUST(@"D:\VocalUtau\VocalUtau.DebugExampleFiles\DemoUSTS\Sakurane2.Tracks\Track-4b158252-eb7f-4223-b7b0-d78f32e044ec.ust");
             RollObjects.NoteList.RemoveAt(0);
-            NV = new NoteView(RollObjects.NotelistPtr, this.pianoRollWindow1);
+            NV = new NoteView(RollObjects.NotelistPtr, RollObjects.PitchlistPtr, this.pianoRollWindow1);
             PV = new PitchView(RollObjects.NotelistPtr, RollObjects.PitchlistPtr, this.pianoRollWindow1);
             NV.HandleEvents = false;
             PV.HandleEvents = true;
@@ -150,6 +150,7 @@ namespace Demo.USTViewer
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
             NV.HandleEvents = true;
+            NV.NoteToolsStatus = NoteView.NoteToolsType.Edit;
             PV.HandleEvents = false;
         }
 
@@ -192,6 +193,24 @@ namespace Demo.USTViewer
         private void LSize_Scroll(object sender, ScrollEventArgs e)
         {
             pianoRollWindow1.setNoteHeight((uint)LSize.Value);
+        }
+
+        private void toolStripButton7_Click(object sender, EventArgs e)
+        {
+            NV.HandleEvents = true;
+            NV.NoteToolsStatus = NoteView.NoteToolsType.Add;
+            PV.HandleEvents = false;
+        }
+        List<PianoNote> PNV = new List<PianoNote>();
+        private void toolStripButton8_Click(object sender, EventArgs e)
+        {
+            PNV=NV.getSelectNotes(true);
+        }
+
+        private void toolStripButton9_Click(object sender, EventArgs e)
+        {
+            bool R=NV.AddNotes(0, PNV);
+            if (!R) MessageBox.Show("Paste Error");
         }
 
     }

@@ -37,10 +37,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BalthasarLib.D2DPainter">
-      <HintPath>..\..\..\BalthasarLib.D2DPainter\bin\Debug\BalthasarLib.D2DPainter.dll</HintPath>
+      <HintPath>..\VocalUtau.DirectUI\bin\Debug\BalthasarLib.D2DPainter.dll</HintPath>
     </Reference>
-    <Reference Include="NAudio">
-      <HintPath>..\..\..\VocalUtau.WavTools\NAudio\NAudio.dll</HintPath>
+    <Reference Include="NAudio, Version=1.7.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

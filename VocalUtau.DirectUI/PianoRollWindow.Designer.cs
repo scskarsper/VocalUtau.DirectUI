@@ -37,10 +37,10 @@
             this.noteScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.noteScrollBar1.LargeChange = 12;
-            this.noteScrollBar1.Location = new System.Drawing.Point(350, 0);
+            this.noteScrollBar1.Location = new System.Drawing.Point(233, 0);
             this.noteScrollBar1.Maximum = 127;
             this.noteScrollBar1.Name = "noteScrollBar1";
-            this.noteScrollBar1.Size = new System.Drawing.Size(19, 339);
+            this.noteScrollBar1.Size = new System.Drawing.Size(19, 226);
             this.noteScrollBar1.TabIndex = 3;
             this.noteScrollBar1.Value = 43;
             this.noteScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.noteScrollBar1_Scroll);
@@ -50,11 +50,15 @@
             this.d2DPainterBox1.Antialias = false;
             this.d2DPainterBox1.BackColor = System.Drawing.Color.Black;
             this.d2DPainterBox1.Location = new System.Drawing.Point(0, 0);
-            this.d2DPainterBox1.Margin = new System.Windows.Forms.Padding(6);
+            this.d2DPainterBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.d2DPainterBox1.Name = "d2DPainterBox1";
-            this.d2DPainterBox1.Size = new System.Drawing.Size(350, 339);
+            this.d2DPainterBox1.Size = new System.Drawing.Size(233, 226);
             this.d2DPainterBox1.TabIndex = 2;
             this.d2DPainterBox1.D2DPaint += new BalthasarLib.D2DPainter.D2DPainterBox.OnD2DPaintHandler(this.d2DPainterBox1_D2DPaint);
+            this.d2DPainterBox1.Load += new System.EventHandler(this.d2DPainterBox1_Load);
+            this.d2DPainterBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.d2DPainterBox1_KeyDown);
+            this.d2DPainterBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.d2DPainterBox1_KeyPress);
+            this.d2DPainterBox1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.d2DPainterBox1_KeyUp);
             this.d2DPainterBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.d2DPainterBox1_MouseClick);
             this.d2DPainterBox1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.d2DPainterBox1_MouseDoubleClick);
             this.d2DPainterBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.d2DPainterBox1_MouseDown);
@@ -65,13 +69,14 @@
             // 
             // PianoRollWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.Controls.Add(this.noteScrollBar1);
             this.Controls.Add(this.d2DPainterBox1);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "PianoRollWindow";
-            this.Size = new System.Drawing.Size(378, 339);
+            this.Size = new System.Drawing.Size(252, 226);
             this.Resize += new System.EventHandler(this.PianoRollWindow_Resize);
             this.ResumeLayout(false);
 

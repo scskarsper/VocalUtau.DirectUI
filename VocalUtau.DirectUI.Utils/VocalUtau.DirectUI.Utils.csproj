@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionUtils\PitchActionUtils.cs" />
     <Compile Include="MathUtils\PitchMathUtils.cs" />
     <Compile Include="PianoUtils\NoteView.cs" />
     <Compile Include="PianoUtils\PitchView.cs" />
