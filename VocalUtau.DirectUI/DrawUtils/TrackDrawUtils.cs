@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using VocalUtau.Formats.Model.VocalObject;
 
 namespace VocalUtau.DirectUI.DrawUtils
 {
@@ -34,11 +35,11 @@ namespace VocalUtau.DirectUI.DrawUtils
             g.DrawLine(L2_p1, L2_p2, LineColor, LineWidth, LineStyle);
         }
 
-        public void DrawNote(PianoNote Note, Color NoteColor)
+        public void DrawNote(NoteObject Note, Color NoteColor)
         {
             DrawNote(Note, NoteColor, Color.Black);
         }
-        public void DrawNote(PianoNote Note, Color NoteColor, Color LyricColor)
+        public void DrawNote(NoteObject Note, Color NoteColor, Color LyricColor)
         {
             //判断X相位是否抛弃
             long LeftTick = Note.Tick;
@@ -162,17 +163,17 @@ namespace VocalUtau.DirectUI.DrawUtils
             g.DrawRectangle(DiaRect, rconf.RollColor_NoteBorderColor);
         }
 
-        public void DrawPitchLine(List<PitchNode> SortedPitchPointSilk, Color LineColor)
+        public void DrawPitchLine(List<PitchObject> SortedPitchPointSilk, Color LineColor)
         {
             DrawPitchLine(SortedPitchPointSilk, LineColor, 1);
         }
-        public void DrawPitchLine(List<PitchNode> SortedPitchPointSilk, Color LineColor, float LineWidth)
+        public void DrawPitchLine(List<PitchObject> SortedPitchPointSilk, Color LineColor, float LineWidth)
         {
             DrawPitchLine(SortedPitchPointSilk, LineColor, LineWidth, System.Drawing.Drawing2D.DashStyle.Solid);
         }
 
 
-        private Point PitchNode2Point(PitchNode Node,long MinTick,long MaxTick,uint MinNote,uint MaxNote)
+        private Point PitchObject2Point(PitchObject Node,long MinTick,long MaxTick,uint MinNote,uint MaxNote)
         {
             long ETick = Node.Tick - MinTick;//获得左边界距离启绘点距离；
             int NodeXPixel = baseEvent.ClipRectangle.X;
@@ -191,7 +192,7 @@ namespace VocalUtau.DirectUI.DrawUtils
             int NodeYPixel=baseEvent.ClipRectangle.Top +  (int)(((double)NoteDistance-PitchDistance+0.5) * rconf.Const_RollNoteHeight);
             return new Point(NodeXPixel,NodeYPixel);
         }
-        public void DrawPitchLine(List<PitchNode> SortedPitchPointSilk, Color LineColor, float LineWidth, System.Drawing.Drawing2D.DashStyle LineStyle)
+        public void DrawPitchLine(List<PitchObject> SortedPitchPointSilk, Color LineColor, float LineWidth, System.Drawing.Drawing2D.DashStyle LineStyle)
         {
             //计算X相位边界
             long MinTick = pprops.PianoStartTick;
@@ -208,15 +209,15 @@ namespace VocalUtau.DirectUI.DrawUtils
             {
                 if (SortedPitchPointSilk[i].Tick > MinTick && SortedPitchPointSilk[i - 1].Tick < MaxTick)
                 {
-                    PitchNode pn = SortedPitchPointSilk[i];
-                    PitchNode pn2 = SortedPitchPointSilk[i-1];
+                    PitchObject pn = SortedPitchPointSilk[i];
+                    PitchObject pn2 = SortedPitchPointSilk[i-1];
                     if (First)
                     {
-                        Point StartP = PitchNode2Point(pn2, MinTick, MaxTick, MinNote, MaxNote);
+                        Point StartP = PitchObject2Point(pn2, MinTick, MaxTick, MinNote, MaxNote);
                         PixelSilkLine.Add(StartP);
                         First = false;
                     }
-                    Point EndP = PitchNode2Point(pn, MinTick, MaxTick, MinNote, MaxNote);
+                    Point EndP = PitchObject2Point(pn, MinTick, MaxTick, MinNote, MaxNote);
                     PixelSilkLine.Add(EndP);
                 }
             }
@@ -227,7 +228,7 @@ namespace VocalUtau.DirectUI.DrawUtils
 
 #region
         /*抛弃的代码段
-        public void DrawPitchLine_droped(List<PitchNode> SortedPitchPointSilk,Color LineColor, float LineWidth, System.Drawing.Drawing2D.DashStyle LineStyle)
+        public void DrawPitchLine_droped(List<PitchObject> SortedPitchPointSilk,Color LineColor, float LineWidth, System.Drawing.Drawing2D.DashStyle LineStyle)
         {
             //计算X相位边界
             long MinTick = pprops.PianoStartTick;
@@ -239,26 +240,26 @@ namespace VocalUtau.DirectUI.DrawUtils
             uint MinNote = MaxNote - (uint)MaxNoteCount;
 
             //点群转线
-            Dictionary<PitchNode[], int> PitchSegments = new Dictionary<PitchNode[], int>();
+            Dictionary<PitchObject[], int> PitchSegments = new Dictionary<PitchObject[], int>();
             for (int i = 1; i < SortedPitchPointSilk.Count; i++)
             {
                 if (SortedPitchPointSilk[i].Tick > MinTick && SortedPitchPointSilk[i - 1].Tick < MaxTick)
                 {
-                    PitchSegments.Add(new PitchNode[2] { SortedPitchPointSilk[i - 1], SortedPitchPointSilk[i] }, 0);//0为未分组的
+                    PitchSegments.Add(new PitchObject[2] { SortedPitchPointSilk[i - 1], SortedPitchPointSilk[i] }, 0);//0为未分组的
                 }
             }
 
             //剔除超界线段
             int SegmentIndex = 0;
             bool LastSegmentIsHidden = true;
-            PitchNode[][] KeyArray = PitchSegments.Keys.ToArray();
+            PitchObject[][] KeyArray = PitchSegments.Keys.ToArray();
             for (int i = 0; i < KeyArray.Length;i++ )
             {
-                PitchNode[] PitchSegment = KeyArray[i];
+                PitchObject[] PitchSegment = KeyArray[i];
                 bool StartOver = false;//起点越界
                 bool EndOver = false;//终点越界
-                PitchNode Sp = PitchSegment[0];
-                PitchNode Ep = PitchSegment[1];
+                PitchObject Sp = PitchSegment[0];
+                PitchObject Ep = PitchSegment[1];
                 if (Sp.PitchValue.NoteNumber > MaxNote || Sp.PitchValue.NoteNumber < MinNote || Sp.Tick > MaxTick || Sp.Tick < MinTick)
                 {
                     StartOver = true;
@@ -284,19 +285,19 @@ namespace VocalUtau.DirectUI.DrawUtils
             //转换成渲染序列
             List<List<Point>> PixelSilks = new List<List<Point>>();
             SegmentIndex = 0;
-            foreach (KeyValuePair<PitchNode[], int> KeyValue in PitchSegments)
+            foreach (KeyValuePair<PitchObject[], int> KeyValue in PitchSegments)
             {
                 int Value = KeyValue.Value;
                 if (Value == 0) continue;
-                PitchNode[] Segment = KeyValue.Key;
+                PitchObject[] Segment = KeyValue.Key;
                 if (Value != SegmentIndex)
                 {
                     SegmentIndex = Value;
                     PixelSilks.Add(new List<Point>());
-                    Point StartP = PitchNode2Point(Segment[0], MinTick, MaxTick, MinNote, MaxNote);
+                    Point StartP = PitchObject2Point(Segment[0], MinTick, MaxTick, MinNote, MaxNote);
                     PixelSilks[PixelSilks.Count - 1].Add(StartP);
                 }
-                Point EndP = PitchNode2Point(Segment[1], MinTick, MaxTick, MinNote, MaxNote);
+                Point EndP = PitchObject2Point(Segment[1], MinTick, MaxTick, MinNote, MaxNote);
                 PixelSilks[PixelSilks.Count - 1].Add(EndP);
             }
             D2DGraphics g = baseEvent.D2DGraphics;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using VocalUtau.DirectUI.Models;
+using VocalUtau.Formats.Model.VocalObject;
 
 namespace Demo.USTViewer.Model.Objects
 {
@@ -11,8 +12,8 @@ namespace Demo.USTViewer.Model.Objects
     {
         public ViewObjects()
         {
-            _NoteList = new List<PianoNote>();
-            _PitchList = new List<PitchNode>();
+            _NoteList = new List<NoteObject>();
+            _PitchList = new List<PitchObject>();
             notelisthandle = GCHandle.Alloc(_NoteList);
             pitchlisthandle = GCHandle.Alloc(_PitchList);
         }
@@ -21,7 +22,7 @@ namespace Demo.USTViewer.Model.Objects
             notelisthandle.Free();
             pitchlisthandle.Free();
         }
-        List<PianoNote> _NoteList;
+        List<NoteObject> _NoteList;
         GCHandle notelisthandle;
 
         public IntPtr NotelistPtr
@@ -32,11 +33,11 @@ namespace Demo.USTViewer.Model.Objects
             }
         }
 
-        public List<PianoNote> NoteList
+        public List<NoteObject> NoteList
         {
             get { return _NoteList; }
         }
-        List<PitchNode> _PitchList;
+        List<PitchObject> _PitchList;
         GCHandle pitchlisthandle;
 
         public IntPtr PitchlistPtr
@@ -47,7 +48,7 @@ namespace Demo.USTViewer.Model.Objects
             }
         }
 
-        public List<PitchNode> PitchList
+        public List<PitchObject> PitchList
         {
             get { return _PitchList; }
         }

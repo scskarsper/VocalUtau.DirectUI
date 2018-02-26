@@ -9,6 +9,7 @@ using VocalUtau.DirectUI;
 using VocalUtau.DirectUI.Models;
 using VocalUtau.DirectUI.Utils.ActionUtils;
 using VocalUtau.DirectUI.Utils.MathUtils;
+using VocalUtau.Formats.Model.VocalObject;
 
 namespace VocalUtau.DirectUI.Utils.PianoUtils
 {
@@ -60,8 +61,8 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             }
         }
         PitchDragingType PitchDragingStatus = PitchDragingType.None;
-        PitchNode PitchStP1 = null;
-        PitchNode PitchTmpP0 = null;
+        PitchObject PitchStP1 = null;
+        PitchObject PitchTmpP0 = null;
 
 
         bool _HandleEvents = false;
@@ -94,31 +95,31 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             PianoWindow.TrackMouseUp += PianoWindow_TrackMouseUp;
             PianoWindow.TrackMouseMove += PianoWindow_TrackMouseMove;
         }
-        private List<PianoNote> NoteList
+        private List<NoteObject> NoteList
         {
             get
             {
-                List<PianoNote> ret = new List<PianoNote>();
+                List<NoteObject> ret = new List<NoteObject>();
                 try
                 {
                     GCHandle handle = GCHandle.FromIntPtr(NoteListPtr);
-                    ret = (List<PianoNote>)handle.Target;
-                    if (ret == null) ret = new List<PianoNote>();
+                    ret = (List<NoteObject>)handle.Target;
+                    if (ret == null) ret = new List<NoteObject>();
                 }
                 catch { ;}
                 return ret;
             }
         }
-        private List<PitchNode> PitchList
+        private List<PitchObject> PitchList
         {
             get
             {
-                List<PitchNode> ret = new List<PitchNode>();
+                List<PitchObject> ret = new List<PitchObject>();
                 try
                 {
                     GCHandle handle = GCHandle.FromIntPtr(PitchListPtr);
-                    ret = (List<PitchNode>)handle.Target;
-                    if (ret == null) ret = new List<PitchNode>();
+                    ret = (List<PitchObject>)handle.Target;
+                    if (ret == null) ret = new List<PitchObject>();
                 }
                 catch { ;}
                 return ret;
@@ -172,7 +173,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             }
             if (_PitchToolsStatus == PitchDragingType.None) return;
             if (PitchDragingStatus != PitchDragingType.None) return;
-            PitchStP1 = new PitchNode(e.Tick, e.PitchValue.PitchValue);
+            PitchStP1 = new PitchObject(e.Tick, e.PitchValue.PitchValue);
             PitchDragingStatus = _PitchToolsStatus;
         }
 
@@ -180,7 +181,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         {
             if (!_HandleEvents) return;
             if (PitchDragingStatus == PitchDragingType.None) return;
-            PitchNode PitchEdP2 = new PitchNode(e.Tick, e.PitchValue.PitchValue);
+            PitchObject PitchEdP2 = new PitchObject(e.Tick, e.PitchValue.PitchValue);
 
             switch (PitchDragingStatus)
             {
@@ -211,7 +212,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             {
                 return;
             }
-            PitchTmpP0 = new PitchNode(e.Tick, e.PitchValue.PitchValue);
+            PitchTmpP0 = new PitchObject(e.Tick, e.PitchValue.PitchValue);
             if (_PitchToolsStatus == PitchDragingType.None)
             {
                 PianoWindow.ParentForm.Cursor = Cursors.Arrow;
@@ -268,24 +269,24 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                 N2 = NoteNum;
             }
         }
-        public List<PitchNode> getShownPitchLine(long MinTick=-1,long MaxTick=-1)
+        public List<PitchObject> getShownPitchLine(long MinTick=-1,long MaxTick=-1)
         {
             MinTick = MinTick<AntiBordTick?0:PianoWindow.MinShownTick - AntiBordTick;
             if(MaxTick<=MinTick)MaxTick = PianoWindow.MaxShownTick + AntiBordTick;
-            List<PianoNote> NL = NoteList;
-            List<PitchNode> PN = PitchList;
+            List<NoteObject> NL = NoteList;
+            List<PitchObject> PN = PitchList;
             return PitchActionUtils.getShownPitchLine(ref NL, ref PN, MinTick, MaxTick, _ShowNoteSpace);
         }
         public void earsePitchLine(PitchView.BlockDia NoteDia,bool ModeV2=false)
         {
-            List<PianoNote> NL = NoteList;
-            List<PitchNode> PN = PitchList;
+            List<NoteObject> NL = NoteList;
+            List<PitchObject> PN = PitchList;
             PitchActionUtils.earsePitchLine(ref NL, ref PN, NoteDia,ModeV2);
         }
-        public void replacePitchLine(List<PitchNode> newPitchLine)
+        public void replacePitchLine(List<PitchObject> newPitchLine)
         {
-            List<PianoNote> NL = NoteList;
-            List<PitchNode> PN = PitchList;
+            List<NoteObject> NL = NoteList;
+            List<PitchObject> PN = PitchList;
             PitchActionUtils.replacePitchLine(ref NL, ref PN, newPitchLine); 
         }
     

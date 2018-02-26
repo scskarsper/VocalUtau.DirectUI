@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using BalthasarLib.D2DPainter;
 using VocalUtau.DirectUI.Models;
+using VocalUtau.Formats.Model.VocalObject;
 
 namespace VocalUtau.DirectUI
 {
@@ -30,7 +31,7 @@ namespace VocalUtau.DirectUI
         /// 公共属性
         /// </summary>
         #region
-        public VocalUtau.DirectUI.PitchValuePair.OctaveTypeEnum OctaveType 
+        public PitchAtomObject.OctaveTypeEnum OctaveType 
         {
             get { return pprops.OctaveType; }
             set
@@ -54,7 +55,8 @@ namespace VocalUtau.DirectUI
         }
         public void setNoteHeight(uint Size=13)
         {
-            rconf.setNoteHeight(Size);
+            rconf.setNoteHeight(Size); 
+            SetScrollMax();
             d2DPainterBox1.Refresh();
         }
         public void setPianoStartTick(long Tick)
@@ -107,7 +109,7 @@ namespace VocalUtau.DirectUI
             ShownNoteCount = (double)(d2DPainterBox1.ClientRectangle.Height - rconf.Const_TitleHeight) / rconf.Const_RollNoteHeight;
             ShownTickCount = pprops.dertPixel2dertTick(d2DPainterBox1.ClientRectangle.Width-rconf.Const_RollWidth);
         }
-        void InitGUI()
+        void SetScrollMax()
         {
             int noteArea = this.ClientRectangle.Height - rconf.Const_TitleHeight;
             int noteCount = noteArea / rconf.Const_RollNoteHeight;
@@ -118,6 +120,10 @@ namespace VocalUtau.DirectUI
                 noteScrollBar1_Scroll(null, null);
             }
             noteScrollBar1.Maximum = ScrollMax;
+        }
+        void InitGUI()
+        {
+            SetScrollMax();
             noteScrollBar1.Height = this.ClientRectangle.Height - rconf.Const_TitleHeight;
             noteScrollBar1.Top = rconf.Const_TitleHeight;
             noteScrollBar1.Width = rconf.Const_VScrollBarWidth;
@@ -204,9 +210,9 @@ namespace VocalUtau.DirectUI
                 Point RB = new Point(w, y + rconf.Const_RollNoteHeight);//矩形右下角
                 Rectangle Rect = new Rectangle(LT, new Size(w - rconf.Const_RollWidth, rconf.Const_RollNoteHeight));//矩形区域
                 //计算色域
-                PitchValuePair NoteValue = new PitchValuePair((uint)cNote, 0);
+                PitchAtomObject NoteValue = new PitchAtomObject((uint)cNote, 0);
                 NoteValue.OctaveType = pprops.OctaveType;
-                int Octave = NoteValue.OctaveType == PitchValuePair.OctaveTypeEnum.Voice ? NoteValue.Octave : NoteValue.Octave-1;
+                int Octave = NoteValue.OctaveType == PitchAtomObject.OctaveTypeEnum.Voice ? NoteValue.Octave : NoteValue.Octave-1;
                 int Key = NoteValue.Key;
                 bool isBlackKey = NoteValue.IsBlackKey;
                 Color KeyColor = isBlackKey ? rconf.RollColor_BlackKey_NormalSound : rconf.RollColor_WhiteKey_NormalSound;
@@ -362,7 +368,7 @@ namespace VocalUtau.DirectUI
                 g.FillRectangle(WhiteRect, rconf.PianoColor_WhiteKey);
                 g.DrawRectangle(WhiteRect, rconf.PianoColor_Line);
                 //绘制黑键
-                PitchValuePair NoteValue = new PitchValuePair((uint)cNote, 0);
+                PitchAtomObject NoteValue = new PitchAtomObject((uint)cNote, 0);
                 NoteValue.OctaveType = pprops.OctaveType;
                 int Octave = NoteValue.Octave;
                 int Key = NoteValue.Key;

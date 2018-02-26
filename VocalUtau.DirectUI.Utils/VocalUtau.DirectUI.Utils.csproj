@@ -49,6 +49,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\VocalUtau.Formats\VocalUtau.Formats.csproj">
+      <Project>{9ea2955f-3919-4939-bb75-0b38f4e6182d}</Project>
+      <Name>VocalUtau.Formats</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VocalUtau.DirectUI\VocalUtau.DirectUI.csproj">
       <Project>{5fcecb26-c22c-49df-bac8-0e431183a379}</Project>
       <Name>VocalUtau.DirectUI</Name>

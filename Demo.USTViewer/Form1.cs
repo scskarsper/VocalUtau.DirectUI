@@ -37,22 +37,27 @@ namespace Demo.USTViewer
             USTOriginalProject USTPO = USTOriginalSerializer.Deserialize(FilePath);
             PartsObject pro = USTOriginalSerializer.UST2Parts(USTPO);
 
-            foreach (KeyValuePair<long, NoteObject> po in pro.NoteList)
+            ProjectObject poj = new ProjectObject();
+            poj.InitEmpty();
+            poj.TrackerList[1].PartList[1] = pro;
+
+            foreach (NoteObject po in pro.NoteList)
             {
-                PianoNote PNote = new PianoNote(po.Key, po.Value.TickLength,
-                        new VocalUtau.DirectUI.PitchValuePair((uint)po.Value.NoteNum, 0));
-                PNote.OctaveType = VocalUtau.DirectUI.PitchValuePair.OctaveTypeEnum.Piano;
-                byte[] byteArray = System.Text.Encoding.Default.GetBytes (po.Value.Lyric);
-                PNote.Lyric = System.Text.Encoding.GetEncoding("Shift-JIS").GetString(byteArray);
-                RollObjects.NoteList.Add(PNote);
+                byte[] bt=System.Text.Encoding.Default.GetBytes(po.Lyric);
+                string Str = System.Text.Encoding.GetEncoding("Shift-JIS").GetString(bt);
+                po.Lyric = Str;
+                RollObjects.NoteList.Add(po);
             }
             hScrollBar1.Maximum = (int)pro.TickLength;
             int sg = 1;
             for (long i = 1; i <= pro.TickLength; i += 32)//
             {
                 sg = sg * -1;
-                RollObjects.PitchList.Add(new PitchNode(i,sg*0.5));
+                RollObjects.PitchList.Add(new PitchObject(i,sg*0.5));
             }
+            pro.PitchBendsList = RollObjects.PitchList;
+
+            string abc=ProjectObject.Serializer.Serialize(poj);
         }
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -201,7 +206,7 @@ namespace Demo.USTViewer
             NV.NoteToolsStatus = NoteView.NoteToolsType.Add;
             PV.HandleEvents = false;
         }
-        List<PianoNote> PNV = new List<PianoNote>();
+        List<NoteObject> PNV = new List<NoteObject>();
         private void toolStripButton8_Click(object sender, EventArgs e)
         {
             PNV=NV.getSelectNotes(true);

@@ -1,4 +1,5 @@
-﻿namespace Demo.USTViewer
+﻿using VocalUtau.Formats.Model.VocalObject;
+namespace Demo.USTViewer
 {
     partial class Form1
     {
@@ -182,7 +183,7 @@
             this.pianoRollWindow1.Location = new System.Drawing.Point(1, 19);
             this.pianoRollWindow1.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.pianoRollWindow1.Name = "pianoRollWindow1";
-            this.pianoRollWindow1.OctaveType = VocalUtau.DirectUI.PitchValuePair.OctaveTypeEnum.Voice;
+            this.pianoRollWindow1.OctaveType = PitchAtomObject.OctaveTypeEnum.Voice;
             this.pianoRollWindow1.Size = new System.Drawing.Size(526, 307);
             this.pianoRollWindow1.TabIndex = 0;
             this.pianoRollWindow1.TrackMouseDown += new VocalUtau.DirectUI.PianoRollWindow.OnMouseEventHandler(this.pianoRollWindow1_TrackMouseDown);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using VocalUtau.Formats.Model.VocalObject;
 
 namespace VocalUtau.DirectUI
 {
@@ -27,8 +28,8 @@ namespace VocalUtau.DirectUI
         private AreaType _area;
         internal AreaType Area { get { return _area; } }
 
-        private PitchValuePair _pitchvp=new PitchValuePair(0,0);
-        public PitchValuePair PitchValue { get { return _pitchvp; } }
+        private PitchAtomObject _pitchvp=new PitchAtomObject(0,0);
+        public PitchAtomObject PitchValue { get { return _pitchvp; } }
         
         private long _tick;
         public long Tick { get { return _tick; } }
@@ -66,7 +67,7 @@ namespace VocalUtau.DirectUI
                 uint _noteNumber = pprops.PianoTopNote - (uint)drawed_noteSpt;
                 double cent=0.5-drawed_noteSpt+(uint)drawed_noteSpt;
                 int _notePitchWheel = (int)Math.Round(cent * 0x2000, 0);
-                _pitchvp=new PitchValuePair(_noteNumber,_notePitchWheel);
+                _pitchvp=new PitchAtomObject(_noteNumber,_notePitchWheel);
                 _pitchvp.OctaveType = pprops.OctaveType;
             }
             if (_area != AreaType.Roll)

@@ -22,3 +22,5 @@ D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Utils\bin\Debug\Ba
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Utils\obj\Debug\VocalUtau.DirectUI.Utils.csprojResolveAssemblyReference.cache
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Utils\obj\Debug\VocalUtau.DirectUI.Utils.dll
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Utils\obj\Debug\VocalUtau.DirectUI.Utils.pdb
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Utils\bin\Debug\VocalUtau.Formats.dll
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Utils\bin\Debug\VocalUtau.Formats.pdb

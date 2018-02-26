@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using VocalUtau.DirectUI;
 using VocalUtau.DirectUI.Models;
 using VocalUtau.DirectUI.Utils.ActionUtils;
+using VocalUtau.Formats.Model.VocalObject;
 
 namespace VocalUtau.DirectUI.Utils.PianoUtils
 {
@@ -28,7 +29,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         IntPtr PitchListPtr = IntPtr.Zero;
         PianoRollWindow PianoWindow;
 
-      //  List<PitchNode> Tmp = new List<PitchNode>();
+      //  List<PitchObject> Tmp = new List<PitchObject>();
 
         long _TickStepTick = 1;
 
@@ -156,31 +157,31 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         }
 
 
-        private List<PianoNote> NoteList
+        private List<NoteObject> NoteList
         {
             get
             {
-                List<PianoNote> ret = new List<PianoNote>();
+                List<NoteObject> ret = new List<NoteObject>();
                 try
                 {
                     GCHandle handle = GCHandle.FromIntPtr(NoteListPtr);
-                    ret = (List<PianoNote>)handle.Target;
-                    if (ret == null) ret = new List<PianoNote>();
+                    ret = (List<NoteObject>)handle.Target;
+                    if (ret == null) ret = new List<NoteObject>();
                 }
                 catch { ;}
                 return ret;
             }
         }
-        private List<PitchNode> PitchList
+        private List<PitchObject> PitchList
         {
             get
             {
-                List<PitchNode> ret = new List<PitchNode>();
+                List<PitchObject> ret = new List<PitchObject>();
                 try
                 {
                     GCHandle handle = GCHandle.FromIntPtr(PitchListPtr);
-                    ret = (List<PitchNode>)handle.Target;
-                    if (ret == null) ret = new List<PitchNode>();
+                    ret = (List<PitchObject>)handle.Target;
+                    if (ret == null) ret = new List<PitchObject>();
                 }
                 catch { ;}
                 return ret;
@@ -260,20 +261,20 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         NoteDragingType NoteDragingWork = NoteDragingType.None;
         List<BlockDia> NoteDias = new List<BlockDia>();
 
-        public List<PianoNote> getSelectNotes(bool independentBlock=false)
+        public List<NoteObject> getSelectNotes(bool independentBlock=false)
         {
-            List<PianoNote> ret = new List<PianoNote>();
+            List<NoteObject> ret = new List<NoteObject>();
             long RL = NoteSelectIndexs.Count > 0 ? NoteList[NoteSelectIndexs[0]].Tick: -1;
             if (RL == -1) return ret;
             for (int i = 0; i < NoteSelectIndexs.Count; i++)
             {
-                PianoNote PNN = (PianoNote)NoteList[NoteSelectIndexs[i]].Clone();
+                NoteObject PNN = (NoteObject)NoteList[NoteSelectIndexs[i]].Clone();
                 PNN.Tick -= RL;
                 ret.Add(PNN);
             }
             return ret;
         }
-        public bool AddNotes(long LeftTick,List<PianoNote> Notes)
+        public bool AddNotes(long LeftTick,List<NoteObject> Notes)
         {
             if (Notes.Count <= 0) return false;
             Notes.Sort();
@@ -282,7 +283,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             bool isAvaliable = true;
             for (int i = 0; i < NoteList.Count; i++)
             {
-                PianoNote PN = NoteList[i];
+                NoteObject PN = NoteList[i];
                 if (PN.Tick > RR) break;
                 if (PN.Tick + PN.Length < RL) continue;
                 isAvaliable = false;
@@ -291,7 +292,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             {
                 for(int i=0;i<Notes.Count;i++)
                 {
-                    PianoNote PNN = (PianoNote)Notes[i].Clone();
+                    NoteObject PNN = (NoteObject)Notes[i].Clone();
                     PNN.Tick += LeftTick;
                     NoteList.Add(PNN);
                 }
@@ -308,7 +309,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             long nt = PianoWindow.MinShownTick;
             for (int i = 0; i < NoteList.Count; i++)
             {
-                PianoNote PN = NoteList[i];
+                NoteObject PN = NoteList[i];
                 if (PN.Tick >= mt) break;
                 if (PN.Tick + PN.Length < nt) continue;
                 utils.DrawNote(PN, (NoteSelectIndexs.IndexOf(i)>-1)?Color.Green:Color.SkyBlue);
@@ -369,27 +370,27 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             {
                 if (NoteDragingWork == NoteDragingType.NoteAdd)
                 {
-                    PianoNote nPN = new PianoNote(NoteDias[0].TickStart, NoteDias[0].TickEnd - NoteDias[0].TickStart, NoteDias[0].TopNoteNum);
+                    NoteObject nPN = new NoteObject(NoteDias[0].TickStart, NoteDias[0].TickEnd - NoteDias[0].TickStart, NoteDias[0].TopNoteNum);
                     //判断是否是重叠的
                     #region
                     /*bool isAvaliable = false;
                     long mt = PianoWindow.MaxShownTick+480;
                     long nt = PianoWindow.MinShownTick-480;
                     if(nt<0)nt=0;
-                    List<PianoNote> EmptyArea = new List<PianoNote>();
+                    List<NoteObject> EmptyArea = new List<NoteObject>();
                     for (int i = 0; i < NoteList.Count; i++)
                     {
-                        PianoNote RPN = i==0?null:NoteList[i-1];
-                        PianoNote PN = NoteList[i];
+                        NoteObject RPN = i==0?null:NoteList[i-1];
+                        NoteObject PN = NoteList[i];
                         if (PN.Tick >= mt) break;
                         if (PN.Tick <= nt) continue;
                         if (PN.Tick > 0 && RPN == null)
                         {
-                            EmptyArea.Add(new PianoNote(0, PN.Tick - 1, 60));//A1;
+                            EmptyArea.Add(new NoteObject(0, PN.Tick - 1, 60));//A1;
                         }else if(i==NoteList.Count-1)
                         {
                             long ABL=mt-PN.Tick-PN.Length;
-                            EmptyArea.Add(new PianoNote(PN.Tick+PN.Length,ABL<=0?1:ABL, 60));//AN;
+                            EmptyArea.Add(new NoteObject(PN.Tick+PN.Length,ABL<=0?1:ABL, 60));//AN;
                         }
                         else
                         {
@@ -397,7 +398,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                             long L = PN.Tick - S;
                             if (L > 32)
                             {
-                                EmptyArea.Add(new PianoNote(S, L, 60));//A1;
+                                EmptyArea.Add(new NoteObject(S, L, 60));//A1;
                             }
                         }
                     }
@@ -460,7 +461,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
 
                             if (NoteList[CurrentNoteIndex].PitchValue.NoteNumber != e.PitchValue.NoteNumber)
                             {
-                                NoteList[CurrentNoteIndex].PitchValue = new VocalUtau.DirectUI.PitchValuePair(e.PitchValue.NoteNumber, NoteList[CurrentNoteIndex].PitchValue.PitchWheel);
+                                NoteList[CurrentNoteIndex].PitchValue = new PitchAtomObject(e.PitchValue.NoteNumber, NoteList[CurrentNoteIndex].PitchValue.PitchWheel);
                             }
                             if (Math.Abs(TickDert) > minTickChange)
                             {
@@ -478,7 +479,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                                 uint NewNoteNumber = (uint)(NoteList[NoteSelectIndexs[i]].PitchValue.NoteNumber - NoteDert);
                                 if (NoteList[NoteSelectIndexs[i]].PitchValue.NoteNumber != NewNoteNumber)
                                 {
-                                    NoteList[NoteSelectIndexs[i]].PitchValue = new VocalUtau.DirectUI.PitchValuePair(NewNoteNumber, NoteList[NoteSelectIndexs[i]].PitchValue.PitchWheel);
+                                    NoteList[NoteSelectIndexs[i]].PitchValue = new PitchAtomObject(NewNoteNumber, NoteList[NoteSelectIndexs[i]].PitchValue.PitchWheel);
                                 }
                                 if (Math.Abs(TickDert) > minTickChange)
                                 {
@@ -497,7 +498,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                         {
                             for (int i = 0; i < NoteList.Count; i++)
                             {
-                                PianoNote PN = NoteList[i];
+                                NoteObject PN = NoteList[i];
                                 if (PN.Tick >= mt) break;
                                 if (PN.Tick + PN.Length < nt) continue;
                                 if (PN.PitchValue.NoteNumber >= NoteDias[0].BottomNoteNum && PN.PitchValue.NoteNumber <= NoteDias[0].TopNoteNum)
@@ -595,7 +596,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                         for (int i = 0; i < NoteList.Count; i++)
                         {
                             PianoWindow.ParentForm.Cursor = Cursors.Arrow;
-                            PianoNote PN = NoteList[i];
+                            NoteObject PN = NoteList[i];
                             if (PN.Tick >= mt) break;
                             if (PN.Tick + PN.Length < nt) continue;
                             if (e.PitchValue.NoteNumber == PN.PitchValue.NoteNumber)

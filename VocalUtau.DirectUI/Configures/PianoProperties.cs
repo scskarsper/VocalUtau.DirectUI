@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VocalUtau.Formats.Model.VocalObject;
 
 namespace VocalUtau.DirectUI
 {
@@ -43,8 +44,8 @@ namespace VocalUtau.DirectUI
             this.rconf = rconf;
         }
 
-        VocalUtau.DirectUI.PitchValuePair.OctaveTypeEnum _octaveType = VocalUtau.DirectUI.PitchValuePair.OctaveTypeEnum.Voice;
-        internal VocalUtau.DirectUI.PitchValuePair.OctaveTypeEnum OctaveType { get { return _octaveType; } set { _octaveType = value; } }
+        PitchAtomObject.OctaveTypeEnum _octaveType = PitchAtomObject.OctaveTypeEnum.Voice;
+        internal PitchAtomObject.OctaveTypeEnum OctaveType { get { return _octaveType; } set { _octaveType = value; } }
         
         private uint _crotchetLengthPixel = 66;
         internal uint CrotchetLengthPixel

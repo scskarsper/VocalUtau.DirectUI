@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using VocalUtau.DirectUI.Models;
 using VocalUtau.DirectUI.Utils.PianoUtils;
+using VocalUtau.Formats.Model.VocalObject;
 
 namespace VocalUtau.DirectUI.Utils.ActionUtils
 {
     class PitchActionUtils
     {
-        public static List<PitchNode> getShownPitchLine(ref List<PianoNote> NoteList, ref List<PitchNode> PitchList, long MinTick, long MaxTick, bool ShowNoteSpace=true)
+        public static List<PitchObject> getShownPitchLine(ref List<NoteObject> NoteList, ref List<PitchObject> PitchList, long MinTick, long MaxTick, bool ShowNoteSpace=true)
         {
-            List<PitchNode> ret = new List<PitchNode>();
+            List<PitchObject> ret = new List<PitchObject>();
             if (MinTick < 0) MinTick = 0;
             if (MaxTick <= MinTick) return ret;
             int NextPitchIndex = -1;
@@ -25,7 +26,7 @@ namespace VocalUtau.DirectUI.Utils.ActionUtils
             for (int i = 0; i < NoteList.Count; i++)
             {
                 //查找和设置音符起始点
-                PianoNote PN = NoteList[i];
+                NoteObject PN = NoteList[i];
                 if (RightLimit >= PN.Tick + PN.Length) continue;
                 if (PN.Tick >= MaxTick) break;
                 if (PN.Tick + PN.Length < MinTick) continue;
@@ -45,7 +46,7 @@ namespace VocalUtau.DirectUI.Utils.ActionUtils
                     //对于两音符间的CP，以后者音高优先（考虑到Overlap参数）
                     while (NextPitchIndex > -1 && NextPitchIndex < PitchList.Count && PitchList[NextPitchIndex].Tick < PN.Tick)
                     {
-                        PitchNode PNP = new PitchNode(PitchList[NextPitchIndex].Tick, PN.PitchValue.NoteNumber + PitchList[NextPitchIndex].PitchValue.PitchValue);
+                        PitchObject PNP = new PitchObject(PitchList[NextPitchIndex].Tick, PN.PitchValue.NoteNumber + PitchList[NextPitchIndex].PitchValue.PitchValue);
                         ret.Add(PNP);
                         NextPitchIndex++;
                     }
@@ -56,16 +57,16 @@ namespace VocalUtau.DirectUI.Utils.ActionUtils
                     )
                 {
                     //NoPitch
-                    PitchNode PNS = new PitchNode(StartPoint, PN.PitchValue.PitchValue);
-                    PitchNode PNE = new PitchNode(EndPoint, PN.PitchValue.PitchValue);
+                    PitchObject PNS = new PitchObject(StartPoint, PN.PitchValue.PitchValue);
+                    PitchObject PNE = new PitchObject(EndPoint, PN.PitchValue.PitchValue);
                     ret.Add(PNS);
                     ret.Add(PNE);
                 }
                 else
                 {
                     //判定如果音符内有CP，则设置音高
-                    PitchNode PNS = null;
-                    PitchNode PNE = null;
+                    PitchObject PNS = null;
+                    PitchObject PNE = null;
                     while (NextPitchIndex < PitchList.Count && PitchList[NextPitchIndex].Tick <= EndPoint && PitchList[NextPitchIndex].Tick < MaxTick)
                     {
                         if (PitchList[NextPitchIndex].Tick < StartPoint)
@@ -75,10 +76,10 @@ namespace VocalUtau.DirectUI.Utils.ActionUtils
                         }
                         if (PNS == null && PitchList[NextPitchIndex].Tick > StartPoint)
                         {
-                            PNS = new PitchNode(StartPoint, PN.PitchValue.NoteNumber + PitchList[NextPitchIndex].PitchValue.PitchValue);
+                            PNS = new PitchObject(StartPoint, PN.PitchValue.NoteNumber + PitchList[NextPitchIndex].PitchValue.PitchValue);
                             ret.Add(PNS);
                         }
-                        PitchNode PNP = new PitchNode(PitchList[NextPitchIndex].Tick, PN.PitchValue.NoteNumber + PitchList[NextPitchIndex].PitchValue.PitchValue);
+                        PitchObject PNP = new PitchObject(PitchList[NextPitchIndex].Tick, PN.PitchValue.NoteNumber + PitchList[NextPitchIndex].PitchValue.PitchValue);
                         ret.Add(PNP);
                         NextPitchIndex++;
                     }
@@ -86,7 +87,7 @@ namespace VocalUtau.DirectUI.Utils.ActionUtils
                     {
                         if (ret[ret.Count - 1].Tick < EndPoint)
                         {
-                            PNE = new PitchNode(EndPoint, ret[ret.Count - 1].PitchValue);
+                            PNE = new PitchObject(EndPoint, ret[ret.Count - 1].PitchValue);
                             ret.Add(PNE);
                         }
                     }
@@ -96,13 +97,13 @@ namespace VocalUtau.DirectUI.Utils.ActionUtils
             return ret;
 
         }
-        public static void earsePitchLine(ref List<PianoNote> NoteList, ref List<PitchNode> PitchList, PitchView.BlockDia NoteDia, bool ModeV2 = false)
+        public static void earsePitchLine(ref List<NoteObject> NoteList, ref List<PitchObject> PitchList, PitchView.BlockDia NoteDia, bool ModeV2 = false)
         {
             long mt = NoteDia.TickEnd;
             long nt = NoteDia.TickStart;
             for (int i = 0; i < NoteList.Count; i++)
             {
-                PianoNote PN = NoteList[i];
+                NoteObject PN = NoteList[i];
                 if (PN.Tick >= mt) break;
                 if (PN.Tick + PN.Length < nt) continue;
                 if (PN.PitchValue.NoteNumber >= NoteDia.BottomNoteNum && PN.PitchValue.NoteNumber <= NoteDia.TopNoteNum)
@@ -111,21 +112,21 @@ namespace VocalUtau.DirectUI.Utils.ActionUtils
                     long Ed = PN.Tick + PN.Length;
                     if (nt > St && nt < Ed) St = nt;
                     if (mt < Ed && mt > St) Ed = mt;
-                    earseArea(ref PitchList,new PitchNode(St, PN.PitchValue.PitchValue), new PitchNode(Ed, PN.PitchValue.PitchValue));
+                    earseArea(ref PitchList,new PitchObject(St, PN.PitchValue.PitchValue), new PitchObject(Ed, PN.PitchValue.PitchValue));
                     if (ModeV2)
                     {
-                        replacePitchLine(ref NoteList,ref PitchList,new List<PitchNode>() { 
-                            new PitchNode(St, PN.PitchValue.NoteNumber), new PitchNode(Ed-1, PN.PitchValue.NoteNumber)
+                        replacePitchLine(ref NoteList,ref PitchList,new List<PitchObject>() { 
+                            new PitchObject(St, PN.PitchValue.NoteNumber), new PitchObject(Ed-1, PN.PitchValue.NoteNumber)
                         });
                     }
                     else
                     {
-                        earseArea(ref PitchList, new PitchNode(St, PN.PitchValue.PitchValue), new PitchNode(Ed - 1, PN.PitchValue.PitchValue));
+                        earseArea(ref PitchList, new PitchObject(St, PN.PitchValue.PitchValue), new PitchObject(Ed - 1, PN.PitchValue.PitchValue));
                     }
                 }
             }
         }
-        private static void earseArea(ref List<PitchNode> PitchList, PitchNode St, PitchNode Et)
+        private static void earseArea(ref List<PitchObject> PitchList, PitchObject St, PitchObject Et)
         {
             int DelIdx = -1;
             for (int i = 0; i < PitchList.Count; i++)
@@ -144,7 +145,7 @@ namespace VocalUtau.DirectUI.Utils.ActionUtils
                 }
             }
         }
-        public static void replacePitchLine(ref List<PianoNote> NoteList, ref List<PitchNode> PitchList, List<PitchNode> newPitchLine)
+        public static void replacePitchLine(ref List<NoteObject> NoteList, ref List<PitchObject> PitchList, List<PitchObject> newPitchLine)
         {
             if (newPitchLine.Count < 2) return;
             long StartPoint = newPitchLine[0].Tick;
@@ -186,7 +187,7 @@ namespace VocalUtau.DirectUI.Utils.ActionUtils
             earseArea(ref PitchList,newPitchLine[0], newPitchLine[newPitchLine.Count - 1]);
             for (int i = 0; i < newPitchLine.Count; i++)
             {
-                PitchList.Add(new PitchNode(newPitchLine[i].Tick, newPitchLine[i].PitchValue.PitchValue - BaseNote[i]));
+                PitchList.Add(new PitchObject(newPitchLine[i].Tick, newPitchLine[i].PitchValue.PitchValue - BaseNote[i]));
             }
             PitchList.Sort();
         }
