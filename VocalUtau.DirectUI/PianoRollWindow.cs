@@ -343,7 +343,7 @@ namespace VocalUtau.DirectUI
                     CurrentRect,
                     e.MousePoint
                 );
-                TitlePaint(sender, new VocalUtau.DirectUI.DrawUtils.TitleDrawUtils(d2de, rconf));
+                TitlePaint(sender, new VocalUtau.DirectUI.DrawUtils.TitleDrawUtils(d2de, rconf, pprops));
             }
         }
         private void DrawPianoRollArea(object sender, BalthasarLib.D2DPainter.D2DPaintEventArgs e)

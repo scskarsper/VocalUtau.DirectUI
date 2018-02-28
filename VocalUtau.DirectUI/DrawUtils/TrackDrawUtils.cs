@@ -35,6 +35,23 @@ namespace VocalUtau.DirectUI.DrawUtils
             g.DrawLine(L2_p1, L2_p2, LineColor, LineWidth, LineStyle);
         }
 
+        public void DrawXLine(long Tick,Color LineColor,float LineWidth=2, System.Drawing.Drawing2D.DashStyle LineStyle=System.Drawing.Drawing2D.DashStyle.Solid)
+        {
+            D2DGraphics g = baseEvent.D2DGraphics;
+            long MinTick = pprops.PianoStartTick;
+            long MaxTick = pprops.PianoStartTick + (long)Math.Round(pprops.dertPixel2dertTick(baseEvent.ClipRectangle.Width), 0) + 1;
+            if (Tick <= MaxTick && Tick>=MinTick)
+            {
+                long ETick = Tick - MinTick;//获得左边界距离启绘点距离；
+                if (ETick >= 0)
+                {
+                    long NodeXPixel = baseEvent.ClipRectangle.X + (int)Math.Round(pprops.dertTick2dertPixel(ETick), 0);
+                    g.DrawLine(new Point((int)NodeXPixel, baseEvent.ClipRectangle.Top), new Point((int)NodeXPixel, baseEvent.ClipRectangle.Bottom), LineColor, LineWidth, LineStyle);
+                }
+            }
+
+        }
+
         public void DrawNote(NoteObject Note, Color NoteColor)
         {
             DrawNote(Note, NoteColor, Color.Black);

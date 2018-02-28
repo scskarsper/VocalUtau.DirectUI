@@ -15,9 +15,12 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
 {
     public class PitchView
     {
+        public delegate void OnPitchEventHandler(PitchDragingType eventType);
+        public event OnPitchEventHandler PitchActionEnd;
+        public event OnPitchEventHandler PitchActionBegin;
+
         const long AntiBordTick = 480;
-        IntPtr NoteListPtr = IntPtr.Zero;
-        IntPtr PitchListPtr = IntPtr.Zero;
+        IntPtr PartsObjectPtr = IntPtr.Zero;
         PianoRollWindow PianoWindow;
         bool _EarseModeV2 = true;
 
@@ -50,14 +53,6 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         {
             get { return _PitchToolsStatus; }
             set { _PitchToolsStatus = value;
-                if (_PitchToolsStatus == PitchDragingType.None)
-                {
-                    PianoWindow.ParentForm.Cursor = Cursors.Arrow;
-                }
-                else
-                {
-                    PianoWindow.ParentForm.Cursor = Cursors.Cross;
-                }
             }
         }
         PitchDragingType PitchDragingStatus = PitchDragingType.None;
@@ -80,11 +75,10 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             set { if (value < 0)_TickStepTick = 5;else _TickStepTick = value; }
         }
 
-        public PitchView(IntPtr NoteListPtr, IntPtr PitchListPtr, PianoRollWindow PianoWindow)
+        public PitchView(IntPtr PartsObjectPtr, PianoRollWindow PianoWindow)
         {
             this.PianoWindow = PianoWindow;
-            setNoteListPtr(NoteListPtr);
-            setPitchListPtr(PitchListPtr);
+            this.PartsObjectPtr = PartsObjectPtr;
             hookPianoWindow();
         }
 
@@ -94,46 +88,63 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             PianoWindow.TrackMouseDown += PianoWindow_TrackMouseDown;
             PianoWindow.TrackMouseUp += PianoWindow_TrackMouseUp;
             PianoWindow.TrackMouseMove += PianoWindow_TrackMouseMove;
+            PianoWindow.TrackMouseLeave += PianoWindow_TrackMouseLeave;
+            PianoWindow.TrackMouseEnter += PianoWindow_TrackMouseEnter;
+        }
+
+        void PianoWindow_TrackMouseLeave(object sender, EventArgs e)
+        {
+            PianoWindow.ParentForm.Cursor = Cursors.Arrow;
+        }
+
+        void PianoWindow_TrackMouseEnter(object sender, EventArgs e)
+        {
+            if (!_HandleEvents) return;
+            if (_PitchToolsStatus == PitchDragingType.None)
+            {
+                PianoWindow.ParentForm.Cursor = Cursors.Arrow;
+            }
+            else
+            {
+                PianoWindow.ParentForm.Cursor = Cursors.Cross;
+            }
+        }
+
+        private PartsObject PartsObject
+        {
+            get
+            {
+                PartsObject ret = null;
+                try
+                {
+                    GCHandle handle = GCHandle.FromIntPtr(PartsObjectPtr);
+                    ret = (PartsObject)handle.Target;
+                }
+                catch { ;}
+                return ret;
+            }
         }
         private List<NoteObject> NoteList
         {
             get
             {
-                List<NoteObject> ret = new List<NoteObject>();
-                try
-                {
-                    GCHandle handle = GCHandle.FromIntPtr(NoteListPtr);
-                    ret = (List<NoteObject>)handle.Target;
-                    if (ret == null) ret = new List<NoteObject>();
-                }
-                catch { ;}
-                return ret;
+                if (PartsObject == null) return new List<NoteObject>();
+                return PartsObject.NoteList;
             }
         }
         private List<PitchObject> PitchList
         {
             get
             {
-                List<PitchObject> ret = new List<PitchObject>();
-                try
-                {
-                    GCHandle handle = GCHandle.FromIntPtr(PitchListPtr);
-                    ret = (List<PitchObject>)handle.Target;
-                    if (ret == null) ret = new List<PitchObject>();
-                }
-                catch { ;}
-                return ret;
+                if (PartsObject == null) return new List<PitchObject>();
+                return PartsObject.PitchBendsList;
             }
         }
-        
-        
-        public void setNoteListPtr(IntPtr NoteListPtr)
+
+
+        public void setPartsObjectPtr(IntPtr PartsObjectPtr)
         {
-            this.NoteListPtr = NoteListPtr;
-        }
-        public void setPitchListPtr(IntPtr PitchListPtr)
-        {
-            this.PitchListPtr = PitchListPtr;
+            this.PartsObjectPtr = PartsObjectPtr;
         }
         public void setPianoWindowPtr(PianoRollWindow PianoWindow)
         {
@@ -175,6 +186,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             if (PitchDragingStatus != PitchDragingType.None) return;
             PitchStP1 = new PitchObject(e.Tick, e.PitchValue.PitchValue);
             PitchDragingStatus = _PitchToolsStatus;
+            if(PitchActionBegin!=null)PitchActionBegin(PitchDragingStatus);
         }
 
         private void PianoWindow_TrackMouseUp(object sender, VocalUtau.DirectUI.PianoMouseEventArgs e)
@@ -199,10 +211,11 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                     }
                     break;
             }
-
+            PitchDragingType EDStatus = PitchDragingStatus;
             PitchDragingStatus = PitchDragingType.None;
             PitchStP1 = null;
             PitchTmpP0 = null;
+            if(PitchActionEnd!=null)PitchActionEnd(EDStatus);
         }
 
         private void PianoWindow_TrackMouseMove(object sender, VocalUtau.DirectUI.PianoMouseEventArgs e)
