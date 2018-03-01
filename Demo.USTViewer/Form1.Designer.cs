@@ -46,11 +46,11 @@ namespace Demo.USTViewer
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.LSize = new System.Windows.Forms.VScrollBar();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.btn_PIT = new System.Windows.Forms.Button();
+            this.btn_DYN = new System.Windows.Forms.Button();
+            this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.pianoRollWindow1 = new VocalUtau.DirectUI.PianoRollWindow();
             this.paramCurveWindow1 = new VocalUtau.DirectUI.ParamCurveWindow();
-            this.trackBar2 = new System.Windows.Forms.TrackBar();
-            this.btn_DYN = new System.Windows.Forms.Button();
-            this.btn_PIT = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -68,7 +68,7 @@ namespace Demo.USTViewer
             this.trackBar1.Location = new System.Drawing.Point(0, 303);
             this.trackBar1.Margin = new System.Windows.Forms.Padding(2);
             this.trackBar1.Maximum = 300;
-            this.trackBar1.Minimum = 3;
+            this.trackBar1.Minimum = 32;
             this.trackBar1.Name = "trackBar1";
             this.trackBar1.Size = new System.Drawing.Size(79, 16);
             this.trackBar1.TabIndex = 4;
@@ -208,7 +208,7 @@ namespace Demo.USTViewer
             this.LSize.Maximum = 130;
             this.LSize.Minimum = 13;
             this.LSize.Name = "LSize";
-            this.LSize.Size = new System.Drawing.Size(18, 111);
+            this.LSize.Size = new System.Drawing.Size(18, 112);
             this.LSize.SmallChange = 10;
             this.LSize.TabIndex = 6;
             this.LSize.Value = 13;
@@ -244,6 +244,42 @@ namespace Demo.USTViewer
             this.splitContainer1.SplitterWidth = 10;
             this.splitContainer1.TabIndex = 7;
             // 
+            // btn_PIT
+            // 
+            this.btn_PIT.Location = new System.Drawing.Point(8, 30);
+            this.btn_PIT.Name = "btn_PIT";
+            this.btn_PIT.Size = new System.Drawing.Size(50, 23);
+            this.btn_PIT.TabIndex = 9;
+            this.btn_PIT.Text = "PIT";
+            this.btn_PIT.UseVisualStyleBackColor = true;
+            // 
+            // btn_DYN
+            // 
+            this.btn_DYN.Location = new System.Drawing.Point(8, 59);
+            this.btn_DYN.Name = "btn_DYN";
+            this.btn_DYN.Size = new System.Drawing.Size(50, 23);
+            this.btn_DYN.TabIndex = 8;
+            this.btn_DYN.Text = "DYN";
+            this.btn_DYN.UseVisualStyleBackColor = true;
+            // 
+            // trackBar2
+            // 
+            this.trackBar2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.trackBar2.AutoSize = false;
+            this.trackBar2.BackColor = System.Drawing.Color.Black;
+            this.trackBar2.LargeChange = 1;
+            this.trackBar2.Location = new System.Drawing.Point(63, 17);
+            this.trackBar2.Margin = new System.Windows.Forms.Padding(2);
+            this.trackBar2.Maximum = 12;
+            this.trackBar2.Minimum = 1;
+            this.trackBar2.Name = "trackBar2";
+            this.trackBar2.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.trackBar2.Size = new System.Drawing.Size(16, 81);
+            this.trackBar2.TabIndex = 7;
+            this.trackBar2.Value = 1;
+            this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
+            // 
             // pianoRollWindow1
             // 
             this.pianoRollWindow1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -270,43 +306,8 @@ namespace Demo.USTViewer
             this.paramCurveWindow1.Location = new System.Drawing.Point(0, 2);
             this.paramCurveWindow1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.paramCurveWindow1.Name = "paramCurveWindow1";
-            this.paramCurveWindow1.Size = new System.Drawing.Size(707, 111);
+            this.paramCurveWindow1.Size = new System.Drawing.Size(707, 112);
             this.paramCurveWindow1.TabIndex = 0;
-            // 
-            // trackBar2
-            // 
-            this.trackBar2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.trackBar2.AutoSize = false;
-            this.trackBar2.BackColor = System.Drawing.Color.Black;
-            this.trackBar2.LargeChange = 1;
-            this.trackBar2.Location = new System.Drawing.Point(63, 17);
-            this.trackBar2.Margin = new System.Windows.Forms.Padding(2);
-            this.trackBar2.Maximum = 12;
-            this.trackBar2.Minimum = 1;
-            this.trackBar2.Name = "trackBar2";
-            this.trackBar2.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.trackBar2.Size = new System.Drawing.Size(16, 80);
-            this.trackBar2.TabIndex = 7;
-            this.trackBar2.Value = 1;
-            // 
-            // btn_DYN
-            // 
-            this.btn_DYN.Location = new System.Drawing.Point(8, 59);
-            this.btn_DYN.Name = "btn_DYN";
-            this.btn_DYN.Size = new System.Drawing.Size(50, 23);
-            this.btn_DYN.TabIndex = 8;
-            this.btn_DYN.Text = "DYN";
-            this.btn_DYN.UseVisualStyleBackColor = true;
-            // 
-            // btn_PIT
-            // 
-            this.btn_PIT.Location = new System.Drawing.Point(8, 30);
-            this.btn_PIT.Name = "btn_PIT";
-            this.btn_PIT.Size = new System.Drawing.Size(50, 23);
-            this.btn_PIT.TabIndex = 9;
-            this.btn_PIT.Text = "PIT";
-            this.btn_PIT.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 

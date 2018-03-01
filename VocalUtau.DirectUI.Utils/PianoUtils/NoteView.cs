@@ -398,6 +398,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                         if (Math.Abs(TickDert) > minTickChange)
                         {
                             NoteList[CurrentNoteIndex].Tick = NoteList[CurrentNoteIndex].Tick - TickDert;
+                            NoteList.Sort();
                         }
                     }
                     else
@@ -418,6 +419,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                                 NoteList[NoteSelectIndexs[i]].Tick = NoteList[NoteSelectIndexs[i]].Tick - TickDert;
                             }
                         }
+                        if (Math.Abs(TickDert) > minTickChange) NoteList.Sort();
                     }
                     NoteDias.Clear();
                 }

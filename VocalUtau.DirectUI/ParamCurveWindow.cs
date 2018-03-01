@@ -36,6 +36,7 @@ namespace VocalUtau.DirectUI
         }
         public void setCrotchetSize(uint Size=66)
         {
+            if (Size < 32) return;
             pprops.CrotchetLengthPixel = Size;
             d2DPainterBox1.Refresh();
         }

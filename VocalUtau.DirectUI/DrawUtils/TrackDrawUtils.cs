@@ -18,6 +18,14 @@ namespace VocalUtau.DirectUI.DrawUtils
             this.pprops = pprops;
         }
 
+        public Rectangle ClipRectangle
+        {
+            get
+            {
+                return baseEvent.ClipRectangle;
+            }
+        }
+
         public void DrawPianoMouseAxis(Color LineColor, float LineWidth)
         {
             DrawPianoMouseAxis(LineColor, LineWidth, System.Drawing.Drawing2D.DashStyle.Dash);

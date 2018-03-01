@@ -50,11 +50,13 @@ namespace VocalUtau.DirectUI
         }
         public void setCrotchetSize(uint Size=66)
         {
+            if (Size < 32) return;
             pprops.CrotchetLengthPixel = Size;
             d2DPainterBox1.Refresh();
         }
         public void setNoteHeight(uint Size=13)
         {
+            if (Size < 13) return;
             rconf.setNoteHeight(Size); 
             SetScrollMax();
             d2DPainterBox1.Refresh();

@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="ActionUtils\PitchActionUtils.cs" />
     <Compile Include="MathUtils\PitchMathUtils.cs" />
+    <Compile Include="ParamUtils\PITParamView.cs" />
     <Compile Include="PianoUtils\ActionView.cs" />
     <Compile Include="PianoUtils\NoteView.cs" />
     <Compile Include="PianoUtils\PitchView.cs" />

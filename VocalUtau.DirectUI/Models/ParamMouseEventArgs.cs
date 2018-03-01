@@ -32,6 +32,15 @@ namespace VocalUtau.DirectUI
         private double _tallPercent;
         public double TallPercent { get { return _tallPercent; } }
 
+        public double MidPercent
+        {
+            get
+            {
+                double _MidPercentMid = _tallPercent - 0.5;
+                return _MidPercentMid / 0.5;
+            }
+        }
+        
         internal long windowheight=0;
 
         internal void CalcAxis(PianoProperties pprops, RollConfigures rconf, ParamMouseEventArgs cache,long windowheight)

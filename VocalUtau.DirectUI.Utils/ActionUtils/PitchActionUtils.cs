@@ -9,7 +9,7 @@ using VocalUtau.Formats.Model.VocalObject;
 namespace VocalUtau.DirectUI.Utils.ActionUtils
 {
     class PitchActionUtils
-    {
+    {        
         public static List<PitchObject> getShownPitchLine(ref List<NoteObject> NoteList, ref List<PitchObject> PitchList, long MinTick, long MaxTick, bool ShowNoteSpace=true)
         {
             List<PitchObject> ret = new List<PitchObject>();
@@ -126,6 +126,20 @@ namespace VocalUtau.DirectUI.Utils.ActionUtils
                 }
             }
         }
+        public static void earsePitchLine(ref List<PitchObject> PitchList, long StartTick, long EndTick, bool ModeV2 = false)
+        {
+            if (ModeV2)
+            {
+                List<PitchObject> PRR = new List<PitchObject>();
+                PRR.Add(new PitchObject(StartTick, 0));
+                PRR.Add(new PitchObject(EndTick, 0));
+                replacePitchLine(ref PitchList, PRR);
+            }
+            else
+            {
+                earseArea(ref PitchList, new PitchObject(StartTick, 60), new PitchObject(EndTick, 60));
+            }
+        }
         private static void earseArea(ref List<PitchObject> PitchList, PitchObject St, PitchObject Et)
         {
             int DelIdx = -1;
@@ -144,6 +158,18 @@ namespace VocalUtau.DirectUI.Utils.ActionUtils
                     PitchList.RemoveAt(DelIdx);
                 }
             }
+        }
+        public static void replacePitchLine(ref List<PitchObject> PitchList, List<PitchObject> newPitchLine)
+        {
+            if (newPitchLine.Count < 2) return;
+            long StartTick = newPitchLine[0].Tick;
+            long EndTick = newPitchLine[newPitchLine.Count - 1].Tick;
+            earseArea(ref PitchList, newPitchLine[0], newPitchLine[newPitchLine.Count - 1]);
+            for (int i = 0; i < newPitchLine.Count; i++)
+            {
+                PitchList.Add(new PitchObject(newPitchLine[i].Tick, newPitchLine[i].PitchValue.PitchValue));
+            }
+            PitchList.Sort();
         }
         public static void replacePitchLine(ref List<NoteObject> NoteList, ref List<PitchObject> PitchList, List<PitchObject> newPitchLine)
         {

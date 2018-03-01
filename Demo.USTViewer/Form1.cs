@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using VocalUtau.DirectUI.Models;
+using VocalUtau.DirectUI.Utils.ParamUtils;
 using VocalUtau.DirectUI.Utils.PianoUtils;
 using VocalUtau.Formats.Model.USTs.Original;
 using VocalUtau.Formats.Model.Utils;
@@ -24,6 +25,7 @@ namespace Demo.USTViewer
         PitchView PV = null;
         ActionView AV = null;
 
+        PITParamView PitV = null;
 
         public Form1()
         {
@@ -41,7 +43,7 @@ namespace Demo.USTViewer
 
             ProjectObject poj = new ProjectObject();
             poj.InitEmpty();
-            poj.TrackerList[1].PartList[1] = pro;
+            poj.TrackerList[1].PartList[0] = pro;
 
             foreach (NoteObject po in pro.NoteList)
             {
@@ -64,20 +66,32 @@ namespace Demo.USTViewer
         private void Form1_Load(object sender, EventArgs e)
         {
             ProjectObject poj = LoadUST(@"D:\VocalUtau\VocalUtau.DebugExampleFiles\DemoUSTS\Sakurane2.Tracks\Track-4b158252-eb7f-4223-b7b0-d78f32e044ec.ust");
-            OAC.ReAlloc(poj.TrackerList[1].PartList[1]);
+            OAC.ReAlloc(poj.TrackerList[1].PartList[0]);
 
             NV = new NoteView(OAC.IntPtr, this.pianoRollWindow1);
             PV = new PitchView(OAC.IntPtr, this.pianoRollWindow1);
-            AV = new ActionView(OAC.IntPtr, this.pianoRollWindow1);
+
+            PitV = new PITParamView(OAC.IntPtr, this.paramCurveWindow1);
+
+
+            AV = new ActionView(OAC.IntPtr, this.pianoRollWindow1, this.paramCurveWindow1);
+
             NV.HandleEvents = false;
             PV.HandleEvents = true;
             PV.EarseModeV2 = true;
+            PitV.HandleEvents = true;
             NV.NoteActionEnd += NV_NoteActionEnd;
             PV.PitchActionEnd += PV_PitchActionEnd;
+            PitV.PitchActionEnd += PitV_PitchActionEnd;
             this.pianoRollWindow1.TrackPaint += TrackPaint;
             InitEventAction();
 
             AV.TickPos = 480;
+        }
+
+        void PitV_PitchActionEnd(PitchView.PitchDragingType eventType)
+        {
+            InitEventAction();
         }
 
         void PV_PitchActionEnd(PitchView.PitchDragingType eventType)
@@ -178,6 +192,7 @@ namespace Demo.USTViewer
             NV.HandleEvents = true;
             NV.NoteToolsStatus = NoteView.NoteToolsType.Select;
             PV.HandleEvents = false;
+            PitV.PitchToolsStatus = PitchView.PitchDragingType.None;
             toolStripButton1.BackColor = System.Drawing.SystemColors.ControlDark;
             toolStripButton2.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton3.BackColor = System.Drawing.SystemColors.Control;
@@ -185,6 +200,8 @@ namespace Demo.USTViewer
             toolStripButton5.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton6.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton7.BackColor = System.Drawing.SystemColors.Control;
+            pianoRollWindow1.Refresh();
+            paramCurveWindow1.Refresh();
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -197,6 +214,7 @@ namespace Demo.USTViewer
             NV.HandleEvents = false;
             PV.HandleEvents = true;
             PV.PitchToolsStatus = PitchView.PitchDragingType.DrawLine;
+            PitV.PitchToolsStatus = PV.PitchToolsStatus;
             toolStripButton1.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton2.BackColor = System.Drawing.SystemColors.ControlDark;
             toolStripButton3.BackColor = System.Drawing.SystemColors.Control;
@@ -212,6 +230,7 @@ namespace Demo.USTViewer
             NV.HandleEvents = false;
             PV.HandleEvents = true;
             PV.PitchToolsStatus = PitchView.PitchDragingType.DrawGraphJ;
+            PitV.PitchToolsStatus = PV.PitchToolsStatus;
             toolStripButton1.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton2.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton3.BackColor = System.Drawing.SystemColors.ControlDark;
@@ -226,6 +245,7 @@ namespace Demo.USTViewer
             NV.HandleEvents = false;
             PV.HandleEvents = true;
             PV.PitchToolsStatus = PitchView.PitchDragingType.DrawGraphR;
+            PitV.PitchToolsStatus = PV.PitchToolsStatus;
             toolStripButton1.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton2.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton3.BackColor = System.Drawing.SystemColors.Control;
@@ -240,6 +260,7 @@ namespace Demo.USTViewer
             NV.HandleEvents = false;
             PV.HandleEvents = true;
             PV.PitchToolsStatus = PitchView.PitchDragingType.DrawGraphS;
+            PitV.PitchToolsStatus = PV.PitchToolsStatus;
             toolStripButton1.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton2.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton3.BackColor = System.Drawing.SystemColors.Control;
@@ -254,6 +275,7 @@ namespace Demo.USTViewer
             NV.HandleEvents = false;
             PV.HandleEvents = true;
             PV.PitchToolsStatus = PitchView.PitchDragingType.EarseArea;
+            PitV.PitchToolsStatus = PV.PitchToolsStatus;
             toolStripButton1.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton2.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton3.BackColor = System.Drawing.SystemColors.Control;
@@ -296,6 +318,11 @@ namespace Demo.USTViewer
             toolStripButton8.BackColor = System.Drawing.SystemColors.Control;
             if (PNV.Count > 0) toolStripButton8.BackColor = System.Drawing.SystemColors.ControlDark;
             if (!R) MessageBox.Show("Paste Error");
+        }
+
+        private void trackBar2_Scroll(object sender, EventArgs e)
+        {
+            PitV.Zoom = (uint)trackBar2.Value;
         }
 
     }

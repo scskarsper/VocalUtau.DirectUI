@@ -37,12 +37,14 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         }
 
         PianoRollWindow PianoWindow;
+        ParamCurveWindow ParamWindow;
 
         IntPtr PartsObjectPtr = IntPtr.Zero;
-        public ActionView(IntPtr PartsObjectPtr, PianoRollWindow PianoWindow)
+        public ActionView(IntPtr PartsObjectPtr, PianoRollWindow PianoWindow, ParamCurveWindow ParamWindow)
         {
             this.PartsObjectPtr = PartsObjectPtr;
             this.PianoWindow = PianoWindow;
+            this.ParamWindow = ParamWindow;
             hookPianoWindow();
         }
         private PartsObject PartsObject
@@ -61,8 +63,25 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         }
         public void hookPianoWindow()
         {
-            PianoWindow.TrackPaint += PianoWindow_TrackPaint;
-            PianoWindow.TitlePaint += PianoWindow_TitlePaint;
+            try
+            {
+                PianoWindow.TrackPaint += PianoWindow_TrackPaint;
+                PianoWindow.TitlePaint += PianoWindow_TitlePaint;
+            }
+            catch { ;}
+            try
+            {
+                ParamWindow.ParamAreaPaint += ParamWindow_ParamAreaPaint;
+            }
+            catch { ;}
+        }
+
+        void ParamWindow_ParamAreaPaint(object sender, DrawUtils.ParamAreaDrawUtils utils)
+        {
+            if (_TickPos >= ParamWindow.MinShownTick && _TickPos <= ParamWindow.MaxShownTick)
+            {
+                utils.DrawXLine(_TickPos, Color.LightBlue);
+            }
         }
 
         void PianoWindow_TitlePaint(object sender, DrawUtils.TitleDrawUtils utils)
