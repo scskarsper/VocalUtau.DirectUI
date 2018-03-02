@@ -97,6 +97,39 @@ namespace VocalUtau.DirectUI.Utils.ActionUtils
             return ret;
 
         }
+        public static List<PitchObject> getShownPitchLine(ref List<PitchObject> PitchList, long MinTick=-1,long MaxTick=-1)
+        {
+            if (MinTick < 0) MinTick = 0;
+            if (MaxTick < MinTick) MaxTick = PitchList[PitchList.Count - 1].Tick + 1;
+            List<PitchObject> ret = new List<PitchObject>();
+            bool isFirst = true;
+            if (PitchList.Count == 0)
+            {
+                PitchList.Add(new PitchObject(0, 0));
+            }
+            PitchObject LastObj = PitchList[0];
+            for (int i = 0; i < PitchList.Count; i++)
+            {
+                if (PitchList[i].Tick < MinTick) continue;
+                if (PitchList[i].Tick > MaxTick) break;
+                if (isFirst && i > 0)
+                {
+                    LastObj = PitchList[i-1];
+                    if (PitchList[i].Tick > MinTick)
+                    {
+                        ret.Add(new PitchObject(MinTick, LastObj.PitchValue));
+                    }
+                    isFirst = false;
+                }
+                ret.Add(new PitchObject(PitchList[i].Tick, PitchList[i].PitchValue.PitchValue));
+                LastObj = PitchList[i];
+            }
+            if (LastObj.Tick < MaxTick)
+            {
+                ret.Add(new PitchObject(MaxTick, LastObj.PitchValue));
+            }
+            return ret;
+        }
         public static void earsePitchLine(ref List<NoteObject> NoteList, ref List<PitchObject> PitchList, PitchView.BlockDia NoteDia, bool ModeV2 = false)
         {
             long mt = NoteDia.TickEnd;
@@ -116,7 +149,7 @@ namespace VocalUtau.DirectUI.Utils.ActionUtils
                     if (ModeV2)
                     {
                         replacePitchLine(ref NoteList,ref PitchList,new List<PitchObject>() { 
-                            new PitchObject(St, PN.PitchValue.NoteNumber), new PitchObject(Ed-1, PN.PitchValue.NoteNumber)
+                            new PitchObject(St+1, PN.PitchValue.NoteNumber), new PitchObject(Ed, PN.PitchValue.NoteNumber)
                         });
                     }
                     else
@@ -137,26 +170,45 @@ namespace VocalUtau.DirectUI.Utils.ActionUtils
             }
             else
             {
-                earseArea(ref PitchList, new PitchObject(StartTick, 60), new PitchObject(EndTick, 60));
+                earseArea(ref PitchList, new PitchObject(StartTick, 60), new PitchObject(EndTick, 60), false);
             }
         }
-        private static void earseArea(ref List<PitchObject> PitchList, PitchObject St, PitchObject Et)
+        private static void earseArea(ref List<PitchObject> PitchList, PitchObject St, PitchObject Et, bool SetStp = true)
         {
             int DelIdx = -1;
+            double LastSt = PitchList.Count == 0 ? 0 : PitchList[0].PitchValue.PitchValue;
             for (int i = 0; i < PitchList.Count; i++)
             {
-                if (PitchList[i].Tick < St.Tick) continue;
-                if (PitchList[i].Tick > Et.Tick) break;
+                if (PitchList[i].Tick < St.Tick - 1) continue;
+                if (PitchList[i].Tick > Et.Tick + 1) break;
                 DelIdx = i;
                 break;
             }
+            double LastEt = LastSt;
+            double LastEt2 = LastSt;
+            long LastLt2 = 0;
             if (DelIdx > -1)
             {
                 while (DelIdx < PitchList.Count)
                 {
-                    if (PitchList[DelIdx].Tick > Et.Tick) break;
+                    if (PitchList[DelIdx].Tick > Et.Tick + 1)
+                    {
+                        LastLt2 = PitchList[DelIdx].Tick - 1;
+                        LastEt2 = PitchList[DelIdx].PitchValue.PitchValue;
+                        break;
+                    }
+                    LastEt = PitchList[DelIdx].PitchValue.PitchValue;
                     PitchList.RemoveAt(DelIdx);
                 }
+            }
+            PitchList.Add(new PitchObject(St.Tick - 1, LastSt));
+            if (SetStp)
+            {
+                PitchList.Add(new PitchObject(Et.Tick + 1, LastEt));
+            }
+            else
+            {
+                PitchList.Add(new PitchObject(LastLt2, LastEt2));
             }
         }
         public static void replacePitchLine(ref List<PitchObject> PitchList, List<PitchObject> newPitchLine)

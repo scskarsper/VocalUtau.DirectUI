@@ -38,6 +38,7 @@ namespace VocalUtau.DirectUI
         {
             if (Size < 32) return;
             pprops.CrotchetLengthPixel = Size;
+            if (pprops != null) genShownArea();
             d2DPainterBox1.Refresh();
         }
         public void setPianoStartTick(long Tick)

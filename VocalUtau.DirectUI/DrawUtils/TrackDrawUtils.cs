@@ -113,9 +113,16 @@ namespace VocalUtau.DirectUI.DrawUtils
             uint NoteDistance = MaxNote - Note.PitchValue.NoteNumber;
             int NoteYPixel = baseEvent.ClipRectangle.Top + (int)NoteDistance * rconf.Const_RollNoteHeight;
 
+            double verb = Note.VerbPrecent;
+
             Rectangle NoteRect=new Rectangle(
                 new Point(NoteX1Pixel, NoteYPixel),
                 new Size(NoteX2Pixel - NoteX1Pixel, rconf.Const_RollNoteHeight)
+                );
+
+            Rectangle NoteVerbRect = new Rectangle(
+                new Point((int)((NoteX2Pixel - NoteX1Pixel) * (1 - verb)) + NoteX1Pixel, NoteYPixel),
+                new Size((int)((NoteX2Pixel - NoteX1Pixel)*(verb)), rconf.Const_RollNoteHeight)
                 );
 
             Rectangle LyricRect = new Rectangle(
@@ -125,6 +132,7 @@ namespace VocalUtau.DirectUI.DrawUtils
 
             D2DGraphics g = baseEvent.D2DGraphics;
             g.FillRectangle(NoteRect, NoteColor);
+            g.FillRectangle(NoteVerbRect, Color.FromArgb(40,Color.Black));
             try
             {
                 g.DrawText(Note.Lyric, LyricRect, LyricColor, new System.Drawing.Font("Tahoma", 9));

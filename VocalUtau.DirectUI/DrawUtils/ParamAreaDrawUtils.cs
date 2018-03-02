@@ -167,41 +167,70 @@ namespace VocalUtau.DirectUI.DrawUtils
             D2DGraphics g = baseEvent.D2DGraphics;
             g.FillPathGeometrySink(PArr, AreaColor);
         }
-        public void DrawHillLine(SortedDictionary<long, double> SortedPitchPointSilk, Color AreaColor)
+
+        public void DrawDynLine(List<ControlObject> SortedDynPointSilk, int DynBase, double MaxValue, Color LineColor, float LineWidth = 1, System.Drawing.Drawing2D.DashStyle LineStyle = System.Drawing.Drawing2D.DashStyle.Solid, ulong AntiBordTick = 480)
         {
-            //计算X相位边界
+            D2DGraphics g = baseEvent.D2DGraphics;
+
             long MinTick = pprops.PianoStartTick;
             long MaxTick = pprops.PianoStartTick + (long)Math.Round(pprops.dertPixel2dertTick(baseEvent.ClipRectangle.Width), 0) + 1;
-            
+
+            int BaseZero = baseEvent.ClipRectangle.Height;
+
             List<Point> PixelSilkLine = new List<Point>();
-           
-            long[] KeyArr=SortedPitchPointSilk.Keys.ToArray();
 
-            
-            Point PS = Tick2Point(KeyArr[0], SortedPitchPointSilk, MinTick, MaxTick);
-            PS.Y=0;
-            Point PE = Tick2Point(KeyArr[KeyArr.Length-1], SortedPitchPointSilk, MinTick, MaxTick);
-            PE.Y = baseEvent.ClipRectangle.Height;
-            Rectangle rb = new Rectangle(PS.X, PS.Y, PE.X - PS.X, PE.Y - PS.Y);
-            PS.Y = baseEvent.ClipRectangle.Height;
-
-            D2DGraphics g = baseEvent.D2DGraphics;
-            g.FillRectangle(rb, Color.Black);
-
-            PixelSilkLine.Add(PS);
-
-            for (int i = 0; i < KeyArr.Length; i++)
+            for (int i = 0; i < SortedDynPointSilk.Count; i++)
             {
-                if (KeyArr[i] > MinTick && KeyArr[i] < MaxTick)
+                if (SortedDynPointSilk[i].Tick >= MinTick - (long)AntiBordTick && SortedDynPointSilk[i].Tick <= MaxTick + (long)AntiBordTick)
                 {
-                    Point P = Tick2Point(KeyArr[i], SortedPitchPointSilk, MinTick, MaxTick);
-                    PixelSilkLine.Add(P);
+                    double DynValue = DynBase + SortedDynPointSilk[i].Value;
+                    if (DynValue < 0) DynValue = 0;
+                    double bfb = (double)DynValue / (double)MaxValue;
+                    int CalcY = (int)(bfb * BaseZero);
+                    int PointY = BaseZero - CalcY;
+                    int PointX = Tick2PixelX(SortedDynPointSilk[i].Tick, MinTick, MaxTick);
+                    PixelSilkLine.Add(new Point(PointX, PointY));
+                }
+            }
+
+            if (PixelSilkLine.Count > 1) g.DrawPathGeometrySink(PixelSilkLine, LineColor, LineWidth, LineStyle, false);
+        }
+        public void FillDynLine(List<ControlObject> SortedDynPointSilk, int DynBase, double MaxValue, Color AreaColor, ulong AntiBordTick = 480)
+        {
+            D2DGraphics g = baseEvent.D2DGraphics;
+
+            long MinTick = pprops.PianoStartTick;
+            long MaxTick = pprops.PianoStartTick + (long)Math.Round(pprops.dertPixel2dertTick(baseEvent.ClipRectangle.Width), 0) + 1;
+            if (MaxValue < 100) MaxValue = 100;
+
+            int BaseZero = baseEvent.ClipRectangle.Height;
+
+            List<Point> PixelSilkLine = new List<Point>();
+
+            bool isFirst = true;
+            Point PE = new Point(rconf.Const_RollWidth + baseEvent.ClipRectangle.Width, baseEvent.ClipRectangle.Height);
+            for (int i = 0; i < SortedDynPointSilk.Count; i++)
+            {
+                if (SortedDynPointSilk[i].Tick >= MinTick - (long)AntiBordTick && SortedDynPointSilk[i].Tick <= MaxTick + (long)AntiBordTick)
+                {
+                    double DynValue = DynBase + SortedDynPointSilk[i].Value;
+                    if (DynValue < 0) DynValue = 0;
+                    double bfb = (double)DynValue / (double)MaxValue;
+                    int CalcY = (int)(bfb * BaseZero);
+                    int PointY = BaseZero - CalcY;
+                    int PointX = Tick2PixelX(SortedDynPointSilk[i].Tick, MinTick, MaxTick);
+                    if (isFirst)
+                    {
+                        PixelSilkLine.Add(new Point(PointX, baseEvent.ClipRectangle.Height));
+                        isFirst = false;
+                    }
+                    PixelSilkLine.Add(new Point(PointX, PointY));
+                    PE = new Point(PointX, baseEvent.ClipRectangle.Height);
                 }
             }
             PixelSilkLine.Add(PE);
 
             if (PixelSilkLine.Count > 1) g.FillPathGeometrySink(PixelSilkLine, AreaColor);
         }
-        
     }
 }

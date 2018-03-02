@@ -43,8 +43,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionUtils\PitchActionUtils.cs" />
+    <Compile Include="ActionUtils\ControlActionUtils.cs" />
     <Compile Include="MathUtils\PitchMathUtils.cs" />
+    <Compile Include="MathUtils\ControlMathUtils.cs" />
     <Compile Include="ParamUtils\PITParamView.cs" />
+    <Compile Include="ParamUtils\DYNParamView.cs" />
     <Compile Include="PianoUtils\ActionView.cs" />
     <Compile Include="PianoUtils\NoteView.cs" />
     <Compile Include="PianoUtils\PitchView.cs" />

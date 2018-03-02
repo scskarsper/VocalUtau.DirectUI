@@ -12,7 +12,7 @@ using VocalUtau.Formats.Model.VocalObject;
 
 namespace VocalUtau.DirectUI.Utils.ParamUtils
 {
-    public class PITParamView
+    public class DYNParamView
     {
         public delegate void OnPitchEventHandler(PitchView.PitchDragingType eventType);
         public event OnPitchEventHandler PitchActionEnd;
@@ -37,19 +37,19 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
             set { _EarseModeV2 = value; }
         }
 
-        PitchView.PitchDragingType _PitchToolsStatus = PitchView.PitchDragingType.EarseArea;
+        PitchView.PitchDragingType _DynToolsStatus = PitchView.PitchDragingType.EarseArea;
 
-        public PitchView.PitchDragingType PitchToolsStatus
+        public PitchView.PitchDragingType DynToolsStatus
         {
-            get { return _PitchToolsStatus; }
+            get { return _DynToolsStatus; }
             set
             {
-                _PitchToolsStatus = value;
+                _DynToolsStatus = value;
             }
         }
-        PitchView.PitchDragingType PitchDragingStatus = PitchView.PitchDragingType.None;
-        PitchObject PitchStP1 = null;
-        PitchObject PitchTmpP0 = null;
+        PitchView.PitchDragingType DynDragingStatus = PitchView.PitchDragingType.None;
+        ControlObject DynStP1 = null;
+        ControlObject DynTmpP0 = null;
 
         bool _HandleEvents = false;
 
@@ -61,7 +61,7 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
 
         IntPtr PartsObjectPtr = IntPtr.Zero;
         ParamCurveWindow ParamWindow;
-        public PITParamView(IntPtr PartsObjectPtr, ParamCurveWindow ParamWindow)
+        public DYNParamView(IntPtr PartsObjectPtr, ParamCurveWindow ParamWindow)
         {
             this.ParamWindow = ParamWindow;
             this.PartsObjectPtr = PartsObjectPtr;
@@ -81,12 +81,20 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
                 return ret;
             }
         }
-        private List<PitchObject> PitchList
+        private int DynBase
         {
             get
             {
-                if (PartsObject == null) return new List<PitchObject>();
-                return PartsObject.PitchBendsList;
+                if (PartsObject == null) return 100;
+                return PartsObject.DynBaseValue;
+            }
+        }
+        private List<ControlObject> DynList
+        {
+            get
+            {
+                if (PartsObject == null) return new List<ControlObject>();
+                return PartsObject.DynList;
             }
         }
 
@@ -112,7 +120,7 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
         void ParamWindow_ParamAreaMouseEnter(object sender, EventArgs e)
         {
             if (!_HandleEvents) return;
-            if (_PitchToolsStatus == PitchView.PitchDragingType.None)
+            if (_DynToolsStatus == PitchView.PitchDragingType.None)
             {
                 ParamWindow.ParentForm.Cursor = Cursors.Arrow;
             }
@@ -125,12 +133,12 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
         void ParamWindow_ParamAreaMouseMove(object sender, ParamMouseEventArgs e)
         {
             if (!_HandleEvents) return;
-            if (PitchDragingStatus == PitchView.PitchDragingType.None)
+            if (DynDragingStatus == PitchView.PitchDragingType.None)
             {
                 return;
             }
-            PitchTmpP0 = new PitchObject(e.Tick, e.MidPercent * 0.5 * Zoom);
-            if (_PitchToolsStatus == PitchView.PitchDragingType.None)
+            DynTmpP0 = new ControlObject(e.Tick, e.TallPercent * 100 * Zoom - DynBase);
+            if (_DynToolsStatus == PitchView.PitchDragingType.None)
             {
                 ParamWindow.ParentForm.Cursor = Cursors.Arrow;
             }
@@ -140,38 +148,38 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
             }
         }
 
-        public void replacePitchLine(List<PitchObject> newPitchLine)
+        public void replaceControlLine(List<ControlObject> newPitchLine)
         {
-            List<PitchObject> PN = PitchList;
-            PitchActionUtils.replacePitchLine(ref PN, newPitchLine);
+            List<ControlObject> PN = DynList;
+            ControlActionUtils.replaceControlLine(ref PN, newPitchLine);
         }
-        public void earsePitchLine(PitchObject P1,PitchObject P2,bool isModeV2)
+        public void earseControlLine(ControlObject P1, ControlObject P2, bool isModeV2)
         {
-            List<PitchObject> PN = PitchList;
-            PitchActionUtils.earsePitchLine(ref PN, Math.Min(P1.Tick, P2.Tick), Math.Max(P1.Tick, P2.Tick), isModeV2);
+            List<ControlObject> PN = DynList;
+            ControlActionUtils.earseControlLine(ref PN, Math.Min(P1.Tick, P2.Tick), Math.Max(P1.Tick, P2.Tick), isModeV2);
         }
 
         void ParamWindow_ParamAreaMouseUp(object sender, ParamMouseEventArgs e)
         {
             if (!_HandleEvents) return;
-            if (PitchDragingStatus == PitchView.PitchDragingType.None) return;
-            PitchObject PitchEdP2 = new PitchObject(e.Tick, e.MidPercent * 0.5 * Zoom);
+            if (DynDragingStatus == PitchView.PitchDragingType.None) return;
+            ControlObject DynEdP2 = new ControlObject(e.Tick, e.TallPercent * 100 * Zoom - DynBase);
 
-            switch (PitchDragingStatus)
+            switch (DynDragingStatus)
             {
-                case PitchView.PitchDragingType.DrawLine: replacePitchLine(PitchMathUtils.CalcLineSilk(PitchStP1, PitchEdP2)); break;
-                case PitchView.PitchDragingType.DrawGraphJ: replacePitchLine(PitchMathUtils.CalcGraphJ(PitchStP1, PitchEdP2)); break;
-                case PitchView.PitchDragingType.DrawGraphR: replacePitchLine(PitchMathUtils.CalcGraphR(PitchStP1, PitchEdP2)); break;
-                case PitchView.PitchDragingType.DrawGraphS: replacePitchLine(PitchMathUtils.CalcGraphS(PitchStP1, PitchEdP2)); break;
-                case PitchView.PitchDragingType.EarseArea: earsePitchLine(PitchStP1, PitchEdP2,_EarseModeV2); break;
+                case PitchView.PitchDragingType.DrawLine: replaceControlLine(ControlMathUtils.CalcLineSilk(DynStP1, DynEdP2)); break;
+                case PitchView.PitchDragingType.DrawGraphJ: replaceControlLine(ControlMathUtils.CalcGraphJ(DynStP1, DynEdP2)); break;
+                case PitchView.PitchDragingType.DrawGraphR: replaceControlLine(ControlMathUtils.CalcGraphR(DynStP1, DynEdP2)); break;
+                case PitchView.PitchDragingType.DrawGraphS: replaceControlLine(ControlMathUtils.CalcGraphS(DynStP1, DynEdP2)); break;
+                case PitchView.PitchDragingType.EarseArea: earseControlLine(DynStP1, DynEdP2,_EarseModeV2); break;
                     
             }
-            PitchView.PitchDragingType EDStatus = PitchDragingStatus;
-            PitchDragingStatus = PitchView.PitchDragingType.None;
-            PitchStP1 = null;
-            PitchTmpP0 = null;
+            PitchView.PitchDragingType EDStatus = DynDragingStatus;
+            DynDragingStatus = PitchView.PitchDragingType.None;
+            DynStP1 = null;
+            DynTmpP0 = null;
             if (PitchActionEnd != null) PitchActionEnd(EDStatus);
-            if (_PitchToolsStatus == PitchView.PitchDragingType.None)
+            if (_DynToolsStatus == PitchView.PitchDragingType.None)
             {
                 ParamWindow.ParentForm.Cursor = Cursors.Arrow;
             }
@@ -185,44 +193,45 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
         {
             if (!_HandleEvents)
             {
-                PitchDragingStatus = PitchView.PitchDragingType.None;
-                PitchStP1 = null;
-                PitchTmpP0 = null;
+                DynDragingStatus = PitchView.PitchDragingType.None;
+                DynStP1 = null;
+                DynTmpP0 = null;
                 return;
             }
-            if (_PitchToolsStatus == PitchView.PitchDragingType.None) return;
-            if (PitchDragingStatus != PitchView.PitchDragingType.None) return;
-            PitchStP1 = new PitchObject(e.Tick, e.MidPercent * 0.5 * Zoom);
-            PitchDragingStatus = _PitchToolsStatus;
-            if (PitchActionBegin != null) PitchActionBegin(PitchDragingStatus);
+            if (_DynToolsStatus == PitchView.PitchDragingType.None) return;
+            if (DynDragingStatus != PitchView.PitchDragingType.None) return;
+            DynStP1 = new ControlObject(e.Tick, e.TallPercent*100*Zoom - 100);
+            DynDragingStatus = _DynToolsStatus;
+            if (PitchActionBegin != null) PitchActionBegin(DynDragingStatus);
         }
 
 
-        public List<PitchObject> getShownPitchLine(long MinTick = -1, long MaxTick = -1)
+        public List<ControlObject> getShownDynLine(long MinTick = -1, long MaxTick = -1)
         {
             MinTick = MinTick < AntiBordTick ? 0 : ParamWindow.MinShownTick- AntiBordTick;
             if (MaxTick <= MinTick) MaxTick = ParamWindow.MaxShownTick + AntiBordTick;
-            List<PitchObject> PO = PitchList;
-            return PitchActionUtils.getShownPitchLine(ref PO, MinTick, MaxTick);
+            List<ControlObject> DL = DynList;
+            List<ControlObject> ret = ControlActionUtils.getShownControlLine(ref DL, MinTick, MaxTick);
+            return ret;
         }
         private void ParamWindow_TrackPaint(object sender, VocalUtau.DirectUI.DrawUtils.ParamAreaDrawUtils utils)
         {
             if (!_HandleEvents) return;
-            if (PitchDragingStatus == PitchView.PitchDragingType.EarseArea)
+            if (DynDragingStatus == PitchView.PitchDragingType.EarseArea)
             {
-                utils.FillSelect(PitchStP1.Tick, PitchTmpP0.Tick,Color.DarkSalmon);
+                utils.FillSelect(DynStP1.Tick, DynTmpP0.Tick,Color.DarkSalmon);
             }
 
-            utils.FillPitchLine(getShownPitchLine(ParamWindow.MinShownTick, ParamWindow.MaxShownTick), (0.5 * Zoom), Color.Green, AntiBordTick);
+            utils.FillDynLine(getShownDynLine(ParamWindow.MinShownTick,ParamWindow.MaxShownTick),DynBase,(100*Zoom), Color.Green, AntiBordTick);
 
-            switch (PitchDragingStatus)
+            switch (DynDragingStatus)
             {
-                case PitchView.PitchDragingType.DrawLine: utils.DrawPitchLine(PitchMathUtils.CalcLineSilk(PitchStP1, PitchTmpP0), (0.5 * Zoom), Color.LightPink, 2); break;
-                case PitchView.PitchDragingType.DrawGraphJ: utils.DrawPitchLine(PitchMathUtils.CalcGraphJ(PitchStP1, PitchTmpP0), (0.5 * Zoom), Color.LightPink, 2); break;
-                case PitchView.PitchDragingType.DrawGraphR: utils.DrawPitchLine(PitchMathUtils.CalcGraphR(PitchStP1, PitchTmpP0), (0.5 * Zoom), Color.LightPink, 2); break;
-                case PitchView.PitchDragingType.DrawGraphS: utils.DrawPitchLine(PitchMathUtils.CalcGraphS(PitchStP1, PitchTmpP0), (0.5 * Zoom), Color.LightPink, 2); break;
+                case PitchView.PitchDragingType.DrawLine:utils.DrawDynLine(ControlMathUtils.CalcLineSilk(DynStP1, DynTmpP0), DynBase, (100 * Zoom), Color.LightPink, 2);  break;
+                case PitchView.PitchDragingType.DrawGraphJ: utils.DrawDynLine(ControlMathUtils.CalcGraphJ(DynStP1, DynTmpP0), DynBase, (100 * Zoom), Color.LightPink, 2); break;
+                case PitchView.PitchDragingType.DrawGraphR: utils.DrawDynLine(ControlMathUtils.CalcGraphR(DynStP1, DynTmpP0), DynBase, (100 * Zoom), Color.LightPink, 2); break;
+                case PitchView.PitchDragingType.DrawGraphS: utils.DrawDynLine(ControlMathUtils.CalcGraphS(DynStP1, DynTmpP0), DynBase, (100 * Zoom), Color.LightPink, 2); break;
             }
-
+            
             uint SplitCount = 2*Zoom;
             if (SplitCount > 2)
             {

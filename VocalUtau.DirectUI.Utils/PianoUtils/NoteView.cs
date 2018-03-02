@@ -549,7 +549,23 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                                 }
                                 else
                                 {
-                                    PianoWindow.ParentForm.Cursor = Cursors.SizeAll;
+                                  /*  bool isVBL = false;
+                                    if (PN.VerbPrecent > 0 && PN.VerbPrecent<1)
+                                    {
+                                        long VBP = (long)(PN.Length * (1 - PN.VerbPrecent));
+                                        if (e.Tick > PN.Tick + VBP - 5 && e.Tick < PN.Tick + VBP + 5)
+                                        {
+                                            isVBL = true;
+                                        }
+                                    }
+                                    if (isVBL)
+                                    {
+                                        PianoWindow.ParentForm.Cursor = Cursors.SizeWE;
+                                    }
+                                    else*/
+                                    {
+                                        PianoWindow.ParentForm.Cursor = Cursors.SizeAll;
+                                    }
                                 }
                                 break;
                             }

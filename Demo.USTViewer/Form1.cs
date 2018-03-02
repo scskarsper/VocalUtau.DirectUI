@@ -26,6 +26,7 @@ namespace Demo.USTViewer
         ActionView AV = null;
 
         PITParamView PitV = null;
+        DYNParamView DynV = null;
 
         public Form1()
         {
@@ -72,6 +73,7 @@ namespace Demo.USTViewer
             PV = new PitchView(OAC.IntPtr, this.pianoRollWindow1);
 
             PitV = new PITParamView(OAC.IntPtr, this.paramCurveWindow1);
+            DynV = new DYNParamView(OAC.IntPtr, this.paramCurveWindow1);
 
 
             AV = new ActionView(OAC.IntPtr, this.pianoRollWindow1, this.paramCurveWindow1);
@@ -79,7 +81,8 @@ namespace Demo.USTViewer
             NV.HandleEvents = false;
             PV.HandleEvents = true;
             PV.EarseModeV2 = true;
-            PitV.HandleEvents = true;
+            PitV.HandleEvents = false;
+            DynV.HandleEvents = true;
             NV.NoteActionEnd += NV_NoteActionEnd;
             PV.PitchActionEnd += PV_PitchActionEnd;
             PitV.PitchActionEnd += PitV_PitchActionEnd;
@@ -200,8 +203,11 @@ namespace Demo.USTViewer
             toolStripButton5.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton6.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton7.BackColor = System.Drawing.SystemColors.Control;
-            pianoRollWindow1.Refresh();
-            paramCurveWindow1.Refresh();
+            if (PitV.HandleEvents)
+            {
+                pianoRollWindow1.Refresh();
+                paramCurveWindow1.Refresh();
+            }
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -215,6 +221,7 @@ namespace Demo.USTViewer
             PV.HandleEvents = true;
             PV.PitchToolsStatus = PitchView.PitchDragingType.DrawLine;
             PitV.PitchToolsStatus = PV.PitchToolsStatus;
+            DynV.DynToolsStatus = PV.PitchToolsStatus;
             toolStripButton1.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton2.BackColor = System.Drawing.SystemColors.ControlDark;
             toolStripButton3.BackColor = System.Drawing.SystemColors.Control;
@@ -231,6 +238,7 @@ namespace Demo.USTViewer
             PV.HandleEvents = true;
             PV.PitchToolsStatus = PitchView.PitchDragingType.DrawGraphJ;
             PitV.PitchToolsStatus = PV.PitchToolsStatus;
+            DynV.DynToolsStatus = PV.PitchToolsStatus;
             toolStripButton1.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton2.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton3.BackColor = System.Drawing.SystemColors.ControlDark;
@@ -246,6 +254,7 @@ namespace Demo.USTViewer
             PV.HandleEvents = true;
             PV.PitchToolsStatus = PitchView.PitchDragingType.DrawGraphR;
             PitV.PitchToolsStatus = PV.PitchToolsStatus;
+            DynV.DynToolsStatus = PV.PitchToolsStatus;
             toolStripButton1.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton2.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton3.BackColor = System.Drawing.SystemColors.Control;
@@ -261,6 +270,7 @@ namespace Demo.USTViewer
             PV.HandleEvents = true;
             PV.PitchToolsStatus = PitchView.PitchDragingType.DrawGraphS;
             PitV.PitchToolsStatus = PV.PitchToolsStatus;
+            DynV.DynToolsStatus = PV.PitchToolsStatus;
             toolStripButton1.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton2.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton3.BackColor = System.Drawing.SystemColors.Control;
@@ -276,6 +286,7 @@ namespace Demo.USTViewer
             PV.HandleEvents = true;
             PV.PitchToolsStatus = PitchView.PitchDragingType.EarseArea;
             PitV.PitchToolsStatus = PV.PitchToolsStatus;
+            DynV.DynToolsStatus = PV.PitchToolsStatus;
             toolStripButton1.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton2.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton3.BackColor = System.Drawing.SystemColors.Control;
@@ -283,11 +294,6 @@ namespace Demo.USTViewer
             toolStripButton5.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton6.BackColor = System.Drawing.SystemColors.ControlDark;
             toolStripButton7.BackColor = System.Drawing.SystemColors.Control;
-        }
-
-        private void LSize_Scroll(object sender, ScrollEventArgs e)
-        {
-            pianoRollWindow1.setNoteHeight((uint)LSize.Value);
         }
 
         private void toolStripButton7_Click(object sender, EventArgs e)
@@ -322,7 +328,35 @@ namespace Demo.USTViewer
 
         private void trackBar2_Scroll(object sender, EventArgs e)
         {
+            trackBar4.Value = trackBar2.Value;
             PitV.Zoom = (uint)trackBar2.Value;
+            DynV.Zoom = (uint)trackBar2.Value;
+        }
+
+        private void trackBar3_Scroll(object sender, EventArgs e)
+        {
+            pianoRollWindow1.setNoteHeight((uint)trackBar3.Value);
+        }
+
+        private void trackBar4_Scroll(object sender, EventArgs e)
+        {
+            trackBar2.Value = trackBar4.Value;
+            trackBar2_Scroll(null,null);
+        }
+
+        private void btn_DYN_Click(object sender, EventArgs e)
+        {
+            DynV.HandleEvents = true;
+            PitV.HandleEvents = false;
+            paramCurveWindow1.Refresh();
+        }
+
+        private void btn_PIT_Click(object sender, EventArgs e)
+        {
+            PitV.HandleEvents = true;
+            DynV.HandleEvents = false;
+            paramCurveWindow1.Refresh();
+
         }
 
     }
