@@ -133,6 +133,7 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
             {
                 return;
             }
+            if (e.Tick == PitchStP1.Tick) return;
             PitchTmpP0 = new PitchObject(e.Tick, e.MidPercent * 0.5 * Zoom);
             if (_PitchToolsStatus == PitchView.PitchDragingType.None)
             {
@@ -217,7 +218,7 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
                 utils.FillSelect(PitchStP1.Tick, PitchTmpP0.Tick,Color.DarkSalmon);
             }
 
-            utils.FillPitchLine(getShownPitchLine(ParamWindow.MinShownTick, ParamWindow.MaxShownTick), (0.5 * Zoom), Color.Green, AntiBordTick);
+            utils.FillPitchLine(getShownPitchLine(), (0.5 * Zoom), Color.Green, AntiBordTick);
 
             switch (PitchDragingStatus)
             {

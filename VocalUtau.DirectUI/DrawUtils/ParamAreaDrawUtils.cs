@@ -149,6 +149,7 @@ namespace VocalUtau.DirectUI.DrawUtils
         }
         public void FillSelect(long Tick1, long Tick2, Color AreaColor)
         {
+            if (Tick1 == Tick2) return;
             long MinSTick = Math.Min(Tick1, Tick2);
             long MaxSTick = Math.Max(Tick1, Tick2);
 
@@ -163,7 +164,7 @@ namespace VocalUtau.DirectUI.DrawUtils
             PArr.Add(new Point(PX2, 0));
             PArr.Add(new Point(PX2, baseEvent.ClipRectangle.Height));
             PArr.Add(new Point(PX1, baseEvent.ClipRectangle.Height));
-
+            
             D2DGraphics g = baseEvent.D2DGraphics;
             g.FillPathGeometrySink(PArr, AreaColor);
         }

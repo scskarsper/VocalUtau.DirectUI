@@ -123,9 +123,13 @@ namespace VocalUtau.DirectUI
         {
             if (isDrawing) return;
             isDrawing = true;
-            PianoRollPoint sp=pprops.getPianoStartPoint();
-            DrawParameterLinesArea(sender, e, sp);
-            DrawParameterButtonsArea(sender, e, sp);
+            try
+            {
+                PianoRollPoint sp = pprops.getPianoStartPoint();
+                DrawParameterLinesArea(sender, e, sp);
+                DrawParameterButtonsArea(sender, e, sp);
+            }
+            catch { ;}
             isDrawing = false;
         }
         private void DrawParameterButtonsArea(object sender, BalthasarLib.D2DPainter.D2DPaintEventArgs e, PianoRollPoint startPoint)

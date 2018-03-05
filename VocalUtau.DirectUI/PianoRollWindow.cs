@@ -194,10 +194,14 @@ namespace VocalUtau.DirectUI
         {
             if (isDrawing) return;
             isDrawing = true;
-            PianoRollPoint sp=pprops.getPianoStartPoint();
-            DrawPianoTrackArea(sender,e,sp);
-            DrawPianoRollArea(sender, e);
-            DrawPianoTitleArea(sender, e, sp);
+            try
+            {
+                PianoRollPoint sp = pprops.getPianoStartPoint();
+                DrawPianoTrackArea(sender, e, sp);
+                DrawPianoRollArea(sender, e);
+                DrawPianoTitleArea(sender, e, sp);
+            }
+            catch { ;}
             isDrawing = false;
         }
         private void DrawPianoTrackArea(object sender, BalthasarLib.D2DPainter.D2DPaintEventArgs e, PianoRollPoint startPoint)

@@ -141,6 +141,7 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
             {
                 return;
             }
+            if (e.Tick == DynStP1.Tick) return;
             DynTmpP0 = new ControlObject(e.Tick, e.TallPercent * 100 * Zoom - DynBase);
             if (_DynToolsStatus == PitchView.PitchDragingType.None)
             {

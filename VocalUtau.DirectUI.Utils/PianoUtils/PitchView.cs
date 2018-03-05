@@ -225,6 +225,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             {
                 return;
             }
+            if (e.Tick == PitchStP1.Tick) return;
             PitchTmpP0 = new PitchObject(e.Tick, e.PitchValue.PitchValue);
             if (_PitchToolsStatus == PitchDragingType.None)
             {
