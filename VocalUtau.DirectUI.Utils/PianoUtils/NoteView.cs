@@ -15,7 +15,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
 {
     public class NoteView
     {
-        public delegate void OnNoteEventHandler(NoteDragingType eventType);
+        public delegate void OnNoteEventHandler(NoteDragingType eventType,bool Callback=false);
         public event OnNoteEventHandler NoteActionEnd;
         public event OnNoteEventHandler NoteActionBegin;
 
@@ -266,6 +266,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         public List<NoteObject> getSelectNotes(bool independentBlock=false)
         {
             List<NoteObject> ret = new List<NoteObject>();
+            NoteSelectIndexs.Sort();
             long RL = NoteSelectIndexs.Count > 0 ? NoteList[NoteSelectIndexs[0]].Tick: -1;
             if (RL == -1) return ret;
             for (int i = 0; i < NoteSelectIndexs.Count; i++)
@@ -276,7 +277,41 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             }
             return ret;
         }
-        public bool AddNotes(long LeftTick,List<NoteObject> Notes)
+        public List<PitchObject> getSelectPitchs(bool independentBlock=false)
+        {
+            List<PitchObject> ret = new List<PitchObject>();
+            if (NoteSelectIndexs.Count == 0) return ret;
+            NoteSelectIndexs.Sort();
+            long TS = NoteList[NoteSelectIndexs[0]].Tick;
+            long TE = NoteList[NoteSelectIndexs[NoteSelectIndexs.Count - 1]].Tick + NoteList[NoteSelectIndexs[NoteSelectIndexs.Count - 1]].Length;
+            double LastPitch = 0;
+            long DTS = independentBlock ? TS : 0;
+            for (int i = 0; i < PitchList.Count; i++)
+            {
+                if (PitchList[i].Tick > TE) break;
+                if (PitchList[i].Tick < TS)
+                {
+                    LastPitch = PitchList[i].PitchValue.PitchValue;
+                    continue;
+                }
+                ret.Add(new PitchObject(PitchList[i].Tick - DTS, PitchList[i].PitchValue.PitchValue));
+            }
+            if (ret[0].Tick > TS - DTS)
+            {
+                ret.Add(new PitchObject(TS - DTS, LastPitch));
+            }
+            else
+            {
+                ret[0] = new PitchObject(TS - DTS, LastPitch);
+            }
+            if (ret[ret.Count - 1].Tick < TE - DTS)
+            {
+                ret.Add(new PitchObject(TE - DTS, ret[ret.Count - 1].PitchValue.PitchValue));
+            }
+            ret.Sort();
+            return ret;
+        }
+        public bool AddNotes(long LeftTick, List<NoteObject> Notes)
         {
             if (Notes.Count <= 0) return false;
             Notes.Sort();
@@ -361,7 +396,17 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                     NoteDias.Add(NoteDia);
                 }
             }
-            if (NoteDragingWork != NoteDragingType.AreaSelect) if(NoteActionBegin!=null)NoteActionBegin(NoteDragingWork);
+            if (NoteDragingWork != NoteDragingType.AreaSelect) if (NoteActionBegin != null)
+                {
+                    if (NoteDragingWork == NoteDragingType.NoteMove)
+                    {
+                        NoteActionBegin(NoteDragingWork,true);
+                    }
+                    else
+                    {
+                        NoteActionBegin(NoteDragingWork);
+                    }
+                }
         }
 
         private void PianoWindow_TrackMouseUp(object sender, VocalUtau.DirectUI.PianoMouseEventArgs e)
@@ -370,6 +415,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             {
                 return;
             }
+            bool NotMove = false;
             if (NoteDragingWork != NoteDragingType.None)
             {
                 if (NoteDragingWork == NoteDragingType.NoteLength)
@@ -394,6 +440,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                         if (NoteList[CurrentNoteIndex].PitchValue.NoteNumber != e.PitchValue.NoteNumber)
                         {
                             NoteList[CurrentNoteIndex].PitchValue = new PitchAtomObject(e.PitchValue.NoteNumber, NoteList[CurrentNoteIndex].PitchValue.PitchWheel);
+                            
                         }
                         if (Math.Abs(TickDert) > minTickChange)
                         {
@@ -407,6 +454,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                         NewTick = (long)(NewTick / _TickStepTick) * _TickStepTick;
                         long TickDert = NoteList[CurrentNoteIndex].Tick - NewTick;
                         long NoteDert = NoteList[CurrentNoteIndex].PitchValue.NoteNumber - e.PitchValue.NoteNumber;
+                        NotMove = (NoteDert == 0 && TickDert < minTickChange);
                         for (int i = 0; i < NoteSelectIndexs.Count; i++)
                         {
                             uint NewNoteNumber = (uint)(NoteList[NoteSelectIndexs[i]].PitchValue.NoteNumber - NoteDert);
@@ -451,7 +499,17 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                     }
                     NoteDias.Clear();
                 }
-                if(NoteDragingWork!=NoteDragingType.AreaSelect && NoteActionEnd!=null)NoteActionEnd(NoteDragingWork);
+                if (NoteDragingWork != NoteDragingType.AreaSelect && NoteActionEnd != null)
+                {
+                    if (NotMove)
+                    {
+                        NoteActionEnd(NoteDragingWork,true);
+                    }
+                    else
+                    {
+                        NoteActionEnd(NoteDragingWork);
+                    }
+                }
             }
             NoteDragingWork = NoteDragingType.None;
         }

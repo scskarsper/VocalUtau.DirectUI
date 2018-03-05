@@ -67,6 +67,10 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
             this.PartsObjectPtr = PartsObjectPtr;
             hookParamWindow();
         }
+        public void setPartsObjectPtr(IntPtr PartsObjectPtr)
+        {
+            this.PartsObjectPtr = PartsObjectPtr;
+        }
         private PartsObject PartsObject
         {
             get

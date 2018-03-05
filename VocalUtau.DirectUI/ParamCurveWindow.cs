@@ -118,11 +118,15 @@ namespace VocalUtau.DirectUI
         /// 绘图逻辑
         /// </summary>
         #region
+        bool isDrawing = false;
         private void d2DPainterBox1_D2DPaint(object sender, BalthasarLib.D2DPainter.D2DPaintEventArgs e)
         {
+            if (isDrawing) return;
+            isDrawing = true;
             PianoRollPoint sp=pprops.getPianoStartPoint();
             DrawParameterLinesArea(sender, e, sp);
             DrawParameterButtonsArea(sender, e, sp);
+            isDrawing = false;
         }
         private void DrawParameterButtonsArea(object sender, BalthasarLib.D2DPainter.D2DPaintEventArgs e, PianoRollPoint startPoint)
         {
@@ -250,8 +254,11 @@ namespace VocalUtau.DirectUI
             return pme;
         }
         private bool pme_sendEnterEvent = false;
+        bool isMMoving = false;
         private void d2DPainterBox1_MouseMove(object sender, MouseEventArgs e)
         {
+            if (isMMoving) return;
+            isMMoving = true;
             d2DPainterBox1.Refresh();
 
             ParamMouseEventArgs pme = new ParamMouseEventArgs(e);
@@ -281,20 +288,29 @@ namespace VocalUtau.DirectUI
             pme_cache = pme;
             pme_sendEnterEvent = false;
             this.OnMouseMove(e);
+            isMMoving = false;
         }
+        bool isMDown = false;
         private void d2DPainterBox1_MouseDown(object sender, MouseEventArgs e)
         {
+            if (isMDown) return;
+            isMDown = true;
             pme_cache = RiseMouseHandle(sender, e,
                 ParamAreaMouseDown,
                 ParamBtnsMouseDown);
             this.OnMouseDown(e);
+            isMDown = false;
         }
+        bool isMUp = false;
         private void d2DPainterBox1_MouseUp(object sender, MouseEventArgs e)
         {
+            if (isMUp) return;
+            isMUp = true;
             pme_cache = RiseMouseHandle(sender, e,
                 ParamAreaMouseUp,
                 ParamBtnsMouseUp);
             this.OnMouseUp(e);
+            isMUp = false;
         }
         private void d2DPainterBox1_MouseClick(object sender, MouseEventArgs e)
         {

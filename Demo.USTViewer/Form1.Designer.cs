@@ -44,13 +44,15 @@ namespace Demo.USTViewer
             this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButton10 = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.trackBar3 = new System.Windows.Forms.TrackBar();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.trackBar4 = new System.Windows.Forms.TrackBar();
             this.btn_PIT = new System.Windows.Forms.Button();
             this.btn_DYN = new System.Windows.Forms.Button();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
-            this.trackBar4 = new System.Windows.Forms.TrackBar();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.toolStripButton11 = new System.Windows.Forms.ToolStripButton();
             this.pianoRollWindow1 = new VocalUtau.DirectUI.PianoRollWindow();
             this.paramCurveWindow1 = new VocalUtau.DirectUI.ParamCurveWindow();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
@@ -60,9 +62,9 @@ namespace Demo.USTViewer
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar4)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             this.SuspendLayout();
             // 
             // trackBar1
@@ -87,7 +89,7 @@ namespace Demo.USTViewer
             this.hScrollBar1.Location = new System.Drawing.Point(81, 303);
             this.hScrollBar1.Maximum = 20000000;
             this.hScrollBar1.Name = "hScrollBar1";
-            this.hScrollBar1.Size = new System.Drawing.Size(564, 18);
+            this.hScrollBar1.Size = new System.Drawing.Size(781, 18);
             this.hScrollBar1.SmallChange = 10;
             this.hScrollBar1.TabIndex = 3;
             this.hScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar1_Scroll);
@@ -105,11 +107,13 @@ namespace Demo.USTViewer
             this.toolStripButton4,
             this.toolStripButton5,
             this.toolStripButton6,
-            this.toolStripSeparator2});
+            this.toolStripSeparator2,
+            this.toolStripButton10,
+            this.toolStripButton11});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolStrip1.Size = new System.Drawing.Size(728, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(945, 25);
             this.toolStrip1.TabIndex = 5;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -205,6 +209,15 @@ namespace Demo.USTViewer
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
+            // toolStripButton10
+            // 
+            this.toolStripButton10.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton10.Image")));
+            this.toolStripButton10.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton10.Name = "toolStripButton10";
+            this.toolStripButton10.Size = new System.Drawing.Size(75, 22);
+            this.toolStripButton10.Text = "Undo(0)";
+            this.toolStripButton10.Click += new System.EventHandler(this.toolStripButton10_Click);
+            // 
             // splitContainer1
             // 
             this.splitContainer1.BackColor = System.Drawing.Color.Black;
@@ -231,7 +244,7 @@ namespace Demo.USTViewer
             this.splitContainer1.Panel2.Controls.Add(this.trackBar2);
             this.splitContainer1.Panel2.Controls.Add(this.paramCurveWindow1);
             this.splitContainer1.Panel2MinSize = 120;
-            this.splitContainer1.Size = new System.Drawing.Size(728, 444);
+            this.splitContainer1.Size = new System.Drawing.Size(945, 444);
             this.splitContainer1.SplitterDistance = 321;
             this.splitContainer1.SplitterWidth = 10;
             this.splitContainer1.TabIndex = 7;
@@ -242,7 +255,7 @@ namespace Demo.USTViewer
             this.trackBar3.AutoSize = false;
             this.trackBar3.BackColor = System.Drawing.SystemColors.Control;
             this.trackBar3.LargeChange = 13;
-            this.trackBar3.Location = new System.Drawing.Point(647, 303);
+            this.trackBar3.Location = new System.Drawing.Point(864, 303);
             this.trackBar3.Margin = new System.Windows.Forms.Padding(2);
             this.trackBar3.Maximum = 130;
             this.trackBar3.Minimum = 13;
@@ -253,6 +266,37 @@ namespace Demo.USTViewer
             this.trackBar3.TickFrequency = 13;
             this.trackBar3.Value = 13;
             this.trackBar3.Scroll += new System.EventHandler(this.trackBar3_Scroll);
+            // 
+            // panel1
+            // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.BackColor = System.Drawing.Color.Black;
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.trackBar4);
+            this.panel1.Location = new System.Drawing.Point(924, 2);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(23, 129);
+            this.panel1.TabIndex = 11;
+            // 
+            // trackBar4
+            // 
+            this.trackBar4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.trackBar4.AutoSize = false;
+            this.trackBar4.BackColor = System.Drawing.Color.Black;
+            this.trackBar4.LargeChange = 1;
+            this.trackBar4.Location = new System.Drawing.Point(0, 15);
+            this.trackBar4.Margin = new System.Windows.Forms.Padding(2);
+            this.trackBar4.Maximum = 12;
+            this.trackBar4.Minimum = 1;
+            this.trackBar4.Name = "trackBar4";
+            this.trackBar4.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.trackBar4.Size = new System.Drawing.Size(17, 83);
+            this.trackBar4.TabIndex = 10;
+            this.trackBar4.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+            this.trackBar4.Value = 1;
+            this.trackBar4.Scroll += new System.EventHandler(this.trackBar4_Scroll);
             // 
             // btn_PIT
             // 
@@ -287,41 +331,19 @@ namespace Demo.USTViewer
             this.trackBar2.Minimum = 1;
             this.trackBar2.Name = "trackBar2";
             this.trackBar2.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.trackBar2.Size = new System.Drawing.Size(16, 83);
+            this.trackBar2.Size = new System.Drawing.Size(16, 85);
             this.trackBar2.TabIndex = 7;
             this.trackBar2.Value = 1;
             this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
             // 
-            // trackBar4
+            // toolStripButton11
             // 
-            this.trackBar4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.trackBar4.AutoSize = false;
-            this.trackBar4.BackColor = System.Drawing.Color.Black;
-            this.trackBar4.LargeChange = 1;
-            this.trackBar4.Location = new System.Drawing.Point(0, 15);
-            this.trackBar4.Margin = new System.Windows.Forms.Padding(2);
-            this.trackBar4.Maximum = 12;
-            this.trackBar4.Minimum = 1;
-            this.trackBar4.Name = "trackBar4";
-            this.trackBar4.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.trackBar4.Size = new System.Drawing.Size(17, 81);
-            this.trackBar4.TabIndex = 10;
-            this.trackBar4.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-            this.trackBar4.Value = 1;
-            this.trackBar4.Scroll += new System.EventHandler(this.trackBar4_Scroll);
-            // 
-            // panel1
-            // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.BackColor = System.Drawing.Color.Black;
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.trackBar4);
-            this.panel1.Location = new System.Drawing.Point(707, 2);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(23, 127);
-            this.panel1.TabIndex = 11;
+            this.toolStripButton11.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton11.Image")));
+            this.toolStripButton11.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton11.Name = "toolStripButton11";
+            this.toolStripButton11.Size = new System.Drawing.Size(84, 22);
+            this.toolStripButton11.Text = "Repeat(0)";
+            this.toolStripButton11.Click += new System.EventHandler(this.toolStripButton11_Click);
             // 
             // pianoRollWindow1
             // 
@@ -333,13 +355,14 @@ namespace Demo.USTViewer
             this.pianoRollWindow1.Margin = new System.Windows.Forms.Padding(1);
             this.pianoRollWindow1.Name = "pianoRollWindow1";
             this.pianoRollWindow1.OctaveType = VocalUtau.Formats.Model.VocalObject.PitchAtomObject.OctaveTypeEnum.Voice;
-            this.pianoRollWindow1.Size = new System.Drawing.Size(726, 301);
+            this.pianoRollWindow1.Size = new System.Drawing.Size(943, 301);
             this.pianoRollWindow1.TabIndex = 0;
             this.pianoRollWindow1.TrackMouseDown += new VocalUtau.DirectUI.PianoRollWindow.OnMouseEventHandler(this.pianoRollWindow1_TrackMouseDown);
             this.pianoRollWindow1.RollMouseDown += new VocalUtau.DirectUI.PianoRollWindow.OnMouseEventHandler(this.pianoRollWindow1_RollMouseDown);
             this.pianoRollWindow1.TrackMouseUp += new VocalUtau.DirectUI.PianoRollWindow.OnMouseEventHandler(this.pianoRollWindow1_TrackMouseUp);
             this.pianoRollWindow1.TrackMouseMove += new VocalUtau.DirectUI.PianoRollWindow.OnMouseEventHandler(this.pianoRollWindow1_TrackMouseMove);
             this.pianoRollWindow1.Load += new System.EventHandler(this.pianoRollWindow1_Load);
+            this.pianoRollWindow1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.pianoRollWindow1_KeyDown);
             // 
             // paramCurveWindow1
             // 
@@ -349,14 +372,14 @@ namespace Demo.USTViewer
             this.paramCurveWindow1.Location = new System.Drawing.Point(0, 2);
             this.paramCurveWindow1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.paramCurveWindow1.Name = "paramCurveWindow1";
-            this.paramCurveWindow1.Size = new System.Drawing.Size(707, 114);
+            this.paramCurveWindow1.Size = new System.Drawing.Size(924, 116);
             this.paramCurveWindow1.TabIndex = 0;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(728, 469);
+            this.ClientSize = new System.Drawing.Size(945, 469);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.toolStrip1);
             this.Margin = new System.Windows.Forms.Padding(2);
@@ -372,9 +395,9 @@ namespace Demo.USTViewer
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.trackBar3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar4)).EndInit();
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -405,6 +428,8 @@ namespace Demo.USTViewer
         private System.Windows.Forms.TrackBar trackBar3;
         private System.Windows.Forms.TrackBar trackBar4;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ToolStripButton toolStripButton10;
+        private System.Windows.Forms.ToolStripButton toolStripButton11;
     }
 }
 

@@ -37,6 +37,10 @@ namespace VocalUtau.DirectUI.Utils.ActionUtils
                 ret.Add(new ControlObject(ControlList[i].Tick, ControlList[i].Value));
                 LastObj = ControlList[i];
             }
+            if (ret.Count == 0)
+            {
+                ret.Add(new ControlObject(MinTick, LastObj.Value));
+            }
             if (LastObj.Tick < MaxTick)
             {
                 ret.Add(new ControlObject(MaxTick, LastObj.Value));
@@ -63,7 +67,8 @@ namespace VocalUtau.DirectUI.Utils.ActionUtils
             double LastSt = ControlList.Count == 0 ? 0 : ControlList[0].Value;
             for (int i = 0; i < ControlList.Count; i++)
             {
-                if (ControlList[i].Tick < St.Tick - 1) continue;
+                LastSt = ControlList[i].Value;
+                if (ControlList[i].Tick <= St.Tick - 1) continue;
                 if (ControlList[i].Tick > Et.Tick + 1) break;
                 DelIdx = i;
                 break;

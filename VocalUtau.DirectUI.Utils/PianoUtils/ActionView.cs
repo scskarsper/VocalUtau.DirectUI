@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Forms;
 using VocalUtau.Formats.Model.Utils;
 using VocalUtau.Formats.Model.VocalObject;
 
@@ -47,6 +48,14 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             this.ParamWindow = ParamWindow;
             hookPianoWindow();
         }
+        public void setPartsObjectPtr(IntPtr PartsObjectPtr)
+        {
+            this.PartsObjectPtr = PartsObjectPtr;
+        }
+        public void setPianoWindowPtr(PianoRollWindow PianoWindow)
+        {
+            this.PianoWindow = PianoWindow;
+        }
         private PartsObject PartsObject
         {
             get
@@ -67,13 +76,89 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             {
                 PianoWindow.TrackPaint += PianoWindow_TrackPaint;
                 PianoWindow.TitlePaint += PianoWindow_TitlePaint;
+                PianoWindow.TrackMouseEnter += PianoWindow_TrackMouseEnter;
+                PianoWindow.TrackMouseLeave += PianoWindow_TrackMouseLeave;
+                PianoWindow.TrackMouseMove += PianoWindow_TrackMouseMove;
+                PianoWindow.KeyDown += PianoWindow_KeyDown;
             }
             catch { ;}
             try
             {
                 ParamWindow.ParamAreaPaint += ParamWindow_ParamAreaPaint;
+                ParamWindow.ParamAreaMouseEnter += ParamWindow_ParamAreaMouseEnter;
+                ParamWindow.ParamAreaMouseLeave += ParamWindow_ParamAreaMouseLeave;
+                ParamWindow.ParamAreaMouseMove += ParamWindow_ParamAreaMouseMove;
+                ParamWindow.KeyDown += ParamWindow_KeyDown;
             }
             catch { ;}
+        }
+
+
+        void ParamWindow_ParamAreaMouseMove(object sender, ParamMouseEventArgs e)
+        {
+            HookParam = true;
+            HookPiano = false;
+            MouseTick = e.Tick;
+        }
+        long MouseTick = 0;
+        void PianoWindow_TrackMouseMove(object sender, PianoMouseEventArgs e)
+        {
+            HookParam = false;
+            HookPiano = true;
+            MouseTick = e.Tick;
+        }
+
+        void ParamWindow_ParamAreaMouseLeave(object sender, EventArgs e)
+        {
+            HookParam = false;
+        }
+
+        void ParamWindow_ParamAreaMouseEnter(object sender, EventArgs e)
+        {
+            HookParam = true;
+        }
+        bool HookPiano = false;
+        bool HookParam = false;
+        void PianoWindow_TrackMouseLeave(object sender, EventArgs e)
+        {
+            HookPiano = false;
+        }
+
+        void PianoWindow_TrackMouseEnter(object sender, EventArgs e)
+        {
+            HookPiano = true;
+        }
+
+
+        void ParamWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            PianoWindow_KeyDown(null, e);
+        }
+        void PianoWindow_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            if (HookParam || HookPiano)
+            {
+                if (Control.ModifierKeys == Keys.Control)
+                {
+                    if (e.KeyCode == Keys.G)
+                    {
+                        if (TickPos != MouseTick)
+                        {
+                            TickPos = MouseTick;
+                            try
+                            {
+                                PianoWindow.RedrawPiano();
+                            }
+                            catch { ;}
+                            try
+                            {
+                                ParamWindow.RedrawPiano();
+                            }
+                            catch { ;}
+                        }
+                    }
+                }
+            }
         }
 
         void ParamWindow_ParamAreaPaint(object sender, DrawUtils.ParamAreaDrawUtils utils)

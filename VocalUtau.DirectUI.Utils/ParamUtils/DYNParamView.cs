@@ -15,8 +15,8 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
     public class DYNParamView
     {
         public delegate void OnPitchEventHandler(PitchView.PitchDragingType eventType);
-        public event OnPitchEventHandler PitchActionEnd;
-        public event OnPitchEventHandler PitchActionBegin;
+        public event OnPitchEventHandler DynActionEnd;
+        public event OnPitchEventHandler DynActionBegin;
         const long AntiBordTick = 480;
 
         uint _Zoom = 1;
@@ -66,6 +66,10 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
             this.ParamWindow = ParamWindow;
             this.PartsObjectPtr = PartsObjectPtr;
             hookParamWindow();
+        }
+        public void setPartsObjectPtr(IntPtr PartsObjectPtr)
+        {
+            this.PartsObjectPtr = PartsObjectPtr;
         }
         private PartsObject PartsObject
         {
@@ -178,7 +182,7 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
             DynDragingStatus = PitchView.PitchDragingType.None;
             DynStP1 = null;
             DynTmpP0 = null;
-            if (PitchActionEnd != null) PitchActionEnd(EDStatus);
+            if (DynActionEnd != null) DynActionEnd(EDStatus);
             if (_DynToolsStatus == PitchView.PitchDragingType.None)
             {
                 ParamWindow.ParentForm.Cursor = Cursors.Arrow;
@@ -202,7 +206,7 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
             if (DynDragingStatus != PitchView.PitchDragingType.None) return;
             DynStP1 = new ControlObject(e.Tick, e.TallPercent*100*Zoom - 100);
             DynDragingStatus = _DynToolsStatus;
-            if (PitchActionBegin != null) PitchActionBegin(DynDragingStatus);
+            if (DynActionBegin != null) DynActionBegin(DynDragingStatus);
         }
 
 

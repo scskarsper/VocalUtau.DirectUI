@@ -235,7 +235,19 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                 PianoWindow.ParentForm.Cursor = Cursors.Cross;
             }
         }
-    
+
+        
+        public void AddPitchs(long StartTick, List<PitchObject> Pitchs)
+        {
+            if (Pitchs.Count == 0) return;
+            List<PitchObject> PN = PitchList;
+            PitchActionUtils.earsePitchLine(ref PN, StartTick, Pitchs[Pitchs.Count - 1].Tick + StartTick);
+            for (int i = 0; i < Pitchs.Count; i++)
+            {
+                PitchList.Add(new PitchObject(Pitchs[i].Tick + StartTick,Pitchs[i].PitchValue.PitchValue));
+            }
+            PitchList.Sort();
+        }
 
         //ShouldPrivate
         public class BlockDia

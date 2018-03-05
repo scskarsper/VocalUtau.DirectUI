@@ -179,6 +179,7 @@ namespace VocalUtau.DirectUI.Utils.ActionUtils
             double LastSt = PitchList.Count == 0 ? 0 : PitchList[0].PitchValue.PitchValue;
             for (int i = 0; i < PitchList.Count; i++)
             {
+                LastSt = PitchList[i].PitchValue.PitchValue;
                 if (PitchList[i].Tick < St.Tick - 1) continue;
                 if (PitchList[i].Tick > Et.Tick + 1) break;
                 DelIdx = i;

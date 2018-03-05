@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using VocalUtau.DirectUI.Models;
+using VocalUtau.DirectUI.Utils.AbilityUtils;
 using VocalUtau.DirectUI.Utils.ParamUtils;
 using VocalUtau.DirectUI.Utils.PianoUtils;
 using VocalUtau.Formats.Model.USTs.Original;
@@ -21,6 +22,8 @@ namespace Demo.USTViewer
     public partial class Form1 : Form
     {
         ObjectAlloc<PartsObject> OAC = new ObjectAlloc<PartsObject>();
+        UndoAbleUtils<PartsObject> UAU = null;
+
         NoteView NV = null;
         PitchView PV = null;
         ActionView AV = null;
@@ -75,6 +78,7 @@ namespace Demo.USTViewer
             PitV = new PITParamView(OAC.IntPtr, this.paramCurveWindow1);
             DynV = new DYNParamView(OAC.IntPtr, this.paramCurveWindow1);
 
+            UAU = new UndoAbleUtils<PartsObject>(OAC.IntPtr);
 
             AV = new ActionView(OAC.IntPtr, this.pianoRollWindow1, this.paramCurveWindow1);
 
@@ -83,14 +87,88 @@ namespace Demo.USTViewer
             PV.EarseModeV2 = true;
             PitV.HandleEvents = false;
             DynV.HandleEvents = true;
+            btn_DYN.BackColor = DynV.HandleEvents ? System.Drawing.SystemColors.ControlDark : System.Drawing.SystemColors.Control;
+            btn_PIT.BackColor = PitV.HandleEvents ? System.Drawing.SystemColors.ControlDark : System.Drawing.SystemColors.Control;
             NV.NoteActionEnd += NV_NoteActionEnd;
             PV.PitchActionEnd += PV_PitchActionEnd;
             PitV.PitchActionEnd += PitV_PitchActionEnd;
+            DynV.DynActionEnd += DynV_DynActionEnd;
+
+            NV.NoteActionBegin += NV_NoteActionBegin;
+            PV.PitchActionBegin += PV_PitchActionBegin;
+            PitV.PitchActionBegin += PitV_PitchActionBegin;
+            DynV.DynActionBegin += DynV_DynActionBegin;
+
             this.pianoRollWindow1.TrackPaint += TrackPaint;
             InitEventAction();
 
             AV.TickPos = 480;
         }
+
+        void NV_NoteActionBegin(NoteView.NoteDragingType eventType, bool Callback = false)
+        {
+            if (eventType == NoteView.NoteDragingType.AreaSelect) return;
+            if (eventType == NoteView.NoteDragingType.None) return;
+            if (eventType == NoteView.NoteDragingType.NoteMove)
+            {
+                AddUndo(true);
+            }
+            else
+            {
+                AddUndo();
+            }
+        }
+
+        void NV_NoteActionEnd(NoteView.NoteDragingType eventType, bool Callback = false)
+        {
+            InitEventAction();
+            if (eventType == NoteView.NoteDragingType.NoteMove)
+            {
+                if (Callback)
+                {
+                    UAU.RemoveUndoPoint();
+                }
+                else
+                {
+                    UAU.ClearRepeat();
+                }
+                toolStripButton10.Text = "Undo(" + UAU.UndoCount.ToString() + ")";
+                toolStripButton11.Text = "Repeat(" + UAU.RepeatCount.ToString() + ")";
+            }
+        }
+
+        void AddUndo(bool ClrRep=true)
+        {
+            UAU.AddUndoPoint(ClrRep);
+            toolStripButton10.Text = "Undo(" + UAU.UndoCount.ToString() + ")";
+            toolStripButton11.Text = "Repeat(" + UAU.RepeatCount.ToString() + ")";
+        }
+
+        void DynV_DynActionBegin(PitchView.PitchDragingType eventType)
+        {
+            if (eventType == PitchView.PitchDragingType.None) return;
+            AddUndo();
+        }
+
+        void PitV_PitchActionBegin(PitchView.PitchDragingType eventType)
+        {
+            if (eventType == PitchView.PitchDragingType.None) return;
+            AddUndo();
+        }
+
+        void PV_PitchActionBegin(PitchView.PitchDragingType eventType)
+        {
+            if (eventType == PitchView.PitchDragingType.None) return;
+            AddUndo();
+        }
+
+
+
+        void DynV_DynActionEnd(PitchView.PitchDragingType eventType)
+        {
+            InitEventAction();
+        }
+
 
         void PitV_PitchActionEnd(PitchView.PitchDragingType eventType)
         {
@@ -102,10 +180,6 @@ namespace Demo.USTViewer
             InitEventAction();
         }
 
-        void NV_NoteActionEnd(NoteView.NoteDragingType eventType)
-        {
-            InitEventAction();
-        }
 
         /// <summary>
         /// BaseWork
@@ -196,6 +270,7 @@ namespace Demo.USTViewer
             NV.NoteToolsStatus = NoteView.NoteToolsType.Select;
             PV.HandleEvents = false;
             PitV.PitchToolsStatus = PitchView.PitchDragingType.None;
+            DynV.DynToolsStatus = PitchView.PitchDragingType.None;
             toolStripButton1.BackColor = System.Drawing.SystemColors.ControlDark;
             toolStripButton2.BackColor = System.Drawing.SystemColors.Control;
             toolStripButton3.BackColor = System.Drawing.SystemColors.Control;
@@ -310,20 +385,26 @@ namespace Demo.USTViewer
             toolStripButton7.BackColor = System.Drawing.SystemColors.ControlDark;
         }
         List<NoteObject> PNV = new List<NoteObject>();
+        List<PitchObject> PPV = new List<PitchObject>();
         private void toolStripButton8_Click(object sender, EventArgs e)
         {
             PNV = NV.getSelectNotes(true);
+            PPV = NV.getSelectPitchs(true);
             toolStripButton8.BackColor = System.Drawing.SystemColors.Control;
             if (PNV.Count > 0) toolStripButton8.BackColor = System.Drawing.SystemColors.ControlDark;
         }
 
         private void toolStripButton9_Click(object sender, EventArgs e)
         {
-            bool R=NV.AddNotes(0, PNV);
+            bool R = NV.AddNotes(AV.TickPos, PNV);
             PNV.Clear();
             toolStripButton8.BackColor = System.Drawing.SystemColors.Control;
             if (PNV.Count > 0) toolStripButton8.BackColor = System.Drawing.SystemColors.ControlDark;
             if (!R) MessageBox.Show("Paste Error");
+            else
+            {
+                PV.AddPitchs(AV.TickPos, PPV);
+            }
         }
 
         private void trackBar2_Scroll(object sender, EventArgs e)
@@ -348,6 +429,8 @@ namespace Demo.USTViewer
         {
             DynV.HandleEvents = true;
             PitV.HandleEvents = false;
+            btn_DYN.BackColor = DynV.HandleEvents ? System.Drawing.SystemColors.ControlDark : System.Drawing.SystemColors.Control;
+            btn_PIT.BackColor = PitV.HandleEvents ? System.Drawing.SystemColors.ControlDark : System.Drawing.SystemColors.Control;
             paramCurveWindow1.Refresh();
         }
 
@@ -355,8 +438,65 @@ namespace Demo.USTViewer
         {
             PitV.HandleEvents = true;
             DynV.HandleEvents = false;
+            btn_DYN.BackColor = DynV.HandleEvents ? System.Drawing.SystemColors.ControlDark : System.Drawing.SystemColors.Control;
+            btn_PIT.BackColor = PitV.HandleEvents ? System.Drawing.SystemColors.ControlDark : System.Drawing.SystemColors.Control;
             paramCurveWindow1.Refresh();
 
+        }
+
+        private void toolStripButton10_Click(object sender, EventArgs e)
+        {
+            UAU.AddRepeatPoint();
+            PartsObject PU=(PartsObject)UAU.PeekUndo();
+            if (PU != null)
+            {
+                OAC.ReAlloc(PU);
+                PV.setPartsObjectPtr(OAC.IntPtr);
+                NV.setPartsObjectPtr(OAC.IntPtr);
+                AV.setPartsObjectPtr(OAC.IntPtr);
+                PitV.setPartsObjectPtr(OAC.IntPtr);
+                DynV.setPartsObjectPtr(OAC.IntPtr);
+                UAU.UpdatePtr(OAC.IntPtr);
+                paramCurveWindow1.RedrawPiano();
+                pianoRollWindow1.RedrawPiano();
+                toolStripButton10.Text = "Undo(" + UAU.UndoCount.ToString() + ")";
+                toolStripButton11.Text = "Repeat(" + UAU.RepeatCount.ToString() + ")";
+            }
+            else
+            {
+                UAU.RemoveRepeatPoint();
+            }
+            GC.Collect();
+        }
+
+        private void toolStripButton11_Click(object sender, EventArgs e)
+        {
+            UAU.AddUndoPoint(false);
+            PartsObject PU = (PartsObject)UAU.PeekRepeat();
+            if (PU != null)
+            {
+                OAC.ReAlloc(PU);
+                PV.setPartsObjectPtr(OAC.IntPtr);
+                NV.setPartsObjectPtr(OAC.IntPtr);
+                AV.setPartsObjectPtr(OAC.IntPtr);
+                PitV.setPartsObjectPtr(OAC.IntPtr);
+                DynV.setPartsObjectPtr(OAC.IntPtr);
+                UAU.UpdatePtr(OAC.IntPtr);
+                paramCurveWindow1.RedrawPiano();
+                pianoRollWindow1.RedrawPiano();
+                toolStripButton10.Text = "Undo(" + UAU.UndoCount.ToString() + ")";
+                toolStripButton11.Text = "Repeat(" + UAU.RepeatCount.ToString() + ")";
+            }
+            else
+            {
+                UAU.RemoveUndoPoint();
+            }
+            GC.Collect();
+        }
+
+        private void pianoRollWindow1_KeyDown(object sender, KeyEventArgs e)
+        {
+            
         }
 
     }
