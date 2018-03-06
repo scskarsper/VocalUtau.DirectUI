@@ -12,31 +12,14 @@ namespace VocalUtau.DirectUI.Utils.AbilityUtils
 {
     public class UndoAbleUtils<T>
     {
-        IntPtr ObjectPtr = IntPtr.Zero;
-        public UndoAbleUtils(IntPtr ObjectPtr)
+        public UndoAbleUtils()
         {
-            this.ObjectPtr = ObjectPtr;
         }
-        public void UpdatePtr(IntPtr ObjectPtr)
-        {
-            this.ObjectPtr = ObjectPtr;
-        }
-        private T Object
-        {
-            get
-            {
-                T ret = default(T);
-                try
-                {
-                    GCHandle handle = GCHandle.FromIntPtr(ObjectPtr);
-                    ret = (T)handle.Target;
-                }
-                catch { ;}
-                return ret;
-            }
-        }
+        private T Object = default(T);
         List<T> UndoList = new List<T>();
+        List<string> UndoRepoList = new List<string>();
         List<T> RepeatList = new List<T>();
+        List<string> RepeatRepoList = new List<string>();
 
         public int UndoCount
         {
@@ -63,13 +46,16 @@ namespace VocalUtau.DirectUI.Utils.AbilityUtils
             stream.Close();
             return clonedObj;
         }
-        public bool AddUndoPoint(bool ClearRepeat=true)
+        public void RegisterPoint(T Object)
+        {
+            this.Object = (T)Clone(Object);
+        }
+        public bool AddUndoPoint(string RepoIntroduce)
         {
             try
             {
-                object O = Clone(Object);
-                if(ClearRepeat)RepeatList.Clear();
-                UndoList.Add((T)O);
+                UndoList.Add(Object);
+                UndoRepoList.Add(RepoIntroduce);
                 return true;
             }
             catch { return false; }
@@ -79,15 +65,15 @@ namespace VocalUtau.DirectUI.Utils.AbilityUtils
             try
             {
                 UndoList.RemoveAt(UndoList.Count - 1);
+                UndoRepoList.RemoveAt(UndoRepoList.Count - 1);
             }catch{;}
         }
-        public bool AddRepeatPoint(bool ClearUndo = false)
+        public bool AddRepeatPoint(string RepoIntroduce)
         {
             try
             {
-                object O = Clone(Object);
-                if (ClearUndo) UndoList.Clear();
-                RepeatList.Add((T)O);
+                RepeatList.Add(Object);
+                RepeatRepoList.Add(RepoIntroduce);
                 return true;
             }
             catch { return false; }
@@ -97,6 +83,7 @@ namespace VocalUtau.DirectUI.Utils.AbilityUtils
             try
             {
                 RepeatList.RemoveAt(RepeatList.Count - 1);
+                RepeatRepoList.RemoveAt(RepeatRepoList.Count - 1);
             }
             catch { ;}
         }
@@ -105,6 +92,7 @@ namespace VocalUtau.DirectUI.Utils.AbilityUtils
             try
             {
                 RepeatList.Clear();
+                RepeatRepoList.Clear();
             }
             catch { ;}
         }
@@ -113,30 +101,51 @@ namespace VocalUtau.DirectUI.Utils.AbilityUtils
             try
             {
                 UndoList.Clear();
+                UndoRepoList.Clear();
             }
             catch { ;}
         }
-        public object PeekUndo()
+        public string LastRepeatRepo
         {
-            if (UndoList.Count <= 0) return null;
+            get
+            {
+                if (RepeatRepoList.Count == 0) return "";
+                return RepeatRepoList[RepeatRepoList.Count - 1];
+            }
+        }
+        public string LastUndoRepo
+        {
+            get
+            {
+                if (UndoRepoList.Count == 0) return "";
+                return UndoRepoList[UndoRepoList.Count - 1];
+            }
+        }
+        public KeyValuePair<T, string> PeekUndo()
+        {
+            if (UndoList.Count <= 0) return new KeyValuePair<T, string>(default(T), "");
             try
             {
                 T Obj = UndoList[UndoList.Count - 1];
+                String Repo = UndoRepoList[UndoRepoList.Count - 1];
                 UndoList.RemoveAt(UndoList.Count - 1);
-                return Obj;
+                UndoRepoList.RemoveAt(UndoRepoList.Count - 1);
+                return new KeyValuePair<T, string>(Obj, Repo);
             }
-            catch { return null; }
+            catch { return new KeyValuePair<T, string>(default(T), ""); }
         }
-        public object PeekRepeat()
+        public KeyValuePair<T,string> PeekRepeat()
         {
-            if (RepeatList.Count <= 0) return null;
+            if (RepeatList.Count <= 0) return new KeyValuePair<T, string>(default(T), "");
             try
             {
                 T Obj = RepeatList[RepeatList.Count - 1];
+                String Repo = RepeatRepoList[RepeatRepoList.Count - 1];
                 RepeatList.RemoveAt(RepeatList.Count - 1);
-                return Obj;
+                RepeatRepoList.RemoveAt(RepeatRepoList.Count - 1);
+                return new KeyValuePair<T,string>(Obj,Repo);
             }
-            catch { return null; }
+            catch { return new KeyValuePair<T, string>(default(T), ""); }
         }
     }
 }

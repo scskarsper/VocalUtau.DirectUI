@@ -1,5 +1,4 @@
-﻿using Demo.USTViewer.Model.Objects;
-using NAudio.Midi;
+﻿using NAudio.Midi;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -78,7 +77,7 @@ namespace Demo.USTViewer
             PitV = new PITParamView(OAC.IntPtr, this.paramCurveWindow1);
             DynV = new DYNParamView(OAC.IntPtr, this.paramCurveWindow1);
 
-            UAU = new UndoAbleUtils<PartsObject>(OAC.IntPtr);
+            UAU = new UndoAbleUtils<PartsObject>();
 
             AV = new ActionView(OAC.IntPtr, this.pianoRollWindow1, this.paramCurveWindow1);
 
@@ -89,6 +88,7 @@ namespace Demo.USTViewer
             DynV.HandleEvents = true;
             btn_DYN.BackColor = DynV.HandleEvents ? System.Drawing.SystemColors.ControlDark : System.Drawing.SystemColors.Control;
             btn_PIT.BackColor = PitV.HandleEvents ? System.Drawing.SystemColors.ControlDark : System.Drawing.SystemColors.Control;
+
             NV.NoteActionEnd += NV_NoteActionEnd;
             PV.PitchActionEnd += PV_PitchActionEnd;
             PitV.PitchActionEnd += PitV_PitchActionEnd;
@@ -109,14 +109,7 @@ namespace Demo.USTViewer
         {
             if (eventType == NoteView.NoteDragingType.AreaSelect) return;
             if (eventType == NoteView.NoteDragingType.None) return;
-            if (eventType == NoteView.NoteDragingType.NoteMove)
-            {
-                AddUndo(true);
-            }
-            else
-            {
-                AddUndo();
-            }
+            UAU.RegisterPoint((PartsObject)OAC.AllocedObject);
         }
 
         void NV_NoteActionEnd(NoteView.NoteDragingType eventType, bool Callback = false)
@@ -130,36 +123,35 @@ namespace Demo.USTViewer
                 }
                 else
                 {
-                    UAU.ClearRepeat();
+                    AddUndo(eventType.ToString());
                 }
-                toolStripButton10.Text = "Undo(" + UAU.UndoCount.ToString() + ")";
-                toolStripButton11.Text = "Repeat(" + UAU.RepeatCount.ToString() + ")";
             }
         }
 
-        void AddUndo(bool ClrRep=true)
+        void AddUndo(string Repo)
         {
-            UAU.AddUndoPoint(ClrRep);
-            toolStripButton10.Text = "Undo(" + UAU.UndoCount.ToString() + ")";
-            toolStripButton11.Text = "Repeat(" + UAU.RepeatCount.ToString() + ")";
+            UAU.AddUndoPoint(Repo);
+            UAU.ClearRepeat();
+            toolStripButton10.Text = "Undo-" + UAU.LastUndoRepo + "(" + UAU.UndoCount.ToString() + ")";
+            toolStripButton11.Text = "Repeat-" + UAU.LastRepeatRepo + "(" + UAU.RepeatCount.ToString() + ")";
         }
 
         void DynV_DynActionBegin(PitchView.PitchDragingType eventType)
         {
             if (eventType == PitchView.PitchDragingType.None) return;
-            AddUndo();
+            UAU.RegisterPoint((PartsObject)OAC.AllocedObject);
         }
 
         void PitV_PitchActionBegin(PitchView.PitchDragingType eventType)
         {
             if (eventType == PitchView.PitchDragingType.None) return;
-            AddUndo();
+            UAU.RegisterPoint((PartsObject)OAC.AllocedObject);
         }
 
         void PV_PitchActionBegin(PitchView.PitchDragingType eventType)
         {
             if (eventType == PitchView.PitchDragingType.None) return;
-            AddUndo();
+            UAU.RegisterPoint((PartsObject)OAC.AllocedObject);
         }
 
 
@@ -167,17 +159,20 @@ namespace Demo.USTViewer
         void DynV_DynActionEnd(PitchView.PitchDragingType eventType)
         {
             InitEventAction();
+            AddUndo(eventType.ToString());
         }
 
 
         void PitV_PitchActionEnd(PitchView.PitchDragingType eventType)
         {
             InitEventAction();
+            AddUndo(eventType.ToString());
         }
 
         void PV_PitchActionEnd(PitchView.PitchDragingType eventType)
         {
             InitEventAction();
+            AddUndo(eventType.ToString());
         }
 
 
@@ -446,21 +441,21 @@ namespace Demo.USTViewer
 
         private void toolStripButton10_Click(object sender, EventArgs e)
         {
-            UAU.AddRepeatPoint();
-            PartsObject PU=(PartsObject)UAU.PeekUndo();
-            if (PU != null)
+            UAU.RegisterPoint((PartsObject)OAC.AllocedObject);
+            UAU.AddRepeatPoint(UAU.LastUndoRepo);
+            KeyValuePair<PartsObject, string> PU = UAU.PeekUndo();
+            if (PU.Key!=null)
             {
-                OAC.ReAlloc(PU);
+                OAC.ReAlloc(PU.Key);
                 PV.setPartsObjectPtr(OAC.IntPtr);
                 NV.setPartsObjectPtr(OAC.IntPtr);
                 AV.setPartsObjectPtr(OAC.IntPtr);
                 PitV.setPartsObjectPtr(OAC.IntPtr);
                 DynV.setPartsObjectPtr(OAC.IntPtr);
-                UAU.UpdatePtr(OAC.IntPtr);
                 paramCurveWindow1.RedrawPiano();
                 pianoRollWindow1.RedrawPiano();
-                toolStripButton10.Text = "Undo(" + UAU.UndoCount.ToString() + ")";
-                toolStripButton11.Text = "Repeat(" + UAU.RepeatCount.ToString() + ")";
+                toolStripButton10.Text = "Undo-" + UAU.LastUndoRepo + "(" + UAU.UndoCount.ToString() + ")";
+                toolStripButton11.Text = "Repeat-" + UAU.LastRepeatRepo + "(" + UAU.RepeatCount.ToString() + ")";
             }
             else
             {
@@ -471,21 +466,21 @@ namespace Demo.USTViewer
 
         private void toolStripButton11_Click(object sender, EventArgs e)
         {
-            UAU.AddUndoPoint(false);
-            PartsObject PU = (PartsObject)UAU.PeekRepeat();
-            if (PU != null)
+            UAU.RegisterPoint((PartsObject)OAC.AllocedObject);
+            UAU.AddUndoPoint(UAU.LastRepeatRepo);
+            KeyValuePair<PartsObject, string> PU = UAU.PeekRepeat();
+            if (PU.Key != null)
             {
-                OAC.ReAlloc(PU);
+                OAC.ReAlloc(PU.Key);
                 PV.setPartsObjectPtr(OAC.IntPtr);
                 NV.setPartsObjectPtr(OAC.IntPtr);
                 AV.setPartsObjectPtr(OAC.IntPtr);
                 PitV.setPartsObjectPtr(OAC.IntPtr);
                 DynV.setPartsObjectPtr(OAC.IntPtr);
-                UAU.UpdatePtr(OAC.IntPtr);
                 paramCurveWindow1.RedrawPiano();
                 pianoRollWindow1.RedrawPiano();
-                toolStripButton10.Text = "Undo(" + UAU.UndoCount.ToString() + ")";
-                toolStripButton11.Text = "Repeat(" + UAU.RepeatCount.ToString() + ")";
+                toolStripButton10.Text = "Undo-" + UAU.LastUndoRepo + "(" + UAU.UndoCount.ToString() + ")";
+                toolStripButton11.Text = "Repeat-" + UAU.LastRepeatRepo + "(" + UAU.RepeatCount.ToString() + ")";
             }
             else
             {
