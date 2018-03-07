@@ -233,5 +233,24 @@ namespace VocalUtau.DirectUI.DrawUtils
 
             if (PixelSilkLine.Count > 1) g.FillPathGeometrySink(PixelSilkLine, AreaColor);
         }
+        public void DrawString(System.Drawing.Point LeftTopAxis, System.Drawing.Color FontColor, string Text, int FontSize = 9, FontStyle FontStyles=FontStyle.Regular)
+        {
+            
+            try
+            {
+                D2DGraphics g = baseEvent.D2DGraphics;
+                g.DrawText(Text, new System.Drawing.Rectangle(baseEvent.ClipRectangle.Left + LeftTopAxis.X, LeftTopAxis.Y, baseEvent.ClipRectangle.Width - LeftTopAxis.X, baseEvent.ClipRectangle.Height - LeftTopAxis.Y), FontColor, new System.Drawing.Font("Tahoma", FontSize, FontStyles));
+            }
+            catch { ;}
+        }
+        public SizeF GetFontSize(string Text, int FontSize = 9, FontStyle FontStyles = FontStyle.Regular)
+        {
+            System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(100, 100);
+            System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(bmp);
+            System.Drawing.SizeF sizeF = graphics.MeasureString(Text, new System.Drawing.Font("Tahoma", FontSize, FontStyles));
+            graphics.Dispose();
+            bmp.Dispose();
+            return sizeF;
+        }
     }
 }

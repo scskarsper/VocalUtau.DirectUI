@@ -35,3 +35,6 @@ D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\bin\Debug\SharpDX.dll
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\bin\Debug\SharpDX.DXGI.dll
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\bin\Debug\BalthasarLib.D2DPainter.dll
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\bin\Debug\BalthasarLib.D2DPainter.pdb
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\obj\Debug\Demo.USTViewer.MDIParentWin.resources
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\bin\Debug\VocalUtau.DirectUI.Forms.dll
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\bin\Debug\VocalUtau.DirectUI.Forms.pdb

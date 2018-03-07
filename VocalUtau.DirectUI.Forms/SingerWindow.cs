@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using VocalUtau.DirectUI.Utils.AbilityUtils;
 using VocalUtau.DirectUI.Utils.ParamUtils;
 using VocalUtau.DirectUI.Utils.PianoUtils;
+using VocalUtau.Formats.Model.Utils;
 using VocalUtau.Formats.Model.VocalObject;
 
 namespace VocalUtau.DirectUI.Forms
@@ -29,6 +30,7 @@ namespace VocalUtau.DirectUI.Forms
         }
         public class ViewController
         {
+            bool Alloced = false;
             PianoRollWindow PianoWindow;
             ParamCurveWindow ParamWindow;
             public ViewController(ref PianoRollWindow PianoWin,ref ParamCurveWindow ParamWin)
@@ -38,22 +40,44 @@ namespace VocalUtau.DirectUI.Forms
             }
             public void AllocView(IntPtr ObjectPtr)
             {
-                Track_NoteView = new NoteView(ObjectPtr, this.PianoWindow);
-                Track_PitchView = new PitchView(ObjectPtr, this.PianoWindow);
-                Param_PitchView = new PITParamView(ObjectPtr, this.ParamWindow);
-                Param_DynamicView = new DYNParamView(ObjectPtr, this.ParamWindow);
-                Global_ActionView = new ActionView(ObjectPtr, this.PianoWindow, this.ParamWindow);
+                if (Alloced)
+                {
+                    Track_PitchView.setPartsObjectPtr(ObjectPtr);
+                    Track_NoteView.setPartsObjectPtr(ObjectPtr);
+                    Global_ActionView.setPartsObjectPtr(ObjectPtr);
+                    Param_PitchView.setPartsObjectPtr(ObjectPtr);
+                    Param_DynamicView.setPartsObjectPtr(ObjectPtr);
+                }
+                else
+                {
+                    Track_NoteView = new NoteView(ObjectPtr, this.PianoWindow);
+                    Track_PitchView = new PitchView(ObjectPtr, this.PianoWindow);
+                    Param_PitchView = new PITParamView(ObjectPtr, this.ParamWindow);
+                    Param_DynamicView = new DYNParamView(ObjectPtr, this.ParamWindow);
+                    Global_ActionView = new ActionView(ObjectPtr, this.PianoWindow, this.ParamWindow);
 
-                CopyPasteController = new CopyPaste(ref Track_NoteView, ref Track_PitchView);
+                    CopyPasteController = new CopyPaste(ref Track_NoteView, ref Track_PitchView);
 
-                Track_NoteView.NoteActionBegin += Track_NoteView_NoteActionBegin;
-                Track_NoteView.NoteActionEnd += Track_NoteView_NoteActionEnd;
-                Track_PitchView.PitchActionBegin += Track_PitchView_PitchActionBegin;
-                Track_PitchView.PitchActionEnd += Track_PitchView_PitchActionEnd;
-                Param_DynamicView.DynActionBegin += Param_DynamicView_DynActionBegin;
-                Param_DynamicView.DynActionEnd += Param_DynamicView_DynActionEnd;
-                Param_PitchView.PitchActionBegin += Param_PitchView_PitchActionBegin;
-                Param_PitchView.PitchActionEnd += Param_PitchView_PitchActionEnd;
+                    Track_NoteView.NoteActionBegin += Track_NoteView_NoteActionBegin;
+                    Track_NoteView.NoteActionEnd += Track_NoteView_NoteActionEnd;
+                    Track_PitchView.PitchActionBegin += Track_PitchView_PitchActionBegin;
+                    Track_PitchView.PitchActionEnd += Track_PitchView_PitchActionEnd;
+                    Param_DynamicView.DynActionBegin += Param_DynamicView_DynActionBegin;
+                    Param_DynamicView.DynActionEnd += Param_DynamicView_DynActionEnd;
+                    Param_PitchView.PitchActionBegin += Param_PitchView_PitchActionBegin;
+                    Param_PitchView.PitchActionEnd += Param_PitchView_PitchActionEnd;
+                    Alloced = true;
+
+                    SetNoteViewTool(NoteView.NoteToolsType.Select);
+                    SetParamGraphicTool(PitchView.PitchDragingType.DrawGraphS);
+                    SwitchParamView(ParamViewType.Dynamic);
+                }
+                try
+                {
+                    ParamWindow.RedrawPiano();
+                    PianoWindow.RedrawPiano();
+                }
+                catch { ;}
             }
 
             #region
@@ -198,16 +222,6 @@ namespace VocalUtau.DirectUI.Forms
                     }
                 }
             }
-            public void SetupPartsObjectPtr(IntPtr Ptr)
-            {
-                Track_PitchView.setPartsObjectPtr(Ptr);
-                Track_NoteView.setPartsObjectPtr(Ptr);
-                Global_ActionView.setPartsObjectPtr(Ptr);
-                Param_PitchView.setPartsObjectPtr(Ptr);
-                Param_DynamicView.setPartsObjectPtr(Ptr);
-                ParamWindow.RedrawPiano();
-                PianoWindow.RedrawPiano();
-            }
 
             public void SetNoteViewTool(NoteView.NoteToolsType Tool)
             {
@@ -268,6 +282,7 @@ namespace VocalUtau.DirectUI.Forms
         }
 
         ViewController Controller;
+        ObjectAlloc<PartsObject> OAC = new ObjectAlloc<PartsObject>();
 
         public SingerWindow()
         {
@@ -275,6 +290,14 @@ namespace VocalUtau.DirectUI.Forms
             Controller = new ViewController(ref this.pianoRollWindow1, ref this.paramCurveWindow1);
         }
 
+        public void LoadParts(ref PartsObject parts)
+        {
+            OAC.ReAlloc(parts);
+            Controller.AllocView(OAC.IntPtr);
+            ctl_Scroll_LeftPos.Maximum = (int)parts.TickLength;
+        }
+
+        #region
         private void ctl_Scroll_LeftPos_Scroll(object sender, ScrollEventArgs e)
         {
             pianoRollWindow1.setPianoStartTick(ctl_Scroll_LeftPos.Value);
@@ -326,6 +349,130 @@ namespace VocalUtau.DirectUI.Forms
         private void pianoRollWindow1_RollMouseDown(object sender, PianoMouseEventArgs e)
         {
             PlayNote((int)e.PitchValue.NoteNumber);
+        }
+        #endregion
+
+        private void btn_SelectCurve_Click(object sender, EventArgs e)
+        {
+            int x = btn_SelectCurve.Left + btn_SelectCurve.Width;
+            int y = btn_SelectCurve.Top +splitContainer1.Top + splitContainer1.SplitterDistance + splitContainer1.SplitterWidth;
+            CurveSelector_DYN.Checked = false;
+            CurveSelector_PIT.Checked = false;
+            switch (Controller.GetParamType())
+            {
+                case ParamViewType.Dynamic: CurveSelector_DYN.Checked = true; break;
+                case ParamViewType.Pitch: CurveSelector_PIT.Checked = true; break;
+            }
+            ParamCurveTypeMenu.Show(PointToScreen(new Point(x,y)),ToolStripDropDownDirection.AboveRight);
+        }
+
+        private void CurveSelector_PIT_Click(object sender, EventArgs e)
+        {
+            Controller.SwitchParamView(ParamViewType.Pitch);
+        }
+
+        private void CurveSelector_DYN_Click(object sender, EventArgs e)
+        {
+            Controller.SwitchParamView(ParamViewType.Dynamic);
+        }
+
+        private void btn_PianoRollAction_Click(object sender, EventArgs e)
+        {
+            int x = btn_PianoRollAction.Left + btn_PianoRollAction.Width;
+            int y = btn_PianoRollAction.Top + splitContainer1.Top;
+
+            RollTool_DrawJ.Checked = false;
+            RollTool_DrawLine.Checked = false;
+            RollTool_DrawR.Checked = false;
+            RollTool_DrawS.Checked = false;
+            RollTool_Earse.Checked = false;
+            RollTool_NoteAdd.Checked = false;
+            RollTool_NoteSelect.Checked = false;
+            if (Controller.GetRollActionType() == RollActionType.Note)
+            {
+                switch (Controller.Track_NoteView.NoteToolsStatus)
+                {
+                    case NoteView.NoteToolsType.Select: RollTool_NoteSelect.Checked = true; break;
+                    case NoteView.NoteToolsType.Add: RollTool_NoteAdd.Checked = true; break;
+                }
+            }
+            else
+            {
+                switch (Controller.Track_PitchView.PitchToolsStatus)
+                {
+                    case PitchView.PitchDragingType.EarseArea:RollTool_Earse.Checked = true;break;
+                    case PitchView.PitchDragingType.DrawLine:RollTool_DrawLine.Checked = true;break;
+                    case PitchView.PitchDragingType.DrawGraphS:RollTool_DrawS.Checked = true;break;
+                    case PitchView.PitchDragingType.DrawGraphR:RollTool_DrawR.Checked = true;break;
+                    case PitchView.PitchDragingType.DrawGraphJ:RollTool_DrawJ.Checked = true;break;
+                }
+            }
+            RollAction_NotePaste.Enabled = Controller.CopyPasteController.isCopyed;
+            RollAction_NoteCopy.Enabled = Controller.Track_NoteView.SelectedCount > 0;
+            RollAction_EditLyrics.Enabled = Controller.Track_NoteView.SelectedCount > 0;
+            PianoRollActionMenu.Show(PointToScreen(new Point(x, y)), ToolStripDropDownDirection.BelowRight);
+        }
+
+        private void RollAction_SetCurrentPos_Click(object sender, EventArgs e)
+        {
+            Controller.Global_ActionView.SetupMouseTick();
+        }
+
+        private void RollAction_NoteCopy_Click(object sender, EventArgs e)
+        {
+            Controller.CopyPasteController.CopySelectsNote();
+        }
+
+        private void RollAction_NotePaste_Click(object sender, EventArgs e)
+        {
+            if (Controller.CopyPasteController.isCopyed)
+            {
+                if (!Controller.CopyPasteController.PasteNotes(Controller.Global_ActionView.TickPos))
+                {
+                    MessageBox.Show("Paste Error! No Enough Spaces!");  
+                }
+                
+            }
+        }
+
+        private void RollAction_EditLyrics_Click(object sender, EventArgs e)
+        {
+            Controller.Track_NoteView.EditNoteLyric();
+        }
+
+        private void RollTool_NoteSelect_Click(object sender, EventArgs e)
+        {
+            Controller.SetNoteViewTool(NoteView.NoteToolsType.Select);
+        }
+
+        private void RollTool_NoteAdd_Click(object sender, EventArgs e)
+        {
+            Controller.SetNoteViewTool(NoteView.NoteToolsType.Add);
+        }
+
+        private void RollTool_DrawLine_Click(object sender, EventArgs e)
+        {
+            Controller.SetPitchViewTool(PitchView.PitchDragingType.DrawLine);
+        }
+
+        private void RollTool_DrawJ_Click(object sender, EventArgs e)
+        {
+            Controller.SetPitchViewTool(PitchView.PitchDragingType.DrawGraphJ);
+        }
+
+        private void RollTool_DrawR_Click(object sender, EventArgs e)
+        {
+            Controller.SetPitchViewTool(PitchView.PitchDragingType.DrawGraphR);
+        }
+
+        private void RollTool_DrawS_Click(object sender, EventArgs e)
+        {
+            Controller.SetPitchViewTool(PitchView.PitchDragingType.DrawGraphS);
+        }
+
+        private void RollTool_Earse_Click(object sender, EventArgs e)
+        {
+            Controller.SetPitchViewTool(PitchView.PitchDragingType.EarseArea);
         }
 
     }

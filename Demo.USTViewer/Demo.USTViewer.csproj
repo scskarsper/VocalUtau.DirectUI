@@ -61,10 +61,19 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="MDIParentWin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MDIParentWin.Designer.cs">
+      <DependentUpon>MDIParentWin.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MDIParentWin.resx">
+      <DependentUpon>MDIParentWin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -89,6 +98,10 @@
     <ProjectReference Include="..\..\VocalUtau.Formats\VocalUtau.Formats.csproj">
       <Project>{9ea2955f-3919-4939-bb75-0b38f4e6182d}</Project>
       <Name>VocalUtau.Formats</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VocalUtau.DirectUI.Forms\VocalUtau.DirectUI.Forms.csproj">
+      <Project>{eb4142f3-fa96-45d9-a817-0b0b9604541b}</Project>
+      <Name>VocalUtau.DirectUI.Forms</Name>
     </ProjectReference>
     <ProjectReference Include="..\VocalUtau.DirectUI.Utils\VocalUtau.DirectUI.Utils.csproj">
       <Project>{10feb9fa-9308-42aa-b5fb-dac652508095}</Project>

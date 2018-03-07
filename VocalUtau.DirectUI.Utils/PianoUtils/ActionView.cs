@@ -134,6 +134,23 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         {
             PianoWindow_KeyDown(null, e);
         }
+        public void SetupMouseTick()
+        {
+            if (TickPos != MouseTick)
+            {
+                TickPos = MouseTick;
+                try
+                {
+                    PianoWindow.RedrawPiano();
+                }
+                catch { ;}
+                try
+                {
+                    ParamWindow.RedrawPiano();
+                }
+                catch { ;}
+            }
+        }
         void PianoWindow_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
         {
             if (HookParam || HookPiano)
@@ -142,20 +159,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                 {
                     if (e.KeyCode == Keys.G)
                     {
-                        if (TickPos != MouseTick)
-                        {
-                            TickPos = MouseTick;
-                            try
-                            {
-                                PianoWindow.RedrawPiano();
-                            }
-                            catch { ;}
-                            try
-                            {
-                                ParamWindow.RedrawPiano();
-                            }
-                            catch { ;}
-                        }
+                        SetupMouseTick();
                     }
                 }
             }

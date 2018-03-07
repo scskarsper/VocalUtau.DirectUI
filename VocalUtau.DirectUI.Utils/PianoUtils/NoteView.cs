@@ -70,14 +70,82 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         void PianoWindow_KeyUp(object sender, KeyEventArgs e)
         {
             if (!HandleEvents) return;
-            if (e.KeyCode == Keys.Delete && NoteSelectIndexs.Count > 0)
+            if (e.KeyCode == Keys.Delete)
             {
+                NoteDelete();
+            }
+        }
+
+        public void NoteDelete()
+        {
+            if (NoteSelectIndexs.Count > 0)
+            {
+                if (NoteActionBegin != null) NoteActionBegin(NoteDragingType.NoteDelete);
                 NoteSelectIndexs.Sort();
                 for (int i = 0; i < NoteSelectIndexs.Count; i++)
                 {
-                    NoteList.RemoveAt(NoteSelectIndexs[i]-i);
+                    NoteList.RemoveAt(NoteSelectIndexs[i] - i);
                 }
                 NoteSelectIndexs.Clear();
+                if (NoteActionEnd != null) NoteActionEnd(NoteDragingType.NoteDelete);
+            }
+        }
+
+        public void EditNoteLyric(int StartIndex=-1)
+        {
+            if(StartIndex==-1 && CurrentNoteIndex > -1)
+            {
+                StartIndex = CurrentNoteIndex;
+            }
+            else if (StartIndex == -1 && NoteSelectIndexs.Count > 0)
+            {
+                StartIndex = NoteSelectIndexs[0];
+            }
+            if (StartIndex > -1)
+            {
+                int BeginIndex = StartIndex;
+                string Lyric2 = "";
+                if (NoteSelectIndexs.IndexOf(StartIndex) != -1)
+                {
+                    List<string> Lyrics = new List<string>();
+                    int MinIndex = StartIndex;
+                    int MaxIndex = StartIndex;
+                    for (int i = 0; i < NoteSelectIndexs.Count; i++)
+                    {
+                        MinIndex = Math.Min(NoteSelectIndexs[i], MinIndex);
+                        MaxIndex = Math.Max(NoteSelectIndexs[i], MaxIndex);
+                    }
+                    for (int i = MinIndex; i <= MaxIndex; i++)
+                    {
+                        Lyrics.Add(NoteList[i].Lyric);
+                    }
+
+                    Lyric2 = Microsoft.VisualBasic.Interaction.InputBox("Input New Lyric", "Input Lyric", String.Join(" ", Lyrics.ToArray()));
+                    BeginIndex = MinIndex;
+                }
+                else
+                {
+                    Lyric2 = Microsoft.VisualBasic.Interaction.InputBox("Input New Lyric", "Input Lyric", NoteList[StartIndex].Lyric);
+                    BeginIndex = StartIndex;
+                }
+                if (Lyric2 != "")
+                {
+                    if (NoteActionBegin != null) NoteActionBegin(NoteDragingType.LyricEdit);
+                    string[] NLyric = Lyric2.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                    for (int i = 0; i < NLyric.Length; i++)
+                    {
+                        NoteList[BeginIndex + i].Lyric = NLyric[i];
+                    }
+                    if (NoteActionEnd != null) NoteActionEnd(NoteDragingType.LyricEdit);
+                }
+            }
+        }
+
+        public int SelectedCount
+        {
+            get
+            {
+                return NoteSelectIndexs.Count;
             }
         }
 
@@ -89,41 +157,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                 {
                     if (e.Tick - NoteTempTick == NoteList[CurrentNoteIndex].Tick)
                     {
-                        int BeginIndex = CurrentNoteIndex;
-                        string Lyric2 = "";
-                        if (NoteSelectIndexs.IndexOf(CurrentNoteIndex) != -1)
-                        {
-                            List<string> Lyrics = new List<string>();
-                            int MinIndex = CurrentNoteIndex;
-                            int MaxIndex = CurrentNoteIndex;
-                            for (int i = 0; i < NoteSelectIndexs.Count; i++)
-                            {
-                                MinIndex = Math.Min(NoteSelectIndexs[i], MinIndex);
-                                MaxIndex = Math.Max(NoteSelectIndexs[i], MaxIndex);
-                            }
-                            for (int i = MinIndex; i <= MaxIndex; i++)
-                            {
-                                Lyrics.Add(NoteList[i].Lyric);
-                            }
-
-                            Lyric2 = Microsoft.VisualBasic.Interaction.InputBox("Input New Lyric", "Input Lyric", String.Join(" ",Lyrics.ToArray()));
-                            BeginIndex = MinIndex;
-                        }
-                        else
-                        {
-                            Lyric2 = Microsoft.VisualBasic.Interaction.InputBox("Input New Lyric", "Input Lyric", NoteList[CurrentNoteIndex].Lyric);
-                            BeginIndex = CurrentNoteIndex;
-                        }
-                        if (Lyric2 != "")
-                        {
-                            if(NoteActionBegin!=null)NoteActionBegin(NoteDragingType.LyricEdit);
-                            string[] NLyric = Lyric2.Split(new string[]{" "},StringSplitOptions.RemoveEmptyEntries);
-                            for (int i = 0; i < NLyric.Length; i++)
-                            {
-                                NoteList[BeginIndex + i].Lyric = NLyric[i];
-                            }
-                            if(NoteActionEnd!=null)NoteActionEnd(NoteDragingType.LyricEdit);
-                        }
+                        EditNoteLyric(CurrentNoteIndex);
                     }
                 }
             }
@@ -196,6 +230,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             NoteLength,
             AreaSelect,
             NoteAdd,
+            NoteDelete,
             LyricEdit
         }
         public class BlockDia

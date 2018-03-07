@@ -259,6 +259,7 @@ namespace VocalUtau.DirectUI.DrawUtils
                 if (PixelSilkLine.Count > 1) g.DrawPathGeometrySink(PixelSilkLine, LineColor, LineWidth, LineStyle, false);
         }
 
+
 #region
         /*抛弃的代码段
         public void DrawPitchLine_droped(List<PitchObject> SortedPitchPointSilk,Color LineColor, float LineWidth, System.Drawing.Drawing2D.DashStyle LineStyle)

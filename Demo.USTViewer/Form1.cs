@@ -494,5 +494,10 @@ namespace Demo.USTViewer
             
         }
 
+        private void paramCurveWindow1_Load(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }

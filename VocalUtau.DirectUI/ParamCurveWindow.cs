@@ -128,6 +128,7 @@ namespace VocalUtau.DirectUI
                 PianoRollPoint sp = pprops.getPianoStartPoint();
                 DrawParameterLinesArea(sender, e, sp);
                 DrawParameterButtonsArea(sender, e, sp);
+                e.D2DGraphics.DrawLine(new Point(0, 1), new Point(d2DPainterBox1.Width, 1), SystemColors.Control);
             }
             catch { ;}
             isDrawing = false;

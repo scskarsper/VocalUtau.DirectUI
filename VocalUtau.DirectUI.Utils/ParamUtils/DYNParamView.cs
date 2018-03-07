@@ -50,6 +50,7 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
         PitchView.PitchDragingType DynDragingStatus = PitchView.PitchDragingType.None;
         ControlObject DynStP1 = null;
         ControlObject DynTmpP0 = null;
+        double CurValue = 0;
 
         bool _HandleEvents = false;
 
@@ -105,15 +106,29 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
         public void hookParamWindow()
         {
             ParamWindow.ParamAreaPaint += ParamWindow_TrackPaint;
+            ParamWindow.ParamBtnsPaint += ParamWindow_ParamBtnsPaint;
             ParamWindow.ParamAreaMouseDown += ParamWindow_ParamAreaMouseDown;
             ParamWindow.ParamAreaMouseUp += ParamWindow_ParamAreaMouseUp;
+            ParamWindow.ParamBtnsMouseUp += ParamWindow_ParamAreaMouseUp;
             ParamWindow.ParamAreaMouseMove += ParamWindow_ParamAreaMouseMove;
-            /* PianoWindow.TrackPaint += PianoWindow_TrackPaint;
-             PianoWindow.TrackMouseDown += PianoWindow_TrackMouseDown;
-             PianoWindow.TrackMouseUp += PianoWindow_TrackMouseUp;
-             PianoWindow.TrackMouseMove += PianoWindow_TrackMouseMove;*/
+            ParamWindow.ParamBtnsMouseMove += ParamWindow_ParamBtnsMouseMove;
             ParamWindow.ParamAreaMouseLeave += ParamWindow_ParamAreaMouseLeave;
             ParamWindow.ParamAreaMouseEnter += ParamWindow_ParamAreaMouseEnter;
+        }
+
+
+        void ParamWindow_ParamBtnsMouseMove(object sender, ParamMouseEventArgs e)
+        {
+            if (!_HandleEvents) return;
+            if (DynDragingStatus == PitchView.PitchDragingType.None) return;
+            ParamWindow_ParamAreaMouseMove(sender, e);
+        }
+
+        void ParamWindow_ParamBtnsMouseUp(object sender, ParamMouseEventArgs e)
+        {
+            if (!_HandleEvents) return;
+            if (DynDragingStatus == PitchView.PitchDragingType.None) return;
+            ParamWindow_ParamAreaMouseUp(sender, e);
         }
 
         void ParamWindow_ParamAreaMouseLeave(object sender, EventArgs e)
@@ -133,10 +148,10 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
                 ParamWindow.ParentForm.Cursor = Cursors.Cross;
             }
         }
-
         void ParamWindow_ParamAreaMouseMove(object sender, ParamMouseEventArgs e)
         {
             if (!_HandleEvents) return;
+            CurValue = (e.TallPercent * 100 * Zoom);
             if (DynDragingStatus == PitchView.PitchDragingType.None)
             {
                 return;
@@ -156,6 +171,13 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
         public void replaceControlLine(List<ControlObject> newPitchLine)
         {
             List<ControlObject> PN = DynList;
+            for (int i = 0; i < newPitchLine.Count; i++)
+            {
+                if (newPitchLine[i].Value < -100)
+                {
+                    newPitchLine[i].Value = -100;
+                }
+            }
             ControlActionUtils.replaceControlLine(ref PN, newPitchLine);
         }
         public void earseControlLine(ControlObject P1, ControlObject P2, bool isModeV2)
@@ -246,6 +268,26 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
                     utils.DrawYLine(Pcent, Color.FromArgb(91, 91, 91));
                 }
             }
+
+            utils.DrawString(new Point(5, 0), Color.FromArgb(80, 255, 255, 255), (100 * Zoom).ToString()+" %", 10, FontStyle.Bold);
+            utils.DrawString(new Point(5, utils.ClipRectangle.Height / 2 - 8), Color.FromArgb(80, 255, 255, 255), (50 * Zoom).ToString() + " %", 10, FontStyle.Bold);
+            utils.DrawString(new Point(5, utils.ClipRectangle.Height - 15), Color.FromArgb(80, 255, 255, 255), "0 %" , 10, FontStyle.Bold);
+
+            utils.DrawString(new Point(utils.ClipRectangle.Width - 150, 0), Color.FromArgb(80, 255, 255, 255), "DYN", 50, FontStyle.Bold);
+
+            switch (_DynToolsStatus)
+            {
+                case PitchView.PitchDragingType.DrawLine: utils.DrawString(new Point(utils.ClipRectangle.Width - 160, 65), Color.FromArgb(80, 255, 255, 255), "Draw Line", 25, FontStyle.Bold); break;
+                case PitchView.PitchDragingType.DrawGraphJ: utils.DrawString(new Point(utils.ClipRectangle.Width - 130, 65), Color.FromArgb(80, 255, 255, 255), "Draw R", 25, FontStyle.Bold); break;
+                case PitchView.PitchDragingType.DrawGraphR: utils.DrawString(new Point(utils.ClipRectangle.Width - 130, 65), Color.FromArgb(80, 255, 255, 255), "Draw J", 25, FontStyle.Bold); break;
+                case PitchView.PitchDragingType.DrawGraphS: utils.DrawString(new Point(utils.ClipRectangle.Width - 130, 65), Color.FromArgb(80, 255, 255, 255), "Draw S", 25, FontStyle.Bold); break;
+                case PitchView.PitchDragingType.EarseArea: utils.DrawString(new Point(utils.ClipRectangle.Width - 130, 65), Color.FromArgb(80, 255, 255, 255), "Earse", 25, FontStyle.Bold); break;
+            }
+        }
+        void ParamWindow_ParamBtnsPaint(object sender, DrawUtils.ParamBtnsDrawUtils utils)
+        {
+            if (!_HandleEvents) return;
+            utils.DrawString(new Point(0, utils.ClipRectangle.Height - 15), Color.FromArgb(100, 255, 255, 255), Math.Round(CurValue<0?0:CurValue, 2).ToString().PadLeft(22, ' '), 10, FontStyle.Bold);
         }
     }
 }

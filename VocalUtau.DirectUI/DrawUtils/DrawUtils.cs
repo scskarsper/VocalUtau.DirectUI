@@ -15,6 +15,5 @@ namespace VocalUtau.DirectUI.DrawUtils
             baseEvent = e;
             this.rconf=rconf;
         }
-
     }
 }
