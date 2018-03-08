@@ -8,7 +8,7 @@ using VocalUtau.Formats.Model.VocalObject;
 
 namespace VocalUtau.DirectUI.DrawUtils
 {
-    public class ParamAreaDrawUtils : DrawUtils
+    public class ParamAreaDrawUtils : PianoDrawUtils
     {
         PianoProperties pprops;
         BalthasarLib.D2DPainter.D2DPaintEventArgs D2DArgs;
@@ -235,7 +235,6 @@ namespace VocalUtau.DirectUI.DrawUtils
         }
         public void DrawString(System.Drawing.Point LeftTopAxis, System.Drawing.Color FontColor, string Text, int FontSize = 9, FontStyle FontStyles=FontStyle.Regular)
         {
-            
             try
             {
                 D2DGraphics g = baseEvent.D2DGraphics;

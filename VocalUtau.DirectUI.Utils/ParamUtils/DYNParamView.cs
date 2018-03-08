@@ -278,8 +278,8 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
             switch (_DynToolsStatus)
             {
                 case PitchView.PitchDragingType.DrawLine: utils.DrawString(new Point(utils.ClipRectangle.Width - 160, 65), Color.FromArgb(80, 255, 255, 255), "Draw Line", 25, FontStyle.Bold); break;
-                case PitchView.PitchDragingType.DrawGraphJ: utils.DrawString(new Point(utils.ClipRectangle.Width - 130, 65), Color.FromArgb(80, 255, 255, 255), "Draw R", 25, FontStyle.Bold); break;
-                case PitchView.PitchDragingType.DrawGraphR: utils.DrawString(new Point(utils.ClipRectangle.Width - 130, 65), Color.FromArgb(80, 255, 255, 255), "Draw J", 25, FontStyle.Bold); break;
+                case PitchView.PitchDragingType.DrawGraphJ: utils.DrawString(new Point(utils.ClipRectangle.Width - 130, 65), Color.FromArgb(80, 255, 255, 255), "Draw J", 25, FontStyle.Bold); break;
+                case PitchView.PitchDragingType.DrawGraphR: utils.DrawString(new Point(utils.ClipRectangle.Width - 130, 65), Color.FromArgb(80, 255, 255, 255), "Draw R", 25, FontStyle.Bold); break;
                 case PitchView.PitchDragingType.DrawGraphS: utils.DrawString(new Point(utils.ClipRectangle.Width - 130, 65), Color.FromArgb(80, 255, 255, 255), "Draw S", 25, FontStyle.Bold); break;
                 case PitchView.PitchDragingType.EarseArea: utils.DrawString(new Point(utils.ClipRectangle.Width - 130, 65), Color.FromArgb(80, 255, 255, 255), "Earse", 25, FontStyle.Bold); break;
             }

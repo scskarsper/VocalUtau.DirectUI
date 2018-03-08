@@ -38,3 +38,5 @@ D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\bin\Debug\BalthasarLib
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\obj\Debug\Demo.USTViewer.MDIParentWin.resources
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\bin\Debug\VocalUtau.DirectUI.Forms.dll
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\bin\Debug\VocalUtau.DirectUI.Forms.pdb
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\obj\Debug\VocalUtau.DirectUI.Forms.MainWindow.resources
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\obj\Debug\Demo.USTViewer.Form2.resources

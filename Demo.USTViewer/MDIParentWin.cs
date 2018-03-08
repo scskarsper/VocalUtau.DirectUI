@@ -146,10 +146,10 @@ namespace Demo.USTViewer
         }
         private void MDIParentWin_Load(object sender, EventArgs e)
         {
-            ProjectObject poj = LoadUST(@"D:\VocalUtau\VocalUtau.DebugExampleFiles\DemoUSTS\Sakurane2.Tracks\Track-4b158252-eb7f-4223-b7b0-d78f32e044ec.ust");
+            /*ProjectObject poj = LoadUST(@"D:\VocalUtau\VocalUtau.DebugExampleFiles\DemoUSTS\Sakurane2.Tracks\Track-4b158252-eb7f-4223-b7b0-d78f32e044ec.ust");
             PartsObject PO = poj.TrackerList[1].PartList[0];
             AddSW();
-            SW.LoadParts(ref PO);
+            SW.LoadParts(ref PO);*/
         }
     }
 }

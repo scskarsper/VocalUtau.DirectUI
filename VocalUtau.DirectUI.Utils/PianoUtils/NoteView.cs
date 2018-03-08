@@ -393,6 +393,14 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                     utils.DrawDia(NoteDia.TickStart, NoteDia.TickEnd, NoteDia.TopNoteNum, NoteDia.BottomNoteNum);
                 }
             }
+            if (_HandleEvents)
+            {
+                switch (_NoteToolsStatus)
+                {
+                    case NoteToolsType.Add: utils.DrawString(new Point(utils.ClipRectangle.Width - 160, 35), Color.FromArgb(60, 0, 0, 0), "Note Add", 25, FontStyle.Bold); break;
+                    case NoteToolsType.Select: utils.DrawString(new Point(utils.ClipRectangle.Width - 160, 35), Color.FromArgb(60, 0, 0, 0), "Note Select", 25, FontStyle.Bold); break;
+                }
+            }
         }
 
         private void PianoWindow_TrackMouseDown(object sender, VocalUtau.DirectUI.PianoMouseEventArgs e)

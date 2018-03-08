@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using VocalUtau.DirectUI.Forms;
 
 namespace Demo.USTViewer
 {
@@ -15,7 +16,8 @@ namespace Demo.USTViewer
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MDIParentWin());
+            //Application.Run(new MainWindow());
+            Application.Run(new Form2());
         }
     }
 }

@@ -7,9 +7,9 @@ using System.Text;
 
 namespace VocalUtau.DirectUI.DrawUtils
 {
-    public class ParamBtnsDrawUtils : DrawUtils
+    public class TrackerPartsDrawUtils : TrackerDrawUtils
     {
-        internal ParamBtnsDrawUtils(BalthasarLib.D2DPainter.D2DPaintEventArgs e, RollConfigures rconf)
+        internal TrackerPartsDrawUtils(BalthasarLib.D2DPainter.D2DPaintEventArgs e, TrackerConfigures rconf)
             : base(e,rconf)
         {
             baseEvent = e;

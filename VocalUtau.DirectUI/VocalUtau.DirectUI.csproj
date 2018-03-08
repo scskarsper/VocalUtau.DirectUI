@@ -45,16 +45,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DrawUtils\RollDrawUtils.cs" />
-    <Compile Include="DrawUtils\DrawUtils.cs" />
-    <Compile Include="DrawUtils\TitleDrawUtils.cs" />
-    <Compile Include="DrawUtils\ParamAreaDrawUtils.cs" />
-    <Compile Include="DrawUtils\ParamBtnsDrawUtils.cs" />
-    <Compile Include="Models\ParamValuePair.cs" />
-    <Compile Include="Models\PianoMouseEventArgs.cs" />
-    <Compile Include="Configures\PianoProperties.cs" />
-    <Compile Include="Models\PianoRollPoint.cs" />
-    <Compile Include="Models\ParamMouseEventArgs.cs" />
+    <Compile Include="Configures\Trackers\TrackerConfigures.cs" />
+    <Compile Include="Configures\Trackers\TrackerProperties.cs" />
+    <Compile Include="DrawUtils\PianoParams\RollDrawUtils.cs" />
+    <Compile Include="DrawUtils\PianoParams\PianoDrawUtils.cs" />
+    <Compile Include="DrawUtils\PianoParams\TitleDrawUtils.cs" />
+    <Compile Include="DrawUtils\PianoParams\ParamAreaDrawUtils.cs" />
+    <Compile Include="DrawUtils\PianoParams\ParamBtnsDrawUtils.cs" />
+    <Compile Include="DrawUtils\Trackers\TrackerPartsDrawUtils.cs" />
+    <Compile Include="DrawUtils\PianoParams\TrackerDrawUtils.cs" />
+    <Compile Include="DrawUtils\Trackers\TrackerTitlesDrawUtils.cs" />
+    <Compile Include="DrawUtils\Trackers\TrackerGridesDrawUtils.cs" />
+    <Compile Include="Models\PianoParams\ParamValuePair.cs" />
+    <Compile Include="Models\PianoParams\PianoMouseEventArgs.cs" />
+    <Compile Include="Configures\PianoParams\PianoProperties.cs" />
+    <Compile Include="Models\PianoParams\PianoRollPoint.cs" />
+    <Compile Include="Models\PianoParams\ParamMouseEventArgs.cs" />
     <Compile Include="ParamCurveWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -68,8 +74,14 @@
       <DependentUpon>PianoRollWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Configures\RollConfigures.cs" />
-    <Compile Include="DrawUtils\TrackDrawUtils.cs" />
+    <Compile Include="Configures\PianoParams\RollConfigures.cs" />
+    <Compile Include="DrawUtils\PianoParams\TrackDrawUtils.cs" />
+    <Compile Include="TrackerRollWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TrackerRollWindow.Designer.cs">
+      <DependentUpon>TrackerRollWindow.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ParamCurveWindow.resx">
@@ -77,6 +89,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PianoRollWindow.resx">
       <DependentUpon>PianoRollWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TrackerRollWindow.resx">
+      <DependentUpon>TrackerRollWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

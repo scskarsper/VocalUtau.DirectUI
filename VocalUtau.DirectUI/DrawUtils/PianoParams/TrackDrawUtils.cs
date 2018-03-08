@@ -9,7 +9,7 @@ using VocalUtau.Formats.Model.VocalObject;
 
 namespace VocalUtau.DirectUI.DrawUtils
 {
-    public class TrackDrawUtils : DrawUtils
+    public class TrackDrawUtils : PianoDrawUtils
     {
         PianoProperties pprops;
         internal TrackDrawUtils(BalthasarLib.D2DPainter.D2DPaintEventArgs e, RollConfigures rconf, PianoProperties pprops)
@@ -205,6 +205,16 @@ namespace VocalUtau.DirectUI.DrawUtils
             DrawPitchLine(SortedPitchPointSilk, LineColor, LineWidth, System.Drawing.Drawing2D.DashStyle.Solid);
         }
 
+        public void DrawString(System.Drawing.Point LeftTopAxis, System.Drawing.Color FontColor, string Text, int FontSize = 9, FontStyle FontStyles = FontStyle.Regular)
+        {
+
+            try
+            {
+                D2DGraphics g = baseEvent.D2DGraphics;
+                g.DrawText(Text, new System.Drawing.Rectangle(baseEvent.ClipRectangle.Left + LeftTopAxis.X, LeftTopAxis.Y, baseEvent.ClipRectangle.Width - LeftTopAxis.X, baseEvent.ClipRectangle.Height - LeftTopAxis.Y), FontColor, new System.Drawing.Font("Tahoma", FontSize, FontStyles));
+            }
+            catch { ;}
+        }
 
         private Point PitchObject2Point(PitchObject Node,long MinTick,long MaxTick,uint MinNote,uint MaxNote)
         {

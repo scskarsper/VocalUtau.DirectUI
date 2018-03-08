@@ -5,12 +5,12 @@ using System.Text;
 
 namespace VocalUtau.DirectUI.DrawUtils
 {
-    public class DrawUtils
+    public class TrackerDrawUtils
     {
         internal BalthasarLib.D2DPainter.D2DPaintEventArgs baseEvent;
         public BalthasarLib.D2DPainter.D2DPaintEventArgs D2DPaintEventArgs { get { return baseEvent; } set { baseEvent = value; } }
-        internal RollConfigures rconf;
-        internal DrawUtils(BalthasarLib.D2DPainter.D2DPaintEventArgs e, RollConfigures rconf)
+        internal TrackerConfigures rconf;
+        internal TrackerDrawUtils(BalthasarLib.D2DPainter.D2DPaintEventArgs e, TrackerConfigures rconf)
         {
             baseEvent = e;
             this.rconf=rconf;

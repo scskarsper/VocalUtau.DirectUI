@@ -17,3 +17,5 @@ D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\obj\Debug\Vo
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\obj\Debug\VocalUtau.DirectUI.Forms.dll
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\obj\Debug\VocalUtau.DirectUI.Forms.pdb
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\bin\Debug\NAudio.dll
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\bin\Debug\WeifenLuo.WinFormsUI.Docking.dll
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\obj\Debug\VocalUtau.DirectUI.Forms.TrackerWindow.resources

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VocalUtau.DirectUI.DrawUtils
 {
-    public class RollDrawUtils : DrawUtils
+    public class RollDrawUtils : PianoDrawUtils
     {
         internal RollDrawUtils(BalthasarLib.D2DPainter.D2DPaintEventArgs e, RollConfigures rconf, PianoProperties pprops)
             : base(e,rconf)

@@ -171,6 +171,17 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                     }
                     break;
             }
+            if (_HandleEvents)
+            {
+                switch (_PitchToolsStatus)
+                {
+                    case PitchView.PitchDragingType.DrawLine: utils.DrawString(new Point(utils.ClipRectangle.Width - 210, 35), Color.FromArgb(60, 0, 0, 0), "Pitch Draw Line", 25, FontStyle.Bold); break;
+                    case PitchView.PitchDragingType.DrawGraphJ: utils.DrawString(new Point(utils.ClipRectangle.Width - 170, 35), Color.FromArgb(60, 0, 0, 0), "Pitch Draw J", 25, FontStyle.Bold); break;
+                    case PitchView.PitchDragingType.DrawGraphR: utils.DrawString(new Point(utils.ClipRectangle.Width - 170, 35), Color.FromArgb(60, 0, 0, 0), "Pitch Draw R", 25, FontStyle.Bold); break;
+                    case PitchView.PitchDragingType.DrawGraphS: utils.DrawString(new Point(utils.ClipRectangle.Width - 170, 35), Color.FromArgb(60, 0, 0, 0), "Pitch Draw S", 25, FontStyle.Bold); break;
+                    case PitchView.PitchDragingType.EarseArea: utils.DrawString(new Point(utils.ClipRectangle.Width - 160, 35), Color.FromArgb(60, 0, 0, 0), "Pitch Earse", 25, FontStyle.Bold); break;
+                }
+            }
         }
 
         private void PianoWindow_TrackMouseDown(object sender, VocalUtau.DirectUI.PianoMouseEventArgs e)

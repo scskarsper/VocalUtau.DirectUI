@@ -20,3 +20,4 @@ D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI\obj\Debug\VocalUta
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI\obj\Debug\VocalUtau.DirectUI.pdb
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI\bin\Debug\VocalUtau.Formats.dll
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI\bin\Debug\VocalUtau.Formats.pdb
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI\obj\Debug\VocalUtau.DirectUI.TrackerRollWindow.resources

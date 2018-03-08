@@ -13,10 +13,11 @@ using VocalUtau.DirectUI.Utils.ParamUtils;
 using VocalUtau.DirectUI.Utils.PianoUtils;
 using VocalUtau.Formats.Model.Utils;
 using VocalUtau.Formats.Model.VocalObject;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace VocalUtau.DirectUI.Forms
 {
-    public partial class SingerWindow : Form
+    public partial class SingerWindow : DockContent
     {
         public enum ParamViewType
         {
@@ -30,6 +31,20 @@ namespace VocalUtau.DirectUI.Forms
         }
         public class ViewController
         {
+            bool _BindRollAndParam = false;
+
+            public bool BindRollAndParam
+            {
+                get { return _BindRollAndParam; }
+                set
+                {
+                    _BindRollAndParam = value;
+                    if(value){
+                        Param_PitchView.PitchToolsStatus = Track_PitchView.PitchToolsStatus;
+                        Param_DynamicView.DynToolsStatus = Track_PitchView.PitchToolsStatus;
+                    }
+                }
+            }
             bool Alloced = false;
             PianoRollWindow PianoWindow;
             ParamCurveWindow ParamWindow;
@@ -85,6 +100,7 @@ namespace VocalUtau.DirectUI.Forms
             {
                 if (eventType == PitchView.PitchDragingType.None) return;
                 if (PitchActionEnd != null) PitchActionEnd(eventType);
+                PianoWindow.RedrawPiano();
             }
             void Param_PitchView_PitchActionBegin(PitchView.PitchDragingType eventType)
             {
@@ -105,6 +121,10 @@ namespace VocalUtau.DirectUI.Forms
             {
                 if (eventType == PitchView.PitchDragingType.None) return;
                 if (PitchActionEnd != null) PitchActionEnd(eventType);
+                if (GetParamType() == ParamViewType.Pitch)
+                {
+                    ParamWindow.RedrawPiano();
+                }
             }
             void Track_PitchView_PitchActionBegin(PitchView.PitchDragingType eventType)
             {
@@ -225,18 +245,31 @@ namespace VocalUtau.DirectUI.Forms
 
             public void SetNoteViewTool(NoteView.NoteToolsType Tool)
             {
-                SwitchRollAction(RollActionType.Note);
                 Track_NoteView.NoteToolsStatus = Tool;
+                SwitchRollAction(RollActionType.Note);
             }
             public void SetPitchViewTool(PitchView.PitchDragingType Tool)
             {
-                SwitchRollAction(RollActionType.Pitch);
                 Track_PitchView.PitchToolsStatus = Tool;
+                SwitchRollAction(RollActionType.Pitch);
+                if (_BindRollAndParam)
+                {
+                    Param_PitchView.PitchToolsStatus = Tool;
+                    Param_DynamicView.DynToolsStatus = Tool;
+                    ParamWindow.RedrawPiano();
+                }
             }
             public void SetParamGraphicTool(PitchView.PitchDragingType Tool)
             {
                 Param_PitchView.PitchToolsStatus = Tool;
                 Param_DynamicView.DynToolsStatus = Tool;
+                ParamWindow.RedrawPiano();
+                if (_BindRollAndParam)
+                {
+                    SwitchRollAction(RollActionType.Pitch);
+                    Track_PitchView.PitchToolsStatus = Tool;
+                    PianoWindow.RedrawPiano();
+                }
             }
 
             public CopyPaste CopyPasteController;
@@ -288,6 +321,33 @@ namespace VocalUtau.DirectUI.Forms
         {
             InitializeComponent();
             Controller = new ViewController(ref this.pianoRollWindow1, ref this.paramCurveWindow1);
+            this.pianoRollWindow1.TrackMouseClick += pianoRollWindow1_TrackMouseClick;
+            this.paramCurveWindow1.ParamAreaMouseClick += paramCurveWindow1_ParamAreaMouseClick;
+        }
+
+        void paramCurveWindow1_ParamAreaMouseClick(object sender, ParamMouseEventArgs e)
+        {
+            if (e.MouseEventArgs.Button == MouseButtons.Right)
+            {
+                SetCurveActionMenu();
+                CurveAction_SetupCurrentToMouse.Visible = true;
+                CurveAction_SetupCurrentToMouse_Separator.Visible = true;
+                ParamCurveTollMenu.Show(PointToScreen(new Point(e.MouseEventArgs.X, e.MouseEventArgs.Y + MainPianoSplitContainer.Top + MainPianoSplitContainer.SplitterDistance + MainPianoSplitContainer.SplitterWidth)), ToolStripDropDownDirection.AboveRight);
+            }
+        }
+
+        void pianoRollWindow1_TrackMouseClick(object sender, PianoMouseEventArgs e)
+        {
+            if (e.MouseEventArgs.Button == MouseButtons.Right)
+            {
+                SetPianoActionMenu();
+                PianoRollActionMenu.Show(PointToScreen(new Point(e.MouseEventArgs.X, e.MouseEventArgs.Y)), ToolStripDropDownDirection.BelowRight);
+            }
+        }
+
+        public void ShowOnDock(DockPanel DockPanel)
+        {
+            this.Show(DockPanel, WeifenLuo.WinFormsUI.Docking.DockState.Document);
         }
 
         public void LoadParts(ref PartsObject parts)
@@ -295,6 +355,7 @@ namespace VocalUtau.DirectUI.Forms
             OAC.ReAlloc(parts);
             Controller.AllocView(OAC.IntPtr);
             ctl_Scroll_LeftPos.Maximum = (int)parts.TickLength;
+            this.Text = parts.PartName;
         }
 
         #region
@@ -355,7 +416,7 @@ namespace VocalUtau.DirectUI.Forms
         private void btn_SelectCurve_Click(object sender, EventArgs e)
         {
             int x = btn_SelectCurve.Left + btn_SelectCurve.Width;
-            int y = btn_SelectCurve.Top +splitContainer1.Top + splitContainer1.SplitterDistance + splitContainer1.SplitterWidth;
+            int y = btn_SelectCurve.Top + btn_SelectCurve.Height +MainPianoSplitContainer.Top + MainPianoSplitContainer.SplitterDistance + MainPianoSplitContainer.SplitterWidth;
             CurveSelector_DYN.Checked = false;
             CurveSelector_PIT.Checked = false;
             switch (Controller.GetParamType())
@@ -369,18 +430,52 @@ namespace VocalUtau.DirectUI.Forms
         private void CurveSelector_PIT_Click(object sender, EventArgs e)
         {
             Controller.SwitchParamView(ParamViewType.Pitch);
+            ctl_Param_RZoom.Value = (int)Controller.ParamZoom;
+            ctl_Param_LZoom.Value = ctl_Param_RZoom.Value;
         }
 
         private void CurveSelector_DYN_Click(object sender, EventArgs e)
         {
             Controller.SwitchParamView(ParamViewType.Dynamic);
+            ctl_Param_RZoom.Value = (int)Controller.ParamZoom;
+            ctl_Param_LZoom.Value = ctl_Param_RZoom.Value;
+        }
+        void SetCurveActionMenu()
+        {
+            CurveAction_SetupCurrentToMouse.Visible = false;
+            CurveAction_SetupCurrentToMouse_Separator.Visible = false;
+            CurveTool_EarseSelect.Checked = false;
+            CurveTool_DrawLine.Checked = false;
+            CurveTool_DrawS.Checked = false;
+            CurveTool_DrawR.Checked = false;
+            CurveTool_DrawJ.Checked = false;
+            PitchView.PitchDragingType PDT = Controller.Param_PitchView.PitchToolsStatus;
+            if (Controller.GetParamType() == ParamViewType.Dynamic)
+            {
+                PDT = Controller.Param_DynamicView.DynToolsStatus;
+            }
+            switch (PDT)
+            {
+                case PitchView.PitchDragingType.EarseArea: CurveTool_EarseSelect.Checked = true; break;
+                case PitchView.PitchDragingType.DrawLine: CurveTool_DrawLine.Checked = true; break;
+                case PitchView.PitchDragingType.DrawGraphS: CurveTool_DrawS.Checked = true; break;
+                case PitchView.PitchDragingType.DrawGraphR: CurveTool_DrawR.Checked = true; break;
+                case PitchView.PitchDragingType.DrawGraphJ: CurveTool_DrawJ.Checked = true; break;
+            }
+            BindPianoRoll.Checked = Controller.BindRollAndParam;
+        }
+        private void btn_SelectAction_Click(object sender, EventArgs e)
+        {
+            int x = btn_SelectAction.Left + btn_SelectAction.Width;
+            int y = btn_SelectAction.Top + btn_SelectAction.Height + MainPianoSplitContainer.Top + MainPianoSplitContainer.SplitterDistance + MainPianoSplitContainer.SplitterWidth;
+
+            SetCurveActionMenu();
+            
+            ParamCurveTollMenu.Show(PointToScreen(new Point(x, y)), ToolStripDropDownDirection.AboveRight);
         }
 
-        private void btn_PianoRollAction_Click(object sender, EventArgs e)
+        void SetPianoActionMenu()
         {
-            int x = btn_PianoRollAction.Left + btn_PianoRollAction.Width;
-            int y = btn_PianoRollAction.Top + splitContainer1.Top;
-
             RollTool_DrawJ.Checked = false;
             RollTool_DrawLine.Checked = false;
             RollTool_DrawR.Checked = false;
@@ -400,16 +495,23 @@ namespace VocalUtau.DirectUI.Forms
             {
                 switch (Controller.Track_PitchView.PitchToolsStatus)
                 {
-                    case PitchView.PitchDragingType.EarseArea:RollTool_Earse.Checked = true;break;
-                    case PitchView.PitchDragingType.DrawLine:RollTool_DrawLine.Checked = true;break;
-                    case PitchView.PitchDragingType.DrawGraphS:RollTool_DrawS.Checked = true;break;
-                    case PitchView.PitchDragingType.DrawGraphR:RollTool_DrawR.Checked = true;break;
-                    case PitchView.PitchDragingType.DrawGraphJ:RollTool_DrawJ.Checked = true;break;
+                    case PitchView.PitchDragingType.EarseArea: RollTool_Earse.Checked = true; break;
+                    case PitchView.PitchDragingType.DrawLine: RollTool_DrawLine.Checked = true; break;
+                    case PitchView.PitchDragingType.DrawGraphS: RollTool_DrawS.Checked = true; break;
+                    case PitchView.PitchDragingType.DrawGraphR: RollTool_DrawR.Checked = true; break;
+                    case PitchView.PitchDragingType.DrawGraphJ: RollTool_DrawJ.Checked = true; break;
                 }
             }
             RollAction_NotePaste.Enabled = Controller.CopyPasteController.isCopyed;
             RollAction_NoteCopy.Enabled = Controller.Track_NoteView.SelectedCount > 0;
             RollAction_EditLyrics.Enabled = Controller.Track_NoteView.SelectedCount > 0;
+        }
+        private void btn_PianoRollAction_Click(object sender, EventArgs e)
+        {
+            int x = btn_PianoRollAction.Left + btn_PianoRollAction.Width;
+            int y = btn_PianoRollAction.Top + MainPianoSplitContainer.Top;
+
+            SetPianoActionMenu();
             PianoRollActionMenu.Show(PointToScreen(new Point(x, y)), ToolStripDropDownDirection.BelowRight);
         }
 
@@ -431,7 +533,6 @@ namespace VocalUtau.DirectUI.Forms
                 {
                     MessageBox.Show("Paste Error! No Enough Spaces!");  
                 }
-                
             }
         }
 
@@ -474,6 +575,38 @@ namespace VocalUtau.DirectUI.Forms
         {
             Controller.SetPitchViewTool(PitchView.PitchDragingType.EarseArea);
         }
+
+        private void BindPianoRoll_Click(object sender, EventArgs e)
+        {
+            Controller.BindRollAndParam = !Controller.BindRollAndParam;
+        }
+
+        private void CurveTool_DrawLine_Click(object sender, EventArgs e)
+        {
+            Controller.SetParamGraphicTool(PitchView.PitchDragingType.DrawLine);
+        }
+
+        private void CurveTool_DrawJ_Click(object sender, EventArgs e)
+        {
+            Controller.SetParamGraphicTool(PitchView.PitchDragingType.DrawGraphJ);
+        }
+
+        private void CurveTool_DrawR_Click(object sender, EventArgs e)
+        {
+            Controller.SetParamGraphicTool(PitchView.PitchDragingType.DrawGraphR);
+        }
+
+        private void CurveTool_DrawS_Click(object sender, EventArgs e)
+        {
+            Controller.SetParamGraphicTool(PitchView.PitchDragingType.DrawGraphS);
+        }
+
+        private void CurveTool_EarseSelect_Click(object sender, EventArgs e)
+        {
+            Controller.SetParamGraphicTool(PitchView.PitchDragingType.EarseArea);
+        }
+
+
 
     }
 }
