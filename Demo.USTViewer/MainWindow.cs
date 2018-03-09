@@ -24,7 +24,7 @@ namespace VocalUtau.DirectUI.Forms
 
             ProjectObject poj = new ProjectObject();
             poj.InitEmpty();
-            poj.TrackerList[1].PartList[0] = pro;
+            poj.TrackerList[0].PartList[0] = pro;
 
             foreach (NoteObject po in pro.NoteList)
             {
@@ -43,10 +43,25 @@ namespace VocalUtau.DirectUI.Forms
 
             return poj;
         }
+        ProjectObject BarkUST(string file)
+        {
+            try
+            {
+                ObjectDeserializer<ProjectObject> DPO = new ObjectDeserializer<ProjectObject>();
+                ProjectObject OOP = DPO.DeserializeFromFile(file + ".json");
+                return OOP; 
+            }
+            catch
+            {
+                ProjectObject POJB = LoadUST(file);
+                ProjectObject.Serializer.SerializeToFile(POJB, file + ".json");
+                return POJB;
+            }
+        }
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            ProjectObject poj = LoadUST(@"D:\VocalUtau\VocalUtau.DebugExampleFiles\DemoUSTS\Sakurane2.Tracks\Track-4b158252-eb7f-4223-b7b0-d78f32e044ec.ust");
-            PartsObject PO = poj.TrackerList[1].PartList[0];
+            ProjectObject poj = BarkUST(@"D:\VocalUtau\VocalUtau.DebugExampleFiles\DemoUSTS\Sakurane2.Tracks\Track-4b158252-eb7f-4223-b7b0-d78f32e044ec.ust");
+            PartsObject PO = poj.TrackerList[0].PartList[0];
             SingerWindow sw = new SingerWindow();
             sw.LoadParts(ref PO);
             sw.ShowOnDock(this.MainDock);

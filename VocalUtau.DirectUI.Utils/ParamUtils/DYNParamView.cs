@@ -227,6 +227,7 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
             }
             if (_DynToolsStatus == PitchView.PitchDragingType.None) return;
             if (DynDragingStatus != PitchView.PitchDragingType.None) return;
+            if (e.MouseEventArgs.Button != MouseButtons.Left) return;
             DynStP1 = new ControlObject(e.Tick, e.TallPercent*100*Zoom - 100);
             DynDragingStatus = _DynToolsStatus;
             if (DynActionBegin != null) DynActionBegin(DynDragingStatus);

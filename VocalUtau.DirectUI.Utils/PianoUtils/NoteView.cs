@@ -406,6 +406,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         private void PianoWindow_TrackMouseDown(object sender, VocalUtau.DirectUI.PianoMouseEventArgs e)
         {
             if (!_HandleEvents) return;
+            if (e.MouseEventArgs.Button != MouseButtons.Left) return;
 
             if (CurrentNoteIndex != -1)
             {

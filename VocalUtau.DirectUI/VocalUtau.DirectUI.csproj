@@ -52,8 +52,8 @@
     <Compile Include="DrawUtils\PianoParams\TitleDrawUtils.cs" />
     <Compile Include="DrawUtils\PianoParams\ParamAreaDrawUtils.cs" />
     <Compile Include="DrawUtils\PianoParams\ParamBtnsDrawUtils.cs" />
+    <Compile Include="DrawUtils\Trackers\TrackerDrawUtils.cs" />
     <Compile Include="DrawUtils\Trackers\TrackerPartsDrawUtils.cs" />
-    <Compile Include="DrawUtils\PianoParams\TrackerDrawUtils.cs" />
     <Compile Include="DrawUtils\Trackers\TrackerTitlesDrawUtils.cs" />
     <Compile Include="DrawUtils\Trackers\TrackerGridesDrawUtils.cs" />
     <Compile Include="Models\PianoParams\ParamValuePair.cs" />
@@ -61,6 +61,7 @@
     <Compile Include="Configures\PianoParams\PianoProperties.cs" />
     <Compile Include="Models\PianoParams\PianoRollPoint.cs" />
     <Compile Include="Models\PianoParams\ParamMouseEventArgs.cs" />
+    <Compile Include="Models\Trackers\TrackerMouseEventArgs.cs" />
     <Compile Include="ParamCurveWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>

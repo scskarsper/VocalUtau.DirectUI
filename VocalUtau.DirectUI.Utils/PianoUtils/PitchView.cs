@@ -195,6 +195,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             }
             if (_PitchToolsStatus == PitchDragingType.None) return;
             if (PitchDragingStatus != PitchDragingType.None) return;
+            if (e.MouseEventArgs.Button != MouseButtons.Left) return;
             PitchStP1 = new PitchObject(e.Tick, e.PitchValue.PitchValue);
             PitchDragingStatus = _PitchToolsStatus;
             if(PitchActionBegin!=null)PitchActionBegin(PitchDragingStatus);
@@ -202,6 +203,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
 
         private void PianoWindow_TrackMouseUp(object sender, VocalUtau.DirectUI.PianoMouseEventArgs e)
         {
+            
             if (!_HandleEvents) return;
             if (PitchDragingStatus == PitchDragingType.None) return;
             PitchObject PitchEdP2 = new PitchObject(e.Tick, e.PitchValue.PitchValue);

@@ -212,6 +212,7 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
             }
             if (_PitchToolsStatus == PitchView.PitchDragingType.None) return;
             if (PitchDragingStatus != PitchView.PitchDragingType.None) return;
+            if (e.MouseEventArgs.Button != MouseButtons.Left) return;
             PitchStP1 = new PitchObject(e.Tick, e.MidPercent * 0.5 * Zoom);
             PitchDragingStatus = _PitchToolsStatus;
             if (PitchActionBegin != null) PitchActionBegin(PitchDragingStatus);

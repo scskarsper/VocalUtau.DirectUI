@@ -19,10 +19,10 @@ namespace VocalUtau.DirectUI
         /// 私有属性
         /// </summary>
         #region
-        TrackerConfigures tconf = new TrackerConfigures();
-        TrackerProperties tprops;
-        double ShownTimeCount;
-        int ShownTrackCount;
+        TrackerConfigures rconf = new TrackerConfigures();
+        TrackerProperties pprops;
+        double ShownTrackCount;
+        double ShownTickCount;
         #endregion
 
         /// <summary>
@@ -34,20 +34,40 @@ namespace VocalUtau.DirectUI
         {
             get
             {
-                return tprops;
+                return pprops;
             }
         }
-        public void setTrackerStartTime(double starttime)
+        public void setCrotchetSize(uint Size = 66)
         {
-            tprops.Starttime = starttime;
+            if (Size < 32) return;
+            pprops.CrotchetLengthPixel = Size;
+            if (pprops != null) genShownArea();
+            d2DPainterBox1.Refresh();
+        }
+        public void setNoteHeight(uint Size = 13)
+        {
+            if (Size < 13) return;
+            rconf.setNoteHeight(Size);
+            SetScrollMax();
+            d2DPainterBox1.Refresh();
+        }
+       
+        public void setPianoStartTick(long Tick)
+        {
+            TrackerProps.PianoStartTick = Tick;
+            d2DPainterBox1.Refresh();
+        }
+        public void setScrollToNote(uint TrackID)
+        {
+            pprops.TopTrackId=TrackID;
             d2DPainterBox1.Refresh();
         }
 
-        public double MaxShownTick { get { return tprops.Starttime + ShownTimeCount; } }
-        public double MinShownTick { get { return tprops.Starttime; } }
-        public double MinTrackId { get { return tprops.TopTrackId; } }
-        public double MaxTrackId { get { return tprops.TopTrackId+ShownTrackCount;} }
-        public bool IsInitalized { get { return (tprops!=null && tconf!=null);} }
+        public uint MinShownTrackerNumber { get { return pprops.TopTrackId; } }
+        public uint MaxShownTrackerNumber { get { return MinShownTrackerNumber + (uint)(ShownTrackCount>1?ShownTrackCount-1:1); } }
+        public long MaxShownTick { get { return MinShownTick + (long)Math.Round(ShownTickCount, 0); } }
+        public long MinShownTick { get { return pprops.PianoStartTick; } }
+        public bool IsInitalized { get { return (pprops != null && rconf != null); } }
         #endregion
 
         /// <summary>
@@ -64,33 +84,25 @@ namespace VocalUtau.DirectUI
         #region
         void genShownArea()
         {
-            ShownTrackCount = (int)Math.Ceiling((double)(d2DPainterBox1.ClientRectangle.Height - tconf.Const_TitleHeight) / tconf.Const_TrachHeight);
-            ShownTimeCount = tprops.Pixel2Ms(d2DPainterBox1.ClientRectangle.Width - tconf.Const_GridWidth);
+            ShownTrackCount = (double)(d2DPainterBox1.ClientRectangle.Height - rconf.Const_TitleHeight) / rconf.Const_TrackHeight;
+            ShownTickCount = pprops.dertPixel2dertTick(d2DPainterBox1.ClientRectangle.Width - rconf.Const_GridWidth);
         }
-       /* void SetScrollMax()
+        void SetScrollMax()
         {
-            int noteArea = this.ClientRectangle.Height - rconf.Const_TitleHeight;
-            int noteCount = noteArea / rconf.Const_RollNoteHeight;
-            int ScrollMax = rconf.MaxNoteNumber - noteCount;
-            if (noteScrollBar1.Value > ScrollMax)
-            {
-                noteScrollBar1.Value = ScrollMax;
-                noteScrollBar1_Scroll(null, null);
-            }
-            noteScrollBar1.Maximum = ScrollMax;
-        }*/
+            //TODO
+        }
         void InitGUI()
         {
-            //SetScrollMax();
-            noteScrollBar1.Height = this.ClientRectangle.Height - tconf.Const_TitleHeight;
-            noteScrollBar1.Top = tconf.Const_TitleHeight;
-            noteScrollBar1.Width = tconf.Const_VScrollBarWidth;
-            noteScrollBar1.Left = this.ClientRectangle.Width - tconf.Const_VScrollBarWidth;
+            SetScrollMax();
+            noteScrollBar1.Height = this.ClientRectangle.Height - rconf.Const_TitleHeight;
+            noteScrollBar1.Top = rconf.Const_TitleHeight;
+            noteScrollBar1.Width = rconf.Const_VScrollBarWidth;
+            noteScrollBar1.Left = this.ClientRectangle.Width - rconf.Const_VScrollBarWidth;
             d2DPainterBox1.Top = 0;
             d2DPainterBox1.Left = 0;
             d2DPainterBox1.Width = this.ClientRectangle.Width;
             d2DPainterBox1.Height = this.ClientRectangle.Height;
-            if(tprops!=null)genShownArea();
+            if (pprops != null) genShownArea();
         }
         private void TrackerRollWindow_Resize(object sender, EventArgs e)
         {
@@ -100,8 +112,7 @@ namespace VocalUtau.DirectUI
         }
         private void noteScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
-            int TopNote = noteScrollBar1.Value;
-            tprops.TopTrackId = (uint)(TopNote > 0 ? TopNote : 0);
+            pprops.TopTrackId = (uint)(noteScrollBar1.Value < 0 ? 0 : noteScrollBar1.Value);
             d2DPainterBox1.Refresh();
         }
         #endregion
@@ -113,11 +124,13 @@ namespace VocalUtau.DirectUI
         public TrackerRollWindow()
         {
             InitializeComponent();
-            tprops = new TrackerProperties(tconf);
+            pprops = new TrackerProperties(rconf);
+            pprops.TopTrackId = 0;
             InitGUI();
         }
         public void RedrawPiano()
         {
+
             d2DPainterBox1.Refresh();
         }
         #endregion
@@ -129,12 +142,12 @@ namespace VocalUtau.DirectUI
         #region
         // 创建一个委托，返回类型为void，两个参数
         public delegate void OnTrackerPartsDrawHandler(object sender, DrawUtils.TrackerPartsDrawUtils utils);
-        public delegate void OnTrackerTitleDrawHandler(object sender, DrawUtils.TitleDrawUtils utils);
-        public delegate void OnTrackerGridDrawHandler(object sender, DrawUtils.TrackerGridesDrawUtils utils);
+        public delegate void OnTrackerTitleDrawHandler(object sender, DrawUtils.TrackerTitlesDrawUtils utils);
+        public delegate void OnTrackerGrideDrawHandler(object sender,  DrawUtils.TrackerGridesDrawUtils utils);
         // 将创建的委托和特定事件关联,在这里特定的事件为KeyDown
-        public event OnTrackerPartsDrawHandler PartsPaint;
-        public event OnTrackerTitleDrawHandler TitlePaint;
-        public event OnTrackerGridDrawHandler GridPaint;
+        public event OnTrackerPartsDrawHandler TPartsPaint;
+        public event OnTrackerGrideDrawHandler TGridePaint;
+        public event OnTrackerTitleDrawHandler TTitlePaint;
         #endregion
 
         /// <summary>
@@ -148,112 +161,82 @@ namespace VocalUtau.DirectUI
             isDrawing = true;
             try
             {
-              //  PianoRollPoint sp = pprops.getPianoStartPoint();
-              //  DrawPianoTrackArea(sender, e, sp);
-                DrawTrackerGridArea(sender, e);
-                DrawTrackerTitleArea(sender, e);
+                PianoRollPoint sp = pprops.getPianoStartPoint();
+                DrawTrackPartsArea(sender, e, sp);
+                DrawTrackGrideArea(sender, e);
+                DrawTrackTitleArea(sender, e, sp);
             }
             catch { ;}
             isDrawing = false;
         }
-        private void DrawPianoTrackArea(object sender, BalthasarLib.D2DPainter.D2DPaintEventArgs e, PianoRollPoint startPoint)
+        private void DrawTrackPartsArea(object sender, BalthasarLib.D2DPainter.D2DPaintEventArgs e, PianoRollPoint startPoint)
         {
-         /*   D2DGraphics g = e.D2DGraphics;
+            D2DGraphics g = e.D2DGraphics;
 
-            int y = rconf.Const_TitleHeight;//绘制点纵坐标
-            int w = e.ClipRectangle.Width - rconf.Const_VScrollBarWidth;
-            //绘制钢琴窗
-            int cNote = (int)pprops.PianoTopNote;//绘制区域第一个阶的音符
-            while (y < e.ClipRectangle.Height)//若未画超界
-            {
-                //计算绘制区域
-                Point LT = new Point(rconf.Const_RollWidth, y);//矩形左上角
-                Point LB = new Point(rconf.Const_RollWidth, y + rconf.Const_RollNoteHeight);//矩形左下角
-                Point RT = new Point(w, y);//矩形右上角
-                Point RB = new Point(w, y + rconf.Const_RollNoteHeight);//矩形右下角
-                Rectangle Rect = new Rectangle(LT, new Size(w - rconf.Const_RollWidth, rconf.Const_RollNoteHeight));//矩形区域
-                //计算色域
-                PitchAtomObject NoteValue = new PitchAtomObject((uint)cNote, 0);
-                NoteValue.OctaveType = pprops.OctaveType;
-                int Octave = NoteValue.OctaveType == PitchAtomObject.OctaveTypeEnum.Voice ? NoteValue.Octave : NoteValue.Octave-1;
-                int Key = NoteValue.Key;
-                bool isBlackKey = NoteValue.IsBlackKey;
-                Color KeyColor = isBlackKey ? rconf.RollColor_BlackKey_NormalSound : rconf.RollColor_WhiteKey_NormalSound;
-                Color LineColor = rconf.RollColor_LineKey_NormalSound;
-                Color OLineColor = rconf.RollColor_LineOctive_NormalSound;
-                switch (rconf.getVoiceArea(cNote))
-                {
-                    case RollConfigures.VoiceKeyArea.OverSound: KeyColor = isBlackKey ? rconf.RollColor_BlackKey_OverSound : rconf.RollColor_WhiteKey_OverSound; LineColor = rconf.RollColor_LineKey_OverSound; OLineColor = rconf.RollColor_LineOctive_OverSound; break;
-                    case RollConfigures.VoiceKeyArea.NoSound: KeyColor = isBlackKey ? rconf.RollColor_BlackKey_NoSound : rconf.RollColor_WhiteKey_NoSound; LineColor = rconf.RollColor_LineKey_NoSound; OLineColor = rconf.RollColor_LineOctive_OverSound; break;
-                }
-                //绘制矩形
-                g.FillRectangle(Rect, KeyColor);
-                //绘制边线
-                g.DrawLine(LB, RB, (Key == 5 || Key == 0) ? OLineColor : LineColor,2);//isB ? LineL : LineB);
-                //递归
-                y = y + rconf.Const_RollNoteHeight;
-                cNote = cNote - 1;
-            }
-            //绘制分节符
-            //初始化
-            double x = rconf.Const_RollWidth;//起点画线
-            long BeatNumber = startPoint.BeatNumber;//获取起点拍号
-            double BeatPixelLength = pprops.dertTick2dertPixel(pprops.BeatLength);//一拍长度
-            if (startPoint.DenominatolTicksBefore!=0)//非完整Beats
-            {
-                //起点不在小节线
-                BeatNumber=startPoint.NextWholeBeatNumber;
-                x = x+pprops.dertTick2dertPixel(startPoint.NextWholeBeatDistance);
-            }
+             int y = rconf.Const_TitleHeight;//绘制点纵坐标
+             int w = e.ClipRectangle.Width - rconf.Const_VScrollBarWidth;
+             //绘制分节符
+             //初始化
+             double x = rconf.Const_GridWidth;//起点画线
+             long BeatNumber = startPoint.BeatNumber;//获取起点拍号
+             double BeatPixelLength = pprops.dertTick2dertPixel(pprops.BeatLength);//一拍长度
+             if (startPoint.DenominatolTicksBefore != 0)//非完整Beats
+             {
+                 //起点不在小节线
+                 BeatNumber = startPoint.NextWholeBeatNumber;
+                 x = x + pprops.dertTick2dertPixel(startPoint.NextWholeBeatDistance);
+             }
             while (x <= w)
             {
                 g.DrawLine(
                 new Point((int)Math.Round(x, 0), rconf.Const_TitleHeight),
                 new Point((int)Math.Round(x, 0), e.ClipRectangle.Height),
-                    BeatNumber % pprops.BeatsCountPerSummery == 0 ? Color.Black : rconf.RollColor_LineOctive_NormalSound
+                    BeatNumber % pprops.BeatsCountPerSummery == 0 ? Color.White : rconf.TitleColor_Marker
                 );
-                BeatNumber=BeatNumber+1;
+                BeatNumber = BeatNumber + 1;
                 x = x + BeatPixelLength;
             }
+
+
             //Rise 绘制Note等//传递事件
             Rectangle CurrentRect = new Rectangle(
-                rconf.Const_RollWidth,
+                rconf.Const_GridWidth,
                 rconf.Const_TitleHeight,
-                w-rconf.Const_RollWidth,
-                e.ClipRectangle.Height-rconf.Const_TitleHeight);//可绘制区域
-            if (PartsPaint != null)
+                w - rconf.Const_GridWidth,
+                e.ClipRectangle.Height - rconf.Const_TitleHeight);//可绘制区域
+            if (TPartsPaint != null)
             {
                 D2DPaintEventArgs d2de = new D2DPaintEventArgs(
                     e.D2DGraphics,
                     CurrentRect,
                     e.MousePoint
                     );
-                PartsPaint(sender, new VocalUtau.DirectUI.DrawUtils.TrackDrawUtils(d2de, rconf, pprops));
-            }*/
+                TPartsPaint(sender, new DrawUtils.TrackerPartsDrawUtils(d2de, rconf,pprops));
+            }
         }
-        private void DrawTrackerTitleArea(object sender, BalthasarLib.D2DPainter.D2DPaintEventArgs e)
+        private void DrawTrackTitleArea(object sender, BalthasarLib.D2DPainter.D2DPaintEventArgs e, PianoRollPoint startPoint)
         {
             D2DGraphics g = e.D2DGraphics;
             Rectangle BlackRect = new Rectangle(
                 0,
                 0,
                 e.ClipRectangle.Width,
-                tconf.Const_TitleHeight
+                rconf.Const_TitleHeight
             );
             g.FillRectangle(BlackRect, Color.Black);
             Rectangle TitleSpliterRect = new Rectangle(
-                0, 
-                tconf.Const_TitleHeight-tconf.Const_TitleHeightSpliter-1, 
-                e.ClipRectangle.Width, 
-                tconf.Const_TitleHeightSpliter
+                0,
+                rconf.Const_TitleHeight - rconf.Const_TitleHeightSpliter - 1,
+                e.ClipRectangle.Width,
+                rconf.Const_TitleHeightSpliter
             );
-            g.DrawLine(new Point(0, tconf.Const_TitleLineTop), new Point(e.ClipRectangle.Width, tconf.Const_TitleLineTop), tconf.TitleColor_Line,2);
-            g.DrawLine(new Point(0, tconf.Const_TitleRulerTop), new Point(e.ClipRectangle.Width, tconf.Const_TitleRulerTop), tconf.TitleColor_Ruler,2);
-            
+            g.DrawLine(new Point(0, rconf.Const_TitleLineTop), new Point(e.ClipRectangle.Width, rconf.Const_TitleLineTop), rconf.TitleColor_Line, 2);
+            g.DrawLine(new Point(0, rconf.Const_TitleRulerTop), new Point(e.ClipRectangle.Width, rconf.Const_TitleRulerTop), rconf.TitleColor_Ruler, 2);
+
             //绘制分节符
-            /*
+
             //初始化
-            double x = rconf.Const_RollWidth;//起点画线
+            double x = rconf.Const_GridWidth;//起点画线
             long BeatNumber = startPoint.BeatNumber;//获取起点拍号
             double BeatPixelLength = pprops.dertTick2dertPixel(pprops.BeatLength);//一拍长度
             if (startPoint.DenominatolTicksBefore != 0)//非完整Beats
@@ -272,8 +255,8 @@ namespace VocalUtau.DirectUI
                     new Point((int)Math.Round(x, 0), 0),
                     new Point((int)Math.Round(x, 0), rconf.Const_TitleHeight),
                     Color.White);
-                    long SummeryId=BeatNumber/pprops.BeatsCountPerSummery;
-                    g.DrawText(" "+SummeryId.ToString(),
+                    long SummeryId = BeatNumber / pprops.BeatsCountPerSummery;
+                    g.DrawText(" " + SummeryId.ToString(),
                         new Rectangle(new Point((int)Math.Round(x, 0), rconf.Const_TitleLineTop), new Size((int)pprops.BeatLength, rconf.Const_TitleRulerTop - rconf.Const_TitleLineTop)),
                         Color.White,
                         new Font("宋体", 12));
@@ -281,54 +264,59 @@ namespace VocalUtau.DirectUI
                 else
                 {
                     g.DrawLine(
-                    new Point((int)Math.Round(x,0), My1),
+                    new Point((int)Math.Round(x, 0), My1),
                     new Point((int)Math.Round(x, 0), My2),
                     rconf.TitleColor_Marker);
                 }
                 BeatNumber = BeatNumber + 1;
                 x = x + BeatPixelLength;
             }
-            */
+
             //绘制分割线
-            g.DrawLine(new Point(tconf.Const_GridWidth, 0), new Point(tconf.Const_GridWidth, tconf.Const_TitleHeight), Color.White, 2);
-            g.FillRectangle(TitleSpliterRect, Color.White);
+            g.DrawLine(new Point(rconf.Const_GridWidth, 0), new Point(rconf.Const_GridWidth, rconf.Const_TitleHeight), Color.White, 2);
+            g.FillRectangle(TitleSpliterRect, rconf.PianoColor_WhiteKey);
+
+            g.DrawText("Tempo: "+String.Format("{0:0.00}",pprops.Tempo),
+                new Rectangle(new Point(0, rconf.Const_TitleLineTop), new Size((int)rconf.Const_GridWidth, rconf.Const_TitleRulerTop - rconf.Const_TitleLineTop)),
+                Color.White,
+                new Font("Tahoma", 10, FontStyle.Bold));
 
             Rectangle CurrentRect = new Rectangle(
                 0,
                 0,
                 e.ClipRectangle.Width,
-                tconf.Const_TitleHeight
+                rconf.Const_TitleHeight
             );//可绘制区域
-            if (TitlePaint != null)
+            if (TTitlePaint != null)
             {
                 D2DPaintEventArgs d2de = new D2DPaintEventArgs(
                     e.D2DGraphics,
                     CurrentRect,
                     e.MousePoint
                 );
-               // TitlePaint(sender, new VocalUtau.DirectUI.DrawUtils.TitleDrawUtils(d2de, rconf, pprops));
+                TTitlePaint(sender, new VocalUtau.DirectUI.DrawUtils.TrackerTitlesDrawUtils(d2de, rconf));
             }
         }
-        private void DrawTrackerGridArea(object sender, BalthasarLib.D2DPainter.D2DPaintEventArgs e)
+        private void DrawTrackGrideArea(object sender, BalthasarLib.D2DPainter.D2DPaintEventArgs e)
         {
             D2DGraphics g = e.D2DGraphics;
 
+            g.DrawLine(new Point(rconf.Const_GridWidth, rconf.Const_TitleHeight), new Point(rconf.Const_GridWidth, e.ClipRectangle.Height), Color.White, 2);
+
             Rectangle CurrentRect = new Rectangle(
                 0,
-                tconf.Const_TitleHeight,
-                tconf.Const_GridWidth,
-                e.ClipRectangle.Height - tconf.Const_TitleHeight);//可绘制区域
+                rconf.Const_TitleHeight,
+                rconf.Const_GridWidth,
+                e.ClipRectangle.Height - rconf.Const_TitleHeight);//可绘制区域
 
-            g.DrawLine(new Point(tconf.Const_GridWidth, tconf.Const_TitleHeight), new Point(tconf.Const_GridWidth, e.ClipRectangle.Height), Color.White, 2);
-
-            if (GridPaint != null)
+            if (TGridePaint != null)
             {
                 D2DPaintEventArgs d2de = new D2DPaintEventArgs(
                     e.D2DGraphics,
                     CurrentRect,
                     e.MousePoint
                     );
-            //    GridPaint(sender, new VocalUtau.DirectUI.DrawUtils.TrackerGridesDrawUtils(d2de,rconf, pprops));
+                TGridePaint(sender, new DrawUtils.TrackerGridesDrawUtils(d2de, rconf, pprops));
             }
         }
         #endregion
@@ -339,28 +327,28 @@ namespace VocalUtau.DirectUI
         /// </summary>
         #region
         // 创建一个委托，返回类型为void，两个参数
-        public delegate void OnMouseEventHandler(object sender, PianoMouseEventArgs e);
+        public delegate void OnMouseEventHandler(object sender, TrackerMouseEventArgs e);
         // 将创建的委托和特定事件关联,在这里特定的事件为KeyDown
-        public event OnMouseEventHandler TrackMouseDown;
-        public event OnMouseEventHandler RollMouseDown;
+        public event OnMouseEventHandler PartsMouseDown;
+        public event OnMouseEventHandler GridsMouseDown;
         public event OnMouseEventHandler TitleMouseDown;
-        public event OnMouseEventHandler TrackMouseUp;
-        public event OnMouseEventHandler RollMouseUp;
+        public event OnMouseEventHandler PartsMouseUp;
+        public event OnMouseEventHandler GridsMouseUp;
         public event OnMouseEventHandler TitleMouseUp;
-        public event OnMouseEventHandler TrackMouseMove;
-        public event OnMouseEventHandler RollMouseMove;
+        public event OnMouseEventHandler PartsMouseMove;
+        public event OnMouseEventHandler GridsMouseMove;
         public event OnMouseEventHandler TitleMouseMove;
-        public event OnMouseEventHandler TrackMouseClick;
-        public event OnMouseEventHandler RollMouseClick;
+        public event OnMouseEventHandler PartsMouseClick;
+        public event OnMouseEventHandler GridsMouseClick;
         public event OnMouseEventHandler TitleMouseClick;
-        public event OnMouseEventHandler TrackMouseDoubleClick;
-        public event OnMouseEventHandler RollMouseDoubleClick;
+        public event OnMouseEventHandler PartsMouseDoubleClick;
+        public event OnMouseEventHandler GridsMouseDoubleClick;
         public event OnMouseEventHandler TitleMouseDoubleClick;
-        public event EventHandler TrackMouseEnter;
-        public event EventHandler RollMouseEnter;
+        public event EventHandler PartsMouseEnter;
+        public event EventHandler GridsMouseEnter;
         public event EventHandler TitleMouseEnter;
-        public event EventHandler TrackMouseLeave;
-        public event EventHandler RollMouseLeave;
+        public event EventHandler PartsMouseLeave;
+        public event EventHandler GridsMouseLeave;
         public event EventHandler TitleMouseLeave;
         #endregion
 
@@ -368,21 +356,20 @@ namespace VocalUtau.DirectUI
         /// 鼠标事件逻辑
         /// </summary>
         #region
-        private PianoMouseEventArgs pme_cache;
-        private PianoMouseEventArgs RiseMouseHandle(object sender, MouseEventArgs e, OnMouseEventHandler Roll, OnMouseEventHandler Title, OnMouseEventHandler Track)
+        private TrackerMouseEventArgs pme_cache;
+        private TrackerMouseEventArgs RiseMouseHandle(object sender, MouseEventArgs e, OnMouseEventHandler Roll, OnMouseEventHandler Title, OnMouseEventHandler Track)
         {
-          /*  PianoMouseEventArgs pme = new PianoMouseEventArgs(e);
+            TrackerMouseEventArgs pme = new TrackerMouseEventArgs(e);
             pme.CalcAxis(pprops, rconf, pme_cache);
             OnMouseEventHandler Handle = null;
             switch (pme.Area)
             {
-                case PianoMouseEventArgs.AreaType.Roll: Handle = Roll; break;
-                case PianoMouseEventArgs.AreaType.Title: Handle = Title; break;
-                case PianoMouseEventArgs.AreaType.Track: Handle = Track; break;
+                case TrackerMouseEventArgs.AreaType.Roll: Handle = Roll; break;
+                case TrackerMouseEventArgs.AreaType.Title: Handle = Title; break;
+                case TrackerMouseEventArgs.AreaType.Track: Handle = Track; break;
             }
             if (Handle != null) Handle(sender, pme);
-            return pme;*/
-            return null;
+            return pme;
         }
         private bool pme_sendEnterEvent = false;
 
@@ -393,34 +380,35 @@ namespace VocalUtau.DirectUI
             isMMoving = true;
             d2DPainterBox1.Refresh();
 
-            /* PianoMouseEventArgs pme = new PianoMouseEventArgs(e);
-             pme.CalcAxis(pprops, rconf, pme_cache);
-             OnMouseEventHandler Handle = null;//Move事件
-             EventHandler HandleEnter = null;//Enter事件
-             EventHandler HandleLeave = null;//Leave事件
-             switch (pme.Area)
-             {
-                 case PianoMouseEventArgs.AreaType.Roll: Handle = RollMouseMove; HandleEnter = RollMouseEnter; break;
-                 case PianoMouseEventArgs.AreaType.Title: Handle = TitleMouseMove; HandleEnter = TitleMouseEnter; break;
-                 case PianoMouseEventArgs.AreaType.Track: Handle = TrackMouseMove; HandleEnter = TrackMouseEnter; break;
-             }
-             if (pme_sendEnterEvent)
-             {
-                 if (HandleEnter != null) HandleEnter(sender, e);
-             }else if (pme_cache.Area != pme.Area)
-             {
-                 switch (pme_cache.Area)
-                 {
-                     case PianoMouseEventArgs.AreaType.Roll: HandleLeave = RollMouseLeave; break;
-                     case PianoMouseEventArgs.AreaType.Title: HandleLeave = TitleMouseLeave; break;
-                     case PianoMouseEventArgs.AreaType.Track: HandleLeave = TrackMouseLeave; break;
-                 }
-                 if (HandleEnter != null) HandleEnter(sender, e);
-                 if (HandleLeave != null) HandleLeave(sender, e);
-             }
-             if (Handle != null) Handle(sender, pme);//发送Move
-             pme_cache = pme;
-             pme_sendEnterEvent = false;*/
+            TrackerMouseEventArgs pme = new TrackerMouseEventArgs(e);
+            pme.CalcAxis(pprops, rconf, pme_cache);
+            OnMouseEventHandler Handle = null;//Move事件
+            EventHandler HandleEnter = null;//Enter事件
+            EventHandler HandleLeave = null;//Leave事件
+            switch (pme.Area)
+            {
+                case TrackerMouseEventArgs.AreaType.Roll: Handle = GridsMouseMove; HandleEnter = GridsMouseEnter; break;
+                case TrackerMouseEventArgs.AreaType.Title: Handle = TitleMouseMove; HandleEnter = TitleMouseEnter; break;
+                case TrackerMouseEventArgs.AreaType.Track: Handle = PartsMouseMove; HandleEnter = PartsMouseEnter; break;
+            }
+            if (pme_sendEnterEvent)
+            {
+                if (HandleEnter != null) HandleEnter(sender, e);
+            }
+            else if (pme_cache.Area != pme.Area)
+            {
+                switch (pme_cache.Area)
+                {
+                    case TrackerMouseEventArgs.AreaType.Roll: HandleLeave = GridsMouseLeave; break;
+                    case TrackerMouseEventArgs.AreaType.Title: HandleLeave = TitleMouseLeave; break;
+                    case TrackerMouseEventArgs.AreaType.Track: HandleLeave = PartsMouseLeave; break;
+                }
+                if (HandleEnter != null) HandleEnter(sender, e);
+                if (HandleLeave != null) HandleLeave(sender, e);
+            }
+            if (Handle != null) Handle(sender, pme);//发送Move
+            pme_cache = pme;
+            pme_sendEnterEvent = false;
             this.OnMouseMove(e);
             isMMoving = false;
         }
@@ -430,9 +418,9 @@ namespace VocalUtau.DirectUI
             if (isMDown) return;
             isMDown = true;
             pme_cache = RiseMouseHandle(sender, e,
-                RollMouseDown,
+                GridsMouseDown,
                 TitleMouseDown,
-                TrackMouseDown);
+                PartsMouseDown);
             this.OnMouseDown(e);
             isMDown = false;
         }
@@ -442,26 +430,26 @@ namespace VocalUtau.DirectUI
             if (isMUp) return;
             isMUp = true;
             pme_cache = RiseMouseHandle(sender, e,
-                RollMouseUp,
+                GridsMouseUp,
                 TitleMouseUp,
-                TrackMouseUp);
+                PartsMouseUp);
             this.OnMouseUp(e);
             isMUp = false;
         }
         private void d2DPainterBox1_MouseClick(object sender, MouseEventArgs e)
         {
             pme_cache = RiseMouseHandle(sender, e,
-                RollMouseClick,
+                GridsMouseClick,
                 TitleMouseClick,
-                TrackMouseClick);
+                PartsMouseClick);
             this.OnMouseClick(e);
         }
         private void d2DPainterBox1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             pme_cache = RiseMouseHandle(sender, e,
-                RollMouseDoubleClick,
+                GridsMouseDoubleClick,
                 TitleMouseDoubleClick,
-                TrackMouseDoubleClick);
+                PartsMouseDoubleClick);
             this.OnMouseDoubleClick(e);
         }
         private void d2DPainterBox1_MouseEnter(object sender, EventArgs e)
@@ -471,13 +459,12 @@ namespace VocalUtau.DirectUI
         }
         private void d2DPainterBox1_MouseLeave(object sender, EventArgs e)
         {
-            return;//DEBUG
             EventHandler Handle = null;
             switch (pme_cache.Area)
             {
-                case PianoMouseEventArgs.AreaType.Roll: Handle = RollMouseLeave; break;
-                case PianoMouseEventArgs.AreaType.Title: Handle = RollMouseLeave; break;
-                case PianoMouseEventArgs.AreaType.Track: Handle = RollMouseLeave; break;
+                case TrackerMouseEventArgs.AreaType.Roll: Handle = GridsMouseLeave; break;
+                case TrackerMouseEventArgs.AreaType.Title: Handle = GridsMouseLeave; break;
+                case TrackerMouseEventArgs.AreaType.Track: Handle = GridsMouseLeave; break;
             }
             if (Handle != null) Handle(sender, e);
             pme_sendEnterEvent = false;

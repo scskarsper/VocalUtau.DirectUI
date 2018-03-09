@@ -25,7 +25,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             set
             {
                 long TTick = MidiMathUtils.Time2Tick(value, PartsObject.Tempo);
-                long AST=PartsObject.AbsoluteStartTick;
+                long AST=PartsObject.getAbsoluteStartTick(PartsObject.Tempo);
                 if (AST >= TTick && TTick <= AST + PartsObject.TickLength)
                 {
                     _TickPos = AST - TTick;
