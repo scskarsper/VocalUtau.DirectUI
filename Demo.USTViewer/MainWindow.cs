@@ -17,50 +17,10 @@ namespace VocalUtau.DirectUI.Forms
         {
             InitializeComponent();
         }
-        ProjectObject LoadUST(string FilePath)
-        {
-            USTOriginalProject USTPO = USTOriginalSerializer.Deserialize(FilePath);
-            PartsObject pro = USTOriginalSerializer.UST2Parts(USTPO);
-
-            ProjectObject poj = new ProjectObject();
-            poj.InitEmpty();
-            poj.TrackerList[0].PartList[0] = pro;
-
-            foreach (NoteObject po in pro.NoteList)
-            {
-                byte[] bt = System.Text.Encoding.Default.GetBytes(po.Lyric);
-                string Str = System.Text.Encoding.GetEncoding("Shift-JIS").GetString(bt);
-                po.Lyric = Str;
-            }
-            int sg = 1;
-            for (long i = 1; i <= pro.TickLength; i += 32)//
-            {
-                sg = sg * -1;
-                pro.PitchBendsList.Add(new PitchObject(i, sg * 0.5));
-            }
-
-            string abc = ProjectObject.Serializer.Serialize(poj);
-
-            return poj;
-        }
-        ProjectObject BarkUST(string file)
-        {
-            try
-            {
-                ObjectDeserializer<ProjectObject> DPO = new ObjectDeserializer<ProjectObject>();
-                ProjectObject OOP = DPO.DeserializeFromFile(file + ".json");
-                return OOP; 
-            }
-            catch
-            {
-                ProjectObject POJB = LoadUST(file);
-                ProjectObject.Serializer.SerializeToFile(POJB, file + ".json");
-                return POJB;
-            }
-        }
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            ProjectObject poj = BarkUST(@"D:\VocalUtau\VocalUtau.DebugExampleFiles\DemoUSTS\Sakurane2.Tracks\Track-4b158252-eb7f-4223-b7b0-d78f32e044ec.ust");
+            Demo.USTViewer.BarkUST bu = new Demo.USTViewer.BarkUST();
+            ProjectObject poj = bu.GetTest(true);
             PartsObject PO = poj.TrackerList[0].PartList[0];
             SingerWindow sw = new SingerWindow();
             sw.LoadParts(ref PO);
@@ -70,6 +30,7 @@ namespace VocalUtau.DirectUI.Forms
             aw.ShowOnDock(this.MainDock);
 
             TrackerWindow tw = new TrackerWindow();
+            tw.LoadProjectObject(ref poj);
             tw.ShowOnDock(this.MainDock);
         }
 

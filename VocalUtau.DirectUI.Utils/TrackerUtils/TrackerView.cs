@@ -38,6 +38,11 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
             hookTrackerWindow();
         }
 
+        public void setProjectObjectPtr(IntPtr ProjectObjectPtr)
+        {
+            this.ProjectObjectPtr = ProjectObjectPtr;
+        }
+
         private ProjectObject ProjectObject
         {
             get
