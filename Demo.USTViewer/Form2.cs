@@ -6,34 +6,25 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using VocalUtau.DirectUI.Utils.TrackerUtils;
+using VocalUtau.Formats.Model.Utils;
 using VocalUtau.Formats.Model.VocalObject;
 
 namespace Demo.USTViewer
 {
     public partial class Form2 : Form
     {
-        List<TrackerObject> TrackObject = new List<TrackerObject>();
-        List<BackerObject> BackerObject = new List<BackerObject>();
+        ProjectObject poj;
+        ObjectAlloc<ProjectObject> OAC = new ObjectAlloc<ProjectObject>();
 
-        List<PartsObject> PObject = new List<PartsObject>();
+        TrackerView TV = null;
+
         public Form2()
         {
             InitializeComponent();
-            trackerRollWindow1.TrackerProps.Tempo = 120.0;
-            trackerRollWindow1.TGridePaint += trackerRollWindow1_TGridePaint;
-            trackerRollWindow1.TPartsPaint += trackerRollWindow1_TPartsPaint;
-            trackerRollWindow1.GridsMouseDown += trackerRollWindow1_GridsMouseDown;
-            trackerRollWindow1.PartsMouseDown += trackerRollWindow1_PartsMouseDown;
-            //INIT
-            TrackObject.Add(new TrackerObject(0));
-            TrackObject.Add(new TrackerObject(1));
-            BackerObject.Add(new BackerObject(0));
-            BackerObject.Add(new BackerObject(1));
-            //Parts
-            TrackObject[0].PartList.Add(new PartsObject());
-            TrackObject[0].PartList[0].StartTime = 0.2;
-            TrackObject[0].PartList[0].TickLength = 1920;
-            TrackObject[0].PartList[0].PartName = "NAME";
+            BarkUST bu=new BarkUST();
+            poj = bu.GetTest(true);
+            OAC.ReAlloc(poj);
         }
 
         void trackerRollWindow1_PartsMouseDown(object sender, VocalUtau.DirectUI.Models.TrackerMouseEventArgs e)
@@ -44,22 +35,6 @@ namespace Demo.USTViewer
         void trackerRollWindow1_GridsMouseDown(object sender, VocalUtau.DirectUI.Models.TrackerMouseEventArgs e)
         {
         }
-        void SingleTrackPaint(VocalUtau.DirectUI.DrawUtils.TrackerPartsDrawUtils.TrackPainterArgs Args, VocalUtau.DirectUI.DrawUtils.TrackerPartsDrawUtils Utils)
-        {
-            if (Args.TrackObject.GetType() == typeof(TrackerObject))
-            {
-                Utils.DrawParts(Args.TrackArea,TrackObject[Args.TrackIndex].PartList,Color.BlueViolet);
-            }
-        }
-        void trackerRollWindow1_TPartsPaint(object sender, VocalUtau.DirectUI.DrawUtils.TrackerPartsDrawUtils utils)
-        {
-            utils.DrawTracks(TrackObject, BackerObject, new VocalUtau.DirectUI.DrawUtils.TrackerPartsDrawUtils.OneTrackPaintHandler(SingleTrackPaint));
-        }
-
-        void trackerRollWindow1_TGridePaint(object sender, VocalUtau.DirectUI.DrawUtils.TrackerGridesDrawUtils utils)
-        {
-            utils.DrawTracks(TrackObject,BackerObject);
-        }
 
         private void trackerRollWindow1_Load(object sender, EventArgs e)
         {
@@ -69,6 +44,13 @@ namespace Demo.USTViewer
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
             trackerRollWindow1.setPianoStartTick(hScrollBar1.Value);
+        }
+
+        private void Form2_Load(object sender, EventArgs e)
+        {
+            TV = new TrackerView(OAC.IntPtr, this.trackerRollWindow1);
+            TV.HandleEvents = true;
+            hScrollBar1.Maximum = (int)Math.Ceiling(1920+(double)poj.Time2Tick(poj.MaxLength));
         }
     }
 }

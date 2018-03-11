@@ -34,7 +34,47 @@ namespace VocalUtau.DirectUI.DrawUtils
             g.DrawText(Text, new System.Drawing.Rectangle(LeftTopAxis.X, LeftTopAxis.Y, baseEvent.ClipRectangle.Width - LeftTopAxis.X, baseEvent.ClipRectangle.Height - LeftTopAxis.Y), FontColor, new System.Drawing.Font("Tahoma", FontSize, FontStyles));
         }
 
-        public void DrawTracks(List<TrackerObject> VocalTracks,List<BackerObject> BackTracks)
+
+        public class GridePainterArgs
+        {
+            public GridePainterArgs(int AbsoluteIndex, int TrackIndex, object TrackObject, System.Drawing.Rectangle TrackArea)
+            {
+                this._AbsoluteIndex = AbsoluteIndex;
+                this._TrackArea = TrackArea;
+                this._TrackIndex = TrackIndex;
+                this._TrackObject = TrackObject;
+            }
+            int _AbsoluteIndex;
+
+            public int AbsoluteIndex
+            {
+                get { return _AbsoluteIndex; }
+                set { _AbsoluteIndex = value; }
+            }
+            int _TrackIndex;
+
+            public int TrackIndex
+            {
+                get { return _TrackIndex; }
+                set { _TrackIndex = value; }
+            }
+            object _TrackObject;
+
+            public object TrackObject
+            {
+                get { return _TrackObject; }
+                set { _TrackObject = value; }
+            }
+            System.Drawing.Rectangle _TrackArea;
+
+            public System.Drawing.Rectangle TrackArea
+            {
+                get { return _TrackArea; }
+                set { _TrackArea = value; }
+            }
+        }
+        public delegate void OneGridePaintHandler(GridePainterArgs Args, TrackerGridesDrawUtils utils);
+        public void DrawTracks(List<TrackerObject> VocalTracks, List<BackerObject> BackTracks, OneGridePaintHandler GridePaintCallBack)
         {
             int ShownTrackCount = baseEvent.ClipRectangle.Height / rconf.Const_TrackHeight;
             int y = rconf.Const_TitleHeight;//绘制点纵坐标
@@ -61,6 +101,11 @@ namespace VocalUtau.DirectUI.DrawUtils
                                 ),
                             Color.White,
                             new System.Drawing.Font("Tahoma", 10));
+
+                        if (GridePaintCallBack != null)
+                        {
+                            GridePaintCallBack(new GridePainterArgs((int)i, (int)j, TObject, new Rectangle(new Point(TrackArea.X,TrackArea.Y),new Size(rconf.Const_GridVolumeWidth,TrackArea.Height))), this);
+                        }
                     }
                     else
                     {
@@ -75,6 +120,10 @@ namespace VocalUtau.DirectUI.DrawUtils
                                 ),
                             Color.White,
                             new System.Drawing.Font("Tahoma", 10));
+                        if (GridePaintCallBack != null)
+                        {
+                            GridePaintCallBack(new GridePainterArgs((int)i, (int)j, TObject, new Rectangle(new Point(TrackArea.X,TrackArea.Y),new Size(rconf.Const_GridVolumeWidth,TrackArea.Height))), this);
+                        }
                     }
 
                     baseEvent.D2DGraphics.DrawLine(

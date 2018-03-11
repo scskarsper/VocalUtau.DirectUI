@@ -34,15 +34,26 @@ namespace VocalUtau.DirectUI.DrawUtils
             g.DrawText(Text, new System.Drawing.Rectangle(LeftTopAxis.X, LeftTopAxis.Y, baseEvent.ClipRectangle.Width - LeftTopAxis.X, baseEvent.ClipRectangle.Height - LeftTopAxis.Y), FontColor, new System.Drawing.Font("Tahoma", FontSize, FontStyles));
         }
 
-        public void DrawParts(System.Drawing.Rectangle TrackArea, List<PartsObject> Parts,Color PartsColor)
+        public void FillParts(System.Drawing.Rectangle TrackArea, List<IPartsInterface> Parts, Color PartsColor, int PartIndex = -1, long OffsetTick=  0)
         {
-            foreach (PartsObject part in Parts)
+            bool isSingle = false;
+            if (PartIndex >= 0 && PartIndex < Parts.Count)
             {
-                long LeftTick=part.getAbsoluteStartTick(pprops.Tempo);
-                long RightTick = part.TickLength + LeftTick; 
-                
-                long LeftRectangleTick = pprops.PianoStartTick;
-                long RightRectangleTick = pprops.PianoStartTick + (long)Math.Round(pprops.dertPixel2dertTick(baseEvent.ClipRectangle.Width), 0) + 1;
+                isSingle = true;
+            }
+            int pIndex=0;
+            foreach (IPartsInterface part in Parts)
+            {
+                pIndex++;
+                if (isSingle && (pIndex-1) != PartIndex)
+                {
+                    continue;
+                }
+                long LeftTick = part.getAbsoluteStartTick(pprops.Tempo);
+                long RightTick = part.getAbsoluteEndTick(pprops.Tempo);
+
+                long LeftRectangleTick = OffsetTick+pprops.PianoStartTick;
+                long RightRectangleTick = OffsetTick+pprops.PianoStartTick + (long)Math.Round(pprops.dertPixel2dertTick(baseEvent.ClipRectangle.Width), 0) + 1;
 
                 if (RightTick <= LeftRectangleTick || LeftTick >= RightRectangleTick)
                 {
@@ -68,16 +79,69 @@ namespace VocalUtau.DirectUI.DrawUtils
                 }
 
                 Rectangle PartsRect = new Rectangle(
-                    new Point(PartsX1Pixel, TrackArea.Top+2),
-                    new Size(PartsX2Pixel - PartsX1Pixel, TrackArea.Height-4)
+                    new Point(PartsX1Pixel, TrackArea.Top + 2),
+                    new Size(PartsX2Pixel - PartsX1Pixel, TrackArea.Height - 4)
                     );
 
                 baseEvent.D2DGraphics.DrawRectangle(PartsRect, Color.White);
                 baseEvent.D2DGraphics.FillRectangle(PartsRect, Color.FromArgb(90, PartsColor));
-                baseEvent.D2DGraphics.DrawText(" "+part.PartName, PartsRect, Color.White,
+                baseEvent.D2DGraphics.DrawText(" " + part.getPartName(), PartsRect, Color.White,
                             new System.Drawing.Font("Tahoma", 10));
             }
         }
+        public void FillParts(System.Drawing.Rectangle TrackArea, List<PartsObject> Parts, Color PartsColor,int PartIndex=-1)
+        {
+            List<IPartsInterface> Parties = new List<IPartsInterface>();
+            Parties.AddRange(Parts.ToArray());
+            FillParts(TrackArea, Parties, PartsColor,PartIndex);
+        }
+        public void FillParts(System.Drawing.Rectangle TrackArea, List<WavePartsObject> WavParts, Color PartsColor, int PartIndex = -1)
+        {
+            List<IPartsInterface> Parties = new List<IPartsInterface>();
+            Parties.AddRange(WavParts.ToArray());
+            FillParts(TrackArea, Parties, PartsColor, PartIndex);
+        }
+
+        public void DrawParts(System.Drawing.Rectangle TrackArea, double StartTime, double DurTime, Color BlockColor)
+        {
+            long LeftTick = pprops.Time2Tick(StartTime);
+            long RightTick = pprops.Time2Tick(StartTime + DurTime);
+
+            long LeftRectangleTick = pprops.PianoStartTick;
+            long RightRectangleTick = pprops.PianoStartTick + (long)Math.Round(pprops.dertPixel2dertTick(baseEvent.ClipRectangle.Width), 0) + 1;
+
+            if (RightTick <= LeftRectangleTick || LeftTick >= RightRectangleTick)
+            {
+                //抛弃音符（超界）
+                return;
+            }
+
+            long StartTick = LeftTick - LeftRectangleTick;//获得左边界距离启绘点距离；
+            long EndTick = RightTick - LeftRectangleTick;//获得右边界距离启绘点距离；
+
+            int PartsX1Pixel = baseEvent.ClipRectangle.X;
+            int PartsX2Pixel = PartsX1Pixel;
+            if (StartTick < 0)
+            {
+                //起绘制点小于0;
+                PartsX1Pixel = baseEvent.ClipRectangle.X - (int)Math.Round(pprops.dertTick2dertPixel(-StartTick), 0);
+                PartsX2Pixel = baseEvent.ClipRectangle.X + (int)Math.Round(pprops.dertTick2dertPixel(EndTick), 0);
+            }
+            else
+            {
+                PartsX1Pixel = PartsX1Pixel + (int)Math.Round(pprops.dertTick2dertPixel(StartTick), 0);
+                PartsX2Pixel = baseEvent.ClipRectangle.X + (int)Math.Round(pprops.dertTick2dertPixel(EndTick), 0);
+            }
+
+            Rectangle PartsRect = new Rectangle(
+                new Point(PartsX1Pixel, TrackArea.Top + 2),
+                new Size(PartsX2Pixel - PartsX1Pixel, TrackArea.Height - 4)
+                );
+
+            baseEvent.D2DGraphics.DrawRectangle(PartsRect, BlockColor, 2);
+
+        }
+        
         public class TrackPainterArgs
         {
             public TrackPainterArgs(int AbsoluteIndex, int TrackIndex, object TrackObject, System.Drawing.Rectangle TrackArea)

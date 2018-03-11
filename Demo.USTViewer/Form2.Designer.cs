@@ -39,9 +39,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.trackerRollWindow1.BackColor = System.Drawing.Color.Black;
             this.trackerRollWindow1.Location = new System.Drawing.Point(0, 0);
-            this.trackerRollWindow1.Margin = new System.Windows.Forms.Padding(2);
             this.trackerRollWindow1.Name = "trackerRollWindow1";
-            this.trackerRollWindow1.Size = new System.Drawing.Size(843, 168);
+            this.trackerRollWindow1.Size = new System.Drawing.Size(1264, 252);
             this.trackerRollWindow1.TabIndex = 0;
             this.trackerRollWindow1.Load += new System.EventHandler(this.trackerRollWindow1_Load);
             // 
@@ -49,21 +48,23 @@
             // 
             this.hScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScrollBar1.Location = new System.Drawing.Point(0, 170);
+            this.hScrollBar1.Location = new System.Drawing.Point(0, 255);
             this.hScrollBar1.Name = "hScrollBar1";
-            this.hScrollBar1.Size = new System.Drawing.Size(843, 25);
+            this.hScrollBar1.Size = new System.Drawing.Size(1264, 25);
             this.hScrollBar1.TabIndex = 1;
             this.hScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar1_Scroll);
             // 
             // Form2
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(843, 192);
+            this.ClientSize = new System.Drawing.Size(1264, 288);
             this.Controls.Add(this.hScrollBar1);
             this.Controls.Add(this.trackerRollWindow1);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Form2";
             this.Text = "Form2";
+            this.Load += new System.EventHandler(this.Form2_Load);
             this.ResumeLayout(false);
 
         }

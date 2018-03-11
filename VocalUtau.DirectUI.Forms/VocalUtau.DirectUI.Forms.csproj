@@ -43,8 +43,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="WeifenLuo.WinFormsUI.Docking">
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=3.0.4.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
       <HintPath>..\Demo.USTViewer\packages\DockPanelSuite.3.0.4\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

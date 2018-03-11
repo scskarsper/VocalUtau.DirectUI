@@ -301,13 +301,14 @@ namespace VocalUtau.DirectUI
         {
             D2DGraphics g = e.D2DGraphics;
 
-            g.DrawLine(new Point(rconf.Const_GridWidth, rconf.Const_TitleHeight), new Point(rconf.Const_GridWidth, e.ClipRectangle.Height), Color.White, 2);
-
             Rectangle CurrentRect = new Rectangle(
                 0,
                 rconf.Const_TitleHeight,
                 rconf.Const_GridWidth,
                 e.ClipRectangle.Height - rconf.Const_TitleHeight);//可绘制区域
+
+            g.FillRectangle(CurrentRect, Color.Black);
+            g.DrawLine(new Point(rconf.Const_GridWidth, rconf.Const_TitleHeight), new Point(rconf.Const_GridWidth, e.ClipRectangle.Height), Color.White, 2);
 
             if (TGridePaint != null)
             {
