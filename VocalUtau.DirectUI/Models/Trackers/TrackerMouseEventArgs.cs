@@ -8,6 +8,13 @@ namespace VocalUtau.DirectUI.Models
 {
     public class TrackerMouseEventArgs
     {
+        object _Tag;
+
+        public object Tag
+        {
+            get { return _Tag; }
+            set { _Tag = value; }
+        }
         MouseEventArgs _me;
         public MouseEventArgs MouseEventArgs
         {

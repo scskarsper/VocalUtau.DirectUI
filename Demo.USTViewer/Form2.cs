@@ -52,5 +52,10 @@ namespace Demo.USTViewer
             TV.HandleEvents = true;
             hScrollBar1.Maximum = (int)Math.Ceiling(1920+(double)poj.Time2Tick(poj.MaxLength));
         }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            this.trackerRollWindow1.setTrackHeight((uint)trackBar1.Value);
+        }
     }
 }

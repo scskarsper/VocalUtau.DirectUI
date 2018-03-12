@@ -144,7 +144,7 @@ namespace VocalUtau.DirectUI.DrawUtils
         
         public class TrackPainterArgs
         {
-            public TrackPainterArgs(int AbsoluteIndex, int TrackIndex, object TrackObject, System.Drawing.Rectangle TrackArea)
+            public TrackPainterArgs(int AbsoluteIndex, int TrackIndex, ITrackerInterface TrackObject, System.Drawing.Rectangle TrackArea)
             {
                 this._AbsoluteIndex = AbsoluteIndex;
                 this._TrackArea = TrackArea;
@@ -165,9 +165,9 @@ namespace VocalUtau.DirectUI.DrawUtils
                 get { return _TrackIndex; }
                 set { _TrackIndex = value; }
             }
-            object _TrackObject;
+            ITrackerInterface _TrackObject;
 
-            public object TrackObject
+            public ITrackerInterface TrackObject
             {
                 get { return _TrackObject; }
                 set { _TrackObject = value; }
@@ -195,23 +195,21 @@ namespace VocalUtau.DirectUI.DrawUtils
                 {
                     System.Drawing.Rectangle TrackArea = new Rectangle(new Point(baseEvent.ClipRectangle.Left, y), new Size(baseEvent.ClipRectangle.Width, rconf.Const_TrackHeight));
                     uint j = 0;
+                    ITrackerInterface TObject = null;
                     if (i >= VocalTracks.Count)
                     {
                         j = (uint)(i - VocalTracks.Count);
                         //BackerObject
-                        BackerObject TObject = BackTracks[(int)j];
-                        //baseEvent.D2DGraphics.FillRectangle(TrackArea, Color.FromArgb(90,Color.Blue));
-                        if (TrackPaintCallBack != null)
-                        {
-                            TrackPaintCallBack(new TrackPainterArgs((int)i,(int)j, TObject, TrackArea), this);
-                        }
+                        TObject = BackTracks[(int)j];
                     }
                     else
                     {
                         j = i;
                         //TrackerObject
-                        TrackerObject TObject = VocalTracks[(int)j];
-                        //baseEvent.D2DGraphics.FillRectangle(TrackArea, Color.FromArgb(90, Color.YellowGreen));
+                        TObject = VocalTracks[(int)j];
+                    }
+                    if (TObject != null)
+                    {
                         if (TrackPaintCallBack != null)
                         {
                             TrackPaintCallBack(new TrackPainterArgs((int)i, (int)j, TObject, TrackArea), this);

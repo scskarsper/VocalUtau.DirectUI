@@ -8,6 +8,7 @@ namespace VocalUtau.DirectUI
     public class TrackerProperties
     {
         TrackerConfigures rconf;
+
         /// <summary>
         /// Numerator of Beats
         /// How much Beats in one Summery

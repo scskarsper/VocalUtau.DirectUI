@@ -61,6 +61,7 @@
     <Compile Include="Configures\PianoParams\PianoProperties.cs" />
     <Compile Include="Models\PianoParams\PianoRollPoint.cs" />
     <Compile Include="Models\PianoParams\ParamMouseEventArgs.cs" />
+    <Compile Include="Models\Trackers\GridesMouseEventArgs.cs" />
     <Compile Include="Models\Trackers\TrackerMouseEventArgs.cs" />
     <Compile Include="ParamCurveWindow.cs">
       <SubType>UserControl</SubType>

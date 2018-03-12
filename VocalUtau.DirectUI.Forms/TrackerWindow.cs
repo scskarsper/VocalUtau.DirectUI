@@ -27,16 +27,17 @@ namespace VocalUtau.DirectUI.Forms
             {
                 if (Alloced)
                 {
-                    Track_View.setProjectObjectPtr(ObjectPtr);
+                    _Track_View.setProjectObjectPtr(ObjectPtr);
                 }
                 else
                 {
-                    Track_View = new TrackerView(ObjectPtr, this.TrackerWindow);
-                    Track_View.TrackerActionBegin += Track_View_TrackerActionBegin;
-                    Track_View.TrackerActionEnd += Track_View_TrackerActionEnd;
-                    Track_View.HandleEvents = true;
+                    _Track_View = new TrackerView(ObjectPtr, this.TrackerWindow);
+                    _Track_View.TrackerActionBegin += Track_View_TrackerActionBegin;
+                    _Track_View.TrackerActionEnd += Track_View_TrackerActionEnd;
+                    _Track_View.ShowingEditorChanged += Track_View_ShowingEditorChanged;
+                    _Track_View.HandleEvents = true;
                     Alloced = true;
-
+                    _Track_View.ResetShowingParts();
                 }
                 try
                 {
@@ -45,8 +46,14 @@ namespace VocalUtau.DirectUI.Forms
                 catch { ;}
             }
 
+            void Track_View_ShowingEditorChanged(PartsObject PartObject)
+            {
+                if (ShowingEditorChanged != null) ShowingEditorChanged(PartObject);
+            }
+
             public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnPartsEventHandler TrackerActionEnd;
             public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnPartsEventHandler TrackerActionBegin;
+            public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnShowingEditorChangeHandler ShowingEditorChanged;
             void Track_View_TrackerActionEnd(TrackerView.PartsDragingType eventType)
             {
                 if (TrackerActionEnd != null) TrackerActionEnd(eventType);
@@ -58,7 +65,12 @@ namespace VocalUtau.DirectUI.Forms
             }
 
             #region
-            TrackerView Track_View;
+            TrackerView _Track_View;
+
+            public TrackerView Track_View
+            {
+                get { return _Track_View; }
+            }
             #endregion
 
             #region
@@ -69,10 +81,18 @@ namespace VocalUtau.DirectUI.Forms
 
         ViewController Controller;
         ObjectAlloc<ProjectObject> OAC = new ObjectAlloc<ProjectObject>();
+        public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnShowingEditorChangeHandler ShowingEditorChanged;
+
         public TrackerWindow()
         {
             InitializeComponent();
             Controller = new ViewController(ref this.trackerRollWindow1);
+            Controller.ShowingEditorChanged += Controller_ShowingEditorChanged;
+        }
+
+        void Controller_ShowingEditorChanged(PartsObject PartObject)
+        {
+            if (ShowingEditorChanged != null) ShowingEditorChanged(PartObject);
         }
 
         private void TrackerWindow_Load(object sender, EventArgs e)
@@ -95,6 +115,17 @@ namespace VocalUtau.DirectUI.Forms
         private void ctl_Scroll_LeftPos_Scroll(object sender, ScrollEventArgs e)
         {
             trackerRollWindow1.setPianoStartTick(ctl_Scroll_LeftPos.Value);
+        }
+
+        private void ctl_Track_PianoWidth_Scroll(object sender, EventArgs e)
+        {
+            this.trackerRollWindow1.setCrotchetSize((uint)ctl_Track_PianoWidth.Value);
+        }
+
+        private void ctl_Track_TrackHeight_Scroll(object sender, EventArgs e)
+        {
+            this.trackerRollWindow1.setTrackHeight((uint)ctl_Track_TrackHeight.Value);
+            Controller.Track_View.ResetScrollBar();
         }
     }
 }

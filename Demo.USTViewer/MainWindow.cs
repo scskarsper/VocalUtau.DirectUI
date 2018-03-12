@@ -13,6 +13,9 @@ namespace VocalUtau.DirectUI.Forms
 {
     public partial class MainWindow : Form
     {
+        SingerWindow sw = new SingerWindow();
+        AttributesWindow aw = new AttributesWindow();
+        TrackerWindow tw = new TrackerWindow();
         public MainWindow()
         {
             InitializeComponent();
@@ -22,16 +25,18 @@ namespace VocalUtau.DirectUI.Forms
             Demo.USTViewer.BarkUST bu = new Demo.USTViewer.BarkUST();
             ProjectObject poj = bu.GetTest(true);
             PartsObject PO = poj.TrackerList[0].PartList[0];
-            SingerWindow sw = new SingerWindow();
-            sw.LoadParts(ref PO);
+
             sw.ShowOnDock(this.MainDock);
-
-            AttributesWindow aw = new AttributesWindow();
             aw.ShowOnDock(this.MainDock);
-
-            TrackerWindow tw = new TrackerWindow();
-            tw.LoadProjectObject(ref poj);
             tw.ShowOnDock(this.MainDock);
+            tw.ShowingEditorChanged += tw_ShowingEditorChanged;
+
+            tw.LoadProjectObject(ref poj);
+        }
+
+        void tw_ShowingEditorChanged(PartsObject PartObject)
+        {
+            sw.LoadParts(ref PartObject);
         }
 
     }

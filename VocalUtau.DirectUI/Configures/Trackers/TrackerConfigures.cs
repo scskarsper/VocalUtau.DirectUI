@@ -8,19 +8,32 @@ namespace VocalUtau.DirectUI
 {
     class TrackerConfigures
     {
-        public int Const_TrackHeight = 40;
+        private int _Const_TrackHeight = 18;//40;
+
+        public int Const_TrackHeight
+        {
+            get { return _Const_TrackHeight; }
+            set { _Const_TrackHeight = value; if (_Const_TrackHeight < 18)_Const_TrackHeight = 18; }
+        }
         public int Const_GridWidth = 200;//头表宽
-        public int Const_GridFontTop = 13;
-        public int Const_GridVolumeWidth = 70;
+        public int Const_GridButtonWidth = 18;//头表宽
+        public int Const_GridFontTop
+        {
+            get
+            {
+                return (_Const_TrackHeight / 2) - 7;
+            }
+        }
+        public int Const_GridVolumeWidth = 80;
         public int Const_TitleHeight = 28;//标题头大小
         public int Const_TitleHeightSpliter = 2;//标题头分割线先高
         public int Const_TitleLineTop = 6;//标题头分割线先高
         public int Const_TitleRulerTop = 20;//标题头分割线先高
         public int Const_VScrollBarWidth = 19;
 
-        public void setNoteHeight(uint NewValue)
+        public void setTrackHeight(uint NewValue)
         {
-            Const_TrackHeight = (int)(NewValue > 20 ? NewValue : 20);
+            Const_TrackHeight = (int)(NewValue < 18 ? 18:NewValue);
         }
 
 

@@ -44,10 +44,10 @@ namespace VocalUtau.DirectUI
             if (pprops != null) genShownArea();
             d2DPainterBox1.Refresh();
         }
-        public void setNoteHeight(uint Size = 13)
+        public void setTrackHeight(uint Size = 18)
         {
-            if (Size < 13) return;
-            rconf.setNoteHeight(Size);
+            if (Size < 18) return;
+            rconf.setTrackHeight(Size);
             SetScrollMax();
             d2DPainterBox1.Refresh();
         }
@@ -57,17 +57,18 @@ namespace VocalUtau.DirectUI
             TrackerProps.PianoStartTick = Tick;
             d2DPainterBox1.Refresh();
         }
-        public void setScrollToNote(uint TrackID)
-        {
-            pprops.TopTrackId=TrackID;
-            d2DPainterBox1.Refresh();
-        }
 
         public uint MinShownTrackerNumber { get { return pprops.TopTrackId; } }
         public uint MaxShownTrackerNumber { get { return MinShownTrackerNumber + (uint)(ShownTrackCount>1?ShownTrackCount-1:1); } }
         public long MaxShownTick { get { return MinShownTick + (long)Math.Round(ShownTickCount, 0); } }
         public long MinShownTick { get { return pprops.PianoStartTick; } }
         public bool IsInitalized { get { return (pprops != null && rconf != null); } }
+        public uint ShownTrackerCount { get { 
+                int TotalHeight=d2DPainterBox1.ClientRectangle.Height - rconf.Const_TitleHeight;
+                if (TotalHeight < 0) return 0;
+                int Count = TotalHeight / rconf.Const_TrackHeight;
+                return (uint)Count;        
+        } }
         #endregion
 
         /// <summary>
@@ -132,6 +133,15 @@ namespace VocalUtau.DirectUI
         {
 
             d2DPainterBox1.Refresh();
+        }
+        public void setScrollBarMax(uint Value)
+        {
+            if (noteScrollBar1.Value < Value)
+            {
+                noteScrollBar1.Value = 0;
+                noteScrollBar1_Scroll(null,null);
+            }
+            noteScrollBar1.Maximum = (int)Value;
         }
         #endregion
 
@@ -358,16 +368,24 @@ namespace VocalUtau.DirectUI
         /// </summary>
         #region
         private TrackerMouseEventArgs pme_cache;
+        private GridesMouseEventArgs pge_cache;
         private TrackerMouseEventArgs RiseMouseHandle(object sender, MouseEventArgs e, OnMouseEventHandler Roll, OnMouseEventHandler Title, OnMouseEventHandler Track)
         {
             TrackerMouseEventArgs pme = new TrackerMouseEventArgs(e);
             pme.CalcAxis(pprops, rconf, pme_cache);
+            pme.Tag=null;
             OnMouseEventHandler Handle = null;
             switch (pme.Area)
             {
-                case TrackerMouseEventArgs.AreaType.Roll: Handle = Roll; break;
+                case TrackerMouseEventArgs.AreaType.Roll: Handle = Roll;break;
                 case TrackerMouseEventArgs.AreaType.Title: Handle = Title; break;
                 case TrackerMouseEventArgs.AreaType.Track: Handle = Track; break;
+            }
+            if (pme.Area == TrackerMouseEventArgs.AreaType.Roll)
+            {
+                GridesMouseEventArgs pge = new GridesMouseEventArgs(e);
+                pge.CalcArea(pprops, rconf, pge_cache);
+                pme.Tag = pge;
             }
             if (Handle != null) Handle(sender, pme);
             return pme;
@@ -383,6 +401,7 @@ namespace VocalUtau.DirectUI
 
             TrackerMouseEventArgs pme = new TrackerMouseEventArgs(e);
             pme.CalcAxis(pprops, rconf, pme_cache);
+            pme.Tag = null;
             OnMouseEventHandler Handle = null;//Move事件
             EventHandler HandleEnter = null;//Enter事件
             EventHandler HandleLeave = null;//Leave事件
@@ -406,6 +425,12 @@ namespace VocalUtau.DirectUI
                 }
                 if (HandleEnter != null) HandleEnter(sender, e);
                 if (HandleLeave != null) HandleLeave(sender, e);
+            }
+            if (pme.Area == TrackerMouseEventArgs.AreaType.Roll)
+            {
+                GridesMouseEventArgs pge = new GridesMouseEventArgs(e);
+                pge.CalcArea(pprops, rconf, pge_cache);
+                pme.Tag = pge;
             }
             if (Handle != null) Handle(sender, pme);//发送Move
             pme_cache = pme;

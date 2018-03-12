@@ -28,9 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.trackerRollWindow1 = new VocalUtau.DirectUI.TrackerRollWindow();
             this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
+            this.trackerRollWindow1 = new VocalUtau.DirectUI.TrackerRollWindow();
+            this.trackBar1 = new System.Windows.Forms.TrackBar();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
+            // 
+            // hScrollBar1
+            // 
+            this.hScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.hScrollBar1.Location = new System.Drawing.Point(77, 170);
+            this.hScrollBar1.Name = "hScrollBar1";
+            this.hScrollBar1.Size = new System.Drawing.Size(766, 25);
+            this.hScrollBar1.TabIndex = 1;
+            this.hScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar1_Scroll);
             // 
             // trackerRollWindow1
             // 
@@ -39,33 +51,38 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.trackerRollWindow1.BackColor = System.Drawing.Color.Black;
             this.trackerRollWindow1.Location = new System.Drawing.Point(0, 0);
+            this.trackerRollWindow1.Margin = new System.Windows.Forms.Padding(1);
             this.trackerRollWindow1.Name = "trackerRollWindow1";
-            this.trackerRollWindow1.Size = new System.Drawing.Size(1264, 252);
+            this.trackerRollWindow1.Size = new System.Drawing.Size(843, 168);
             this.trackerRollWindow1.TabIndex = 0;
             this.trackerRollWindow1.Load += new System.EventHandler(this.trackerRollWindow1_Load);
             // 
-            // hScrollBar1
+            // trackBar1
             // 
-            this.hScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScrollBar1.Location = new System.Drawing.Point(0, 255);
-            this.hScrollBar1.Name = "hScrollBar1";
-            this.hScrollBar1.Size = new System.Drawing.Size(1264, 25);
-            this.hScrollBar1.TabIndex = 1;
-            this.hScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar1_Scroll);
+            this.trackBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.trackBar1.Location = new System.Drawing.Point(0, 170);
+            this.trackBar1.Maximum = 60;
+            this.trackBar1.Minimum = 18;
+            this.trackBar1.Name = "trackBar1";
+            this.trackBar1.Size = new System.Drawing.Size(74, 45);
+            this.trackBar1.TabIndex = 2;
+            this.trackBar1.Value = 18;
+            this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
             // 
             // Form2
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1264, 288);
+            this.ClientSize = new System.Drawing.Size(843, 192);
+            this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.hScrollBar1);
             this.Controls.Add(this.trackerRollWindow1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Form2";
             this.Text = "Form2";
             this.Load += new System.EventHandler(this.Form2_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -73,5 +90,6 @@
 
         private VocalUtau.DirectUI.TrackerRollWindow trackerRollWindow1;
         private System.Windows.Forms.HScrollBar hScrollBar1;
+        private System.Windows.Forms.TrackBar trackBar1;
     }
 }
