@@ -151,9 +151,11 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             this.PianoWindow = PianoWindow;
         }
 
+
         private void PianoWindow_TrackPaint(object sender, VocalUtau.DirectUI.DrawUtils.TrackDrawUtils utils)
         {
-            utils.DrawPitchLine(getShownPitchLine(), Color.Red);
+            List<PitchObject> PitchObjList=getShownPitchLine();
+            utils.DrawPitchLine(PitchObjList, Color.Red);
 
             switch (PitchDragingStatus)
             {

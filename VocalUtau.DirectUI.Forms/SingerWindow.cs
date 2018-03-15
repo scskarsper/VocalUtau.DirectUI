@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -81,6 +82,9 @@ namespace VocalUtau.DirectUI.Forms
                     Param_DynamicView.DynActionEnd += Param_DynamicView_DynActionEnd;
                     Param_PitchView.PitchActionBegin += Param_PitchView_PitchActionBegin;
                     Param_PitchView.PitchActionEnd += Param_PitchView_PitchActionEnd;
+
+                    Global_ActionView.TickPosChange += Global_ActionView_TickPosChange;
+
                     Alloced = true;
 
                     SetNoteViewTool(NoteView.NoteToolsType.Select);
@@ -93,6 +97,11 @@ namespace VocalUtau.DirectUI.Forms
                     PianoWindow.RedrawPiano();
                 }
                 catch { ;}
+            }
+                        
+            void Global_ActionView_TickPosChange(long Tick, double Time)
+            {
+                if (TickPosChange != null) TickPosChange(Tick, Time);
             }
 
             #region
@@ -158,6 +167,7 @@ namespace VocalUtau.DirectUI.Forms
             public event VocalUtau.DirectUI.Utils.ParamUtils.DYNParamView.OnPitchEventHandler DynActionBegin;
             public event VocalUtau.DirectUI.Utils.PianoUtils.PitchView.OnPitchEventHandler PitchActionEnd;
             public event VocalUtau.DirectUI.Utils.PianoUtils.PitchView.OnPitchEventHandler PitchActionBegin;
+            public event VocalUtau.DirectUI.Utils.PianoUtils.ActionView.OnTickPosChangeHandler TickPosChange;
             #endregion
 
             public PitchView Track_PitchView;
@@ -271,6 +281,19 @@ namespace VocalUtau.DirectUI.Forms
                     PianoWindow.RedrawPiano();
                 }
             }
+            public void setTimePos(double Time)
+            {
+                if (Global_ActionView.TimePos != Time)
+                {
+                    Global_ActionView.TimePos = Time;
+                    PianoWindow.RedrawPiano();
+                    ParamWindow.RedrawPiano();
+                }
+            }
+            public long getTickPos()
+            {
+                return Global_ActionView.TickPos;
+            }
 
             public CopyPaste CopyPasteController;
             public class CopyPaste
@@ -313,6 +336,8 @@ namespace VocalUtau.DirectUI.Forms
             }
 
         }
+        public delegate void OnTotalTimePosChangeHandler(double Time);
+        public event OnTotalTimePosChangeHandler TotalTimePosChange;
 
         ViewController Controller;
         ObjectAlloc<PartsObject> OAC = new ObjectAlloc<PartsObject>();
@@ -321,8 +346,33 @@ namespace VocalUtau.DirectUI.Forms
         {
             InitializeComponent();
             Controller = new ViewController(ref this.pianoRollWindow1, ref this.paramCurveWindow1);
+            Controller.TickPosChange += Controller_TickPosChange;
             this.pianoRollWindow1.TrackMouseClick += pianoRollWindow1_TrackMouseClick;
             this.paramCurveWindow1.ParamAreaMouseClick += paramCurveWindow1_ParamAreaMouseClick;
+        }
+
+        void Controller_TickPosChange(long Tick, double Time)
+        {
+            if (TotalTimePosChange != null) TotalTimePosChange(Time+((PartsObject)OAC.AllocedObject).getStartTime());
+        }
+
+        public void setCurrentTimePos(double Time)
+        {
+            double StartTime = ((PartsObject)OAC.AllocedObject).getStartTime();
+            double EndTime = StartTime + ((PartsObject)OAC.AllocedObject).getDuringTime();
+            double CurrTime = Time - StartTime;
+            if (Time > EndTime) CurrTime = -1;
+            if (Time < StartTime) CurrTime = -1;
+            Controller.setTimePos(CurrTime);
+            long CurTick=Controller.getTickPos();
+            long PreStartTick=CurTick-(this.pianoRollWindow1.MaxShownTick-this.pianoRollWindow1.MinShownTick)/2;
+            if(PreStartTick<0)PreStartTick=0;
+            if (PreStartTick > ((PartsObject)OAC.AllocedObject).TickLength) return;
+            if (CurTick < this.pianoRollWindow1.MinShownTick || CurTick > this.pianoRollWindow1.MaxShownTick)
+            {
+                ctl_Scroll_LeftPos.Value = (int)PreStartTick;
+                ctl_Scroll_LeftPos_Scroll(null, null);
+            }
         }
 
         void paramCurveWindow1_ParamAreaMouseClick(object sender, ParamMouseEventArgs e)
@@ -355,6 +405,8 @@ namespace VocalUtau.DirectUI.Forms
             OAC.ReAlloc(parts);
             Controller.AllocView(OAC.IntPtr);
             ctl_Scroll_LeftPos.Maximum = (int)parts.TickLength;
+            ctl_Scroll_LeftPos.Value = 0;
+            ctl_Scroll_LeftPos_Scroll(null, null);
             this.Text = parts.PartName;
         }
 

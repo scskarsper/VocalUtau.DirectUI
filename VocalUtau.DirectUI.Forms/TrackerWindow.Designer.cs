@@ -106,6 +106,7 @@
             this.Name = "TrackerWindow";
             this.Text = "TrackerWindow";
             this.Load += new System.EventHandler(this.TrackerWindow_Load);
+            this.Enter += new System.EventHandler(this.TrackerWindow_Enter);
             ((System.ComponentModel.ISupportInitialize)(this.ctl_Track_PianoWidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ctl_Track_TrackHeight)).EndInit();
             this.ResumeLayout(false);

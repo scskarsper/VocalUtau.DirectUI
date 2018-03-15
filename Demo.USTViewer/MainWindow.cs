@@ -30,13 +30,26 @@ namespace VocalUtau.DirectUI.Forms
             aw.ShowOnDock(this.MainDock);
             tw.ShowOnDock(this.MainDock);
             tw.ShowingEditorChanged += tw_ShowingEditorChanged;
+            tw.TotalTimePosChange += tw_TotalTimePosChange;
+            sw.TotalTimePosChange += sw_TotalTimePosChange;
 
             tw.LoadProjectObject(ref poj);
         }
 
+        void tw_TotalTimePosChange(double Time)
+        {
+            sw.setCurrentTimePos(Time);
+        }
+
+        void sw_TotalTimePosChange(double Time)
+        {
+            tw.setCurrentTimePos(Time);
+        }
+        
         void tw_ShowingEditorChanged(PartsObject PartObject)
         {
             sw.LoadParts(ref PartObject);
+            tw.RealarmTickPosition();
         }
 
     }

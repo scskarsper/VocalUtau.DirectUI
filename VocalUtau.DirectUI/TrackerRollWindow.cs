@@ -304,7 +304,7 @@ namespace VocalUtau.DirectUI
                     CurrentRect,
                     e.MousePoint
                 );
-                TTitlePaint(sender, new VocalUtau.DirectUI.DrawUtils.TrackerTitlesDrawUtils(d2de, rconf));
+                TTitlePaint(sender, new VocalUtau.DirectUI.DrawUtils.TrackerTitlesDrawUtils(d2de, rconf,pprops));
             }
         }
         private void DrawTrackGrideArea(object sender, BalthasarLib.D2DPainter.D2DPaintEventArgs e)

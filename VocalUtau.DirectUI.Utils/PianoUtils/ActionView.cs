@@ -12,6 +12,8 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
 {
     public class ActionView
     {
+        public delegate void OnTickPosChangeHandler(long Tick,double Time);
+        public event OnTickPosChangeHandler TickPosChange;
         long _TickPos = -1;
 
         public long TickPos
@@ -20,20 +22,15 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             set { _TickPos = value; }
         }
 
-        public double TracksTime
+        public double TimePos
         {
+            get
+            {
+                return MidiMathUtils.Tick2Time(_TickPos, PartsObject.Tempo);
+            }
             set
             {
-                long TTick = MidiMathUtils.Time2Tick(value, PartsObject.Tempo);
-                long AST=PartsObject.getAbsoluteStartTick(PartsObject.Tempo);
-                if (AST >= TTick && TTick <= AST + PartsObject.TickLength)
-                {
-                    _TickPos = AST - TTick;
-                }
-                else
-                {
-                    _TickPos = -1;
-                }
+                _TickPos = MidiMathUtils.Time2Tick(value, PartsObject.Tempo);
             }
         }
 
@@ -80,6 +77,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                 PianoWindow.TrackMouseLeave += PianoWindow_TrackMouseLeave;
                 PianoWindow.TrackMouseMove += PianoWindow_TrackMouseMove;
                 PianoWindow.KeyDown += PianoWindow_KeyDown;
+                PianoWindow.MouseLeave += PianoWindow_MouseLeave;
                 PianoWindow.ParentForm.MouseLeave += ParentForm_MouseLeave;
             }
             catch { ;}
@@ -90,9 +88,25 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                 ParamWindow.ParamAreaMouseLeave += ParamWindow_ParamAreaMouseLeave;
                 ParamWindow.ParamAreaMouseMove += ParamWindow_ParamAreaMouseMove;
                 ParamWindow.KeyDown += ParamWindow_KeyDown;
+                ParamWindow.MouseLeave += ParamWindow_MouseLeave;
             }
             catch { ;}
         }
+
+        void ParamWindow_MouseLeave(object sender, EventArgs e)
+        {
+            HookParam = false;
+            if (!HookPiano)
+                DisableMousePost();
+        }
+
+        void PianoWindow_MouseLeave(object sender, EventArgs e)
+        {
+            HookPiano = false;
+            if (!HookParam)
+                DisableMousePost();
+        }
+
 
         void ParentForm_MouseLeave(object sender, EventArgs e)
         {
@@ -110,6 +124,8 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         }
         void ParamWindow_ParamAreaMouseMove(object sender, ParamMouseEventArgs e)
         {
+            this.ParamWindow.ParentForm.Activate();
+            this.ParamWindow.Focus();
             HookPiano = false;
             if (e.Tick < PianoWindow.MinShownTick || e.Tick > PianoWindow.MaxShownTick)
             {
@@ -125,6 +141,8 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         long MouseTick = 0;
         void PianoWindow_TrackMouseMove(object sender, PianoMouseEventArgs e)
         {
+            this.PianoWindow.ParentForm.Activate();
+            this.PianoWindow.Focus();
             HookParam = false; 
             if (e.Tick < PianoWindow.MinShownTick || e.Tick > PianoWindow.MaxShownTick)
             {
@@ -183,6 +201,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                     ParamWindow.RedrawPiano();
                 }
                 catch { ;}
+                if (TickPosChange != null) TickPosChange(TickPos, TimePos);
             }
         }
         void PianoWindow_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
@@ -237,6 +256,10 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
 
         void PianoWindow_TrackPaint(object sender, DrawUtils.TrackDrawUtils utils)
         {
+            if (PartsObject.TickLength < PianoWindow.MaxShownTick)
+            {
+                utils.DrawMask(PartsObject.TickLength, PianoWindow.MaxShownTick);
+            }
             if (_TickPos >= PianoWindow.MinShownTick && _TickPos <= PianoWindow.MaxShownTick)
             {
                 utils.DrawXLine(_TickPos, CurPost);

@@ -15,10 +15,13 @@ namespace VocalUtau.DirectUI.Forms
 {
     public partial class TrackerWindow : DockContent
     {
+        public delegate void OnTotalTimePosChangeHandler(double Time);
+        public event OnTotalTimePosChangeHandler TotalTimePosChange;
         public class ViewController
         {   
             bool Alloced = false;
             TrackerRollWindow TrackerWindow;
+           
             public ViewController(ref TrackerRollWindow TrackerWin)
             {
                 this.TrackerWindow = TrackerWin;
@@ -32,9 +35,12 @@ namespace VocalUtau.DirectUI.Forms
                 else
                 {
                     _Track_View = new TrackerView(ObjectPtr, this.TrackerWindow);
+                    _Action_View = new TrackerActionView(ObjectPtr, this.TrackerWindow);
                     _Track_View.TrackerActionBegin += Track_View_TrackerActionBegin;
                     _Track_View.TrackerActionEnd += Track_View_TrackerActionEnd;
                     _Track_View.ShowingEditorChanged += Track_View_ShowingEditorChanged;
+                    _Track_View.ShowingEditorStartPosMoved += _Track_View_ShowingEditorStartPosMoved;
+                    _Action_View.TickPosChange += _Action_View_TickPosChange;
                     _Track_View.HandleEvents = true;
                     Alloced = true;
                     _Track_View.ResetShowingParts();
@@ -46,6 +52,16 @@ namespace VocalUtau.DirectUI.Forms
                 catch { ;}
             }
 
+            void _Track_View_ShowingEditorStartPosMoved()
+            {
+                _Action_View.RealarmTickPosition();
+            }
+            
+            void _Action_View_TickPosChange(long Tick, double Time)
+            {
+                if (TickPosChange != null) TickPosChange(Tick, Time);
+            }
+
             void Track_View_ShowingEditorChanged(PartsObject PartObject)
             {
                 if (ShowingEditorChanged != null) ShowingEditorChanged(PartObject);
@@ -54,6 +70,7 @@ namespace VocalUtau.DirectUI.Forms
             public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnPartsEventHandler TrackerActionEnd;
             public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnPartsEventHandler TrackerActionBegin;
             public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnShowingEditorChangeHandler ShowingEditorChanged;
+            public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerActionView.OnTickPosChangeHandler TickPosChange;
             void Track_View_TrackerActionEnd(TrackerView.PartsDragingType eventType)
             {
                 if (TrackerActionEnd != null) TrackerActionEnd(eventType);
@@ -64,8 +81,23 @@ namespace VocalUtau.DirectUI.Forms
                 if (TrackerActionBegin != null) TrackerActionBegin(eventType);
             }
 
+            public void setTimePos(double Time)
+            {
+                if (_Action_View.TimePos != Time)
+                {
+                    _Action_View.TimePos = Time;
+                    TrackerWindow.RedrawPiano();
+                }
+            }
             #region
             TrackerView _Track_View;
+            TrackerActionView _Action_View;
+
+            public TrackerActionView Action_View
+            {
+                get { return _Action_View; }
+                set { _Action_View = value; }
+            }
 
             public TrackerView Track_View
             {
@@ -87,7 +119,13 @@ namespace VocalUtau.DirectUI.Forms
         {
             InitializeComponent();
             Controller = new ViewController(ref this.trackerRollWindow1);
+            Controller.TickPosChange += Controller_TickPosChange;
             Controller.ShowingEditorChanged += Controller_ShowingEditorChanged;
+        }
+
+        void Controller_TickPosChange(long Tick, double Time)
+        {
+            if (TotalTimePosChange != null) TotalTimePosChange(Time);
         }
 
         void Controller_ShowingEditorChanged(PartsObject PartObject)
@@ -99,11 +137,21 @@ namespace VocalUtau.DirectUI.Forms
         {
 
         }
+
+        public void RealarmTickPosition()
+        {
+            Controller.Action_View.RealarmTickPosition();
+        }
+
         public void ShowOnDock(DockPanel DockPanel)
         {
             this.Show(DockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockTop);
         }
 
+        public void setCurrentTimePos(double Time)
+        {
+            Controller.setTimePos(Time);
+        }
         public void LoadProjectObject(ref ProjectObject projects)
         {
             OAC.ReAlloc(projects);
@@ -126,6 +174,10 @@ namespace VocalUtau.DirectUI.Forms
         {
             this.trackerRollWindow1.setTrackHeight((uint)ctl_Track_TrackHeight.Value);
             Controller.Track_View.ResetScrollBar();
+        }
+
+        private void TrackerWindow_Enter(object sender, EventArgs e)
+        {
         }
     }
 }

@@ -60,6 +60,27 @@ namespace VocalUtau.DirectUI.DrawUtils
 
         }
 
+        public void DrawMask(long LeftTick, long RightTick)
+        {
+            long LeftRectangleTick = pprops.PianoStartTick;
+            long RightRectangleTick = pprops.PianoStartTick + (long)Math.Round(pprops.dertPixel2dertTick(baseEvent.ClipRectangle.Width), 0) + 1;
+            if (LeftTick < LeftRectangleTick) LeftTick = LeftRectangleTick;
+            if (RightTick > RightRectangleTick) RightTick = RightRectangleTick;
+            long StartTick = LeftTick - LeftRectangleTick;//获得左边界距离启绘点距离；
+            long EndTick = RightTick - LeftRectangleTick;//获得右边界距离启绘点距离；
+
+
+            int X1 = baseEvent.ClipRectangle.X + (int)Math.Round(pprops.dertTick2dertPixel(StartTick), 0);
+            int X2 = baseEvent.ClipRectangle.X + (int)Math.Round(pprops.dertTick2dertPixel(EndTick), 0);
+
+            Rectangle Rect = new Rectangle(
+                new Point(X1, baseEvent.ClipRectangle.Top),
+                new Size(X2 - X1, baseEvent.ClipRectangle.Height)
+                );
+            baseEvent.D2DGraphics.DrawLine(new Point(X1, baseEvent.ClipRectangle.Top), new Point(X1, baseEvent.ClipRectangle.Bottom), Color.FromArgb(90, Color.Black));
+            baseEvent.D2DGraphics.FillRectangle(Rect, Color.FromArgb(70,Color.Black));
+        }
+
         public void DrawNote(NoteObject Note, Color NoteColor)
         {
             DrawNote(Note, NoteColor, Color.Black);

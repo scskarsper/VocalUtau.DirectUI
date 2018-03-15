@@ -16,6 +16,8 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
         public event OnPartsEventHandler TrackerActionEnd;
         public event OnPartsEventHandler TrackerActionBegin;
         public event OnShowingEditorChangeHandler ShowingEditorChanged;
+        public delegate void OnShowingEditorStartPosMovedHandler();
+        public event OnShowingEditorStartPosMovedHandler ShowingEditorStartPosMoved;
         public enum PartsDragingType
         {
             None,
@@ -634,6 +636,13 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
                             //Traker X
                             TrackerList[(int)CurrentPartLocation.TrackLocation.TrackID].PartList[(int)CurrentPartLocation.PartID].StartTime += TrackerWindow.TrackerProps.Tick2Time(Dert);
                             if (TrackerList[(int)CurrentPartLocation.TrackLocation.TrackID].PartList[(int)CurrentPartLocation.PartID].StartTime < 0) TrackerList[(int)CurrentPartLocation.TrackLocation.TrackID].PartList[(int)CurrentPartLocation.PartID].StartTime = 0;
+                            if (Dert != 0)
+                            {
+                                if (TrackerList[(int)CurrentPartLocation.TrackLocation.TrackID].PartList[(int)CurrentPartLocation.PartID].getGuid() == SelectGUID)
+                                {
+                                    if (ShowingEditorStartPosMoved != null) ShowingEditorStartPosMoved();
+                                }
+                            }
                             //Traker Y
                             if (!TrackLocation.Equals(CurrentPartLocation.TrackLocation) && TrackLocation.Type == CurrentPartLocation.TrackLocation.Type)
                             {
