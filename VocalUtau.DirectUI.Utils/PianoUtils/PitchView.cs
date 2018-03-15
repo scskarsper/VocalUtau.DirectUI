@@ -152,9 +152,39 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         }
 
 
+        List<PitchObject> getPitchObjLists()
+        {
+            List<KeyValuePair<long, long>> Partsy = new List<KeyValuePair<long, long>>();
+
+            long mt = PianoWindow.MaxShownTick;
+            long nt = PianoWindow.MinShownTick;
+            long st = -1;
+            long et = -1;
+            for (int i = 0; i < NoteList.Count; i++)
+            {
+                NoteObject PN = NoteList[i];
+                if (PN.Tick >= mt) break;
+                if (PN.Tick + PN.Length < nt) continue;
+                if (et!=-1 && PN.Tick - et > 480)
+                {
+                    if (st != -1)
+                    {
+                        Partsy.Add(new KeyValuePair<long, long>(st, et));
+                        st = -1;
+                        et = -1;
+                    }
+                }
+                if (st == -1) st = PN.Tick;
+                et = PN.Tick + PN.Length;
+            }
+
+            return new List<PitchObject>();
+        }
+
         private void PianoWindow_TrackPaint(object sender, VocalUtau.DirectUI.DrawUtils.TrackDrawUtils utils)
         {
             List<PitchObject> PitchObjList=getShownPitchLine();
+            getPitchObjLists();
             utils.DrawPitchLine(PitchObjList, Color.Red);
 
             switch (PitchDragingStatus)
