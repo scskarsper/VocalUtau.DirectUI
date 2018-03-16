@@ -144,7 +144,15 @@ namespace VocalUtau.DirectUI.DrawUtils
                 }
             }
             PixelSilkLine.Add(PE);
-
+ /*           PixelSilkLine = PixelSilkLine.OrderBy(p => p.X).ToList();
+            for (int i = 1; i < PixelSilkLine.Count; i++)
+            {
+                if (PixelSilkLine[i - 1] == PixelSilkLine[i])
+                {
+                    PixelSilkLine.RemoveAt(i - 1);
+                    i--;
+                }
+            }*/
             if (PixelSilkLine.Count > 1) g.FillPathGeometrySink(PixelSilkLine, AreaColor);
         }
         public void FillSelect(long Tick1, long Tick2, Color AreaColor)

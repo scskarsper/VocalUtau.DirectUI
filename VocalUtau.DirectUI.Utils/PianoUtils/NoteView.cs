@@ -19,6 +19,9 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         public event OnNoteEventHandler NoteActionEnd;
         public event OnNoteEventHandler NoteActionBegin;
 
+        public delegate void OnNoteSelectHandler(int SelectedNoteIndex);
+        public event OnNoteSelectHandler NoteSelecting;
+
         const int AntiShakePixel = 3;
 
         bool _HandleEvents = false;
@@ -86,8 +89,22 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                 {
                     NoteList.RemoveAt(NoteSelectIndexs[i] - i);
                 }
-                NoteSelectIndexs.Clear();
+                ClearSelect();
                 if (NoteActionEnd != null) NoteActionEnd(NoteDragingType.NoteDelete);
+            }
+        }
+
+        public void ClearSelect()
+        {
+            bool isSingle = false;
+            if (NoteSelectIndexs.Count == 1)
+            {
+                isSingle = true;
+            }
+            NoteSelectIndexs.Clear();
+            if (isSingle && NoteSelecting!=null)
+            {
+                NoteSelecting(-1);
             }
         }
 
@@ -173,7 +190,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                     {
                         if (Control.ModifierKeys != Keys.Control 
                             &&Control.ModifierKeys != Keys.Shift)
-                            NoteSelectIndexs.Clear();
+                            ClearSelect();
                         if (Control.ModifierKeys == Keys.Shift && NoteSelectIndexs.Count>0)
                         {
                             for (int i = Math.Min(NoteSelectIndexs[NoteSelectIndexs.Count - 1], CurrentNoteIndex); i <= Math.Max(NoteSelectIndexs[NoteSelectIndexs.Count - 1], CurrentNoteIndex); i++)
@@ -184,6 +201,10 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                         else
                         {
                             NoteSelectIndexs.Add(CurrentNoteIndex);
+                            if (NoteSelecting!=null && NoteSelectIndexs.Count == 1)
+                            {
+                                NoteSelecting(NoteSelectIndexs[0]);
+                            }
                         }
 
                     }
@@ -369,7 +390,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                     NoteList.Add(PNN);
                 }
                 NoteList.Sort();
-                NoteSelectIndexs.Clear();
+                ClearSelect();
                 PianoWindow.RedrawPiano();
             }
             return isAvaliable;
@@ -525,7 +546,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                 }
                 else if (NoteDragingWork == NoteDragingType.AreaSelect)
                 {
-                    NoteSelectIndexs.Clear();
+                    ClearSelect();
                     long mt = NoteDias[0].TickEnd;
                     long nt = NoteDias[0].TickStart;
                     if (e.Tick >= nt && e.Tick <= mt)

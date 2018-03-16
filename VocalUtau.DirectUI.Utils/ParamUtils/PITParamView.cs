@@ -221,6 +221,7 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
 
         public List<PitchObject> getShownPitchLine(long MinTick = -1, long MaxTick = -1)
         {
+            if (MinTick < 0) MinTick = ParamWindow.MinShownTick;
             MinTick = MinTick < AntiBordTick ? 0 : ParamWindow.MinShownTick- AntiBordTick;
             if (MaxTick <= MinTick) MaxTick = ParamWindow.MaxShownTick + AntiBordTick;
             List<PitchObject> PO = PitchList;

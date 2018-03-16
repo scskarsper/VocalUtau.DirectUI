@@ -20,6 +20,8 @@ namespace VocalUtau.DirectUI.Forms
 {
     public partial class SingerWindow : DockContent
     {
+        public AttributesWindow AttributeWindow = null;
+
         public enum ParamViewType
         {
             Dynamic,
@@ -76,6 +78,7 @@ namespace VocalUtau.DirectUI.Forms
 
                     Track_NoteView.NoteActionBegin += Track_NoteView_NoteActionBegin;
                     Track_NoteView.NoteActionEnd += Track_NoteView_NoteActionEnd;
+                    Track_NoteView.NoteSelecting += Track_NoteView_NoteSelecting;
                     Track_PitchView.PitchActionBegin += Track_PitchView_PitchActionBegin;
                     Track_PitchView.PitchActionEnd += Track_PitchView_PitchActionEnd;
                     Param_DynamicView.DynActionBegin += Param_DynamicView_DynActionBegin;
@@ -97,6 +100,14 @@ namespace VocalUtau.DirectUI.Forms
                     PianoWindow.RedrawPiano();
                 }
                 catch { ;}
+            }
+
+            void Track_NoteView_NoteSelecting(int SelectedNoteIndex)
+            {
+                if (NoteSelecting != null)
+                {
+                    NoteSelecting(SelectedNoteIndex);
+                }
             }
                         
             void Global_ActionView_TickPosChange(long Tick, double Time)
@@ -168,6 +179,7 @@ namespace VocalUtau.DirectUI.Forms
             public event VocalUtau.DirectUI.Utils.PianoUtils.PitchView.OnPitchEventHandler PitchActionEnd;
             public event VocalUtau.DirectUI.Utils.PianoUtils.PitchView.OnPitchEventHandler PitchActionBegin;
             public event VocalUtau.DirectUI.Utils.PianoUtils.ActionView.OnTickPosChangeHandler TickPosChange;
+            public event VocalUtau.DirectUI.Utils.PianoUtils.NoteView.OnNoteSelectHandler NoteSelecting;
             #endregion
 
             public PitchView Track_PitchView;
@@ -347,8 +359,34 @@ namespace VocalUtau.DirectUI.Forms
             InitializeComponent();
             Controller = new ViewController(ref this.pianoRollWindow1, ref this.paramCurveWindow1);
             Controller.TickPosChange += Controller_TickPosChange;
+            Controller.NoteSelecting += Controller_NoteSelecting;
             this.pianoRollWindow1.TrackMouseClick += pianoRollWindow1_TrackMouseClick;
             this.paramCurveWindow1.ParamAreaMouseClick += paramCurveWindow1_ParamAreaMouseClick;
+        }
+
+        void Controller_NoteSelecting(int SelectedNoteIndex)
+        {
+            if (AttributeWindow != null)
+            {
+                if (SelectedNoteIndex < 0)
+                {
+                    AttributeWindow.LoadPartsPtr(OAC.IntPtr);
+                }
+                else
+                {
+                    List<NoteObject> NoteList = ((PartsObject)OAC.AllocedObject).NoteList;
+                    if (NoteList.Count > SelectedNoteIndex)
+                    {
+                        NoteObject NoteObj = NoteList[SelectedNoteIndex];
+                        AttributeWindow.LoadNotesPtr(OAC.IntPtr, ref NoteObj);
+                    }
+                }
+            }
+        }
+
+        public void BindAttributeWindow(AttributesWindow attrwin)
+        {
+            this.AttributeWindow = attrwin;
         }
 
         void Controller_TickPosChange(long Tick, double Time)
@@ -408,6 +446,7 @@ namespace VocalUtau.DirectUI.Forms
             ctl_Scroll_LeftPos.Value = 0;
             ctl_Scroll_LeftPos_Scroll(null, null);
             this.Text = parts.PartName;
+            AttributeWindow.LoadPartsPtr(OAC.IntPtr);
         }
 
         #region
@@ -428,16 +467,15 @@ namespace VocalUtau.DirectUI.Forms
             pianoRollWindow1.setNoteHeight((uint)ctl_Track_NoteHeight.Value);
         }
         
-        private void ctl_Param_LZoom_Scroll(object sender, EventArgs e)
+        public void SetupParamZoom()
         {
-            ctl_Param_RZoom.Value = ctl_Param_LZoom.Value;
-            Controller.ParamZoom= (uint)ctl_Param_LZoom.Value;
+            Controller.ParamZoom = (uint)(ctl_Param_RZoom.Value * ctl_Param_LZoom.Maximum + ctl_Param_LZoom.Value);
         }
-
-        private void ctl_Param_RZoom_Scroll(object sender, EventArgs e)
+        public void ShowBackParamZoom()
         {
-            ctl_Param_LZoom.Value = ctl_Param_RZoom.Value;
-            ctl_Param_LZoom_Scroll(null, null);
+            int LZ=(int)(Controller.ParamZoom % ctl_Param_LZoom.Maximum);
+            ctl_Param_LZoom.Value = LZ < 1 ? 1 : LZ;
+            ctl_Param_RZoom.Value = (int)Math.Floor((decimal)Controller.ParamZoom / ctl_Param_LZoom.Maximum);
         }
 
         private void PlayNote(int NoteNumber)
@@ -482,15 +520,13 @@ namespace VocalUtau.DirectUI.Forms
         private void CurveSelector_PIT_Click(object sender, EventArgs e)
         {
             Controller.SwitchParamView(ParamViewType.Pitch);
-            ctl_Param_RZoom.Value = (int)Controller.ParamZoom;
-            ctl_Param_LZoom.Value = ctl_Param_RZoom.Value;
+            ShowBackParamZoom();
         }
 
         private void CurveSelector_DYN_Click(object sender, EventArgs e)
         {
             Controller.SwitchParamView(ParamViewType.Dynamic);
-            ctl_Param_RZoom.Value = (int)Controller.ParamZoom;
-            ctl_Param_LZoom.Value = ctl_Param_RZoom.Value;
+            ShowBackParamZoom();
         }
         void SetCurveActionMenu()
         {
@@ -656,6 +692,16 @@ namespace VocalUtau.DirectUI.Forms
         private void CurveTool_EarseSelect_Click(object sender, EventArgs e)
         {
             Controller.SetParamGraphicTool(PitchView.PitchDragingType.EarseArea);
+        }
+
+        private void ctl_Param_RZoom_Scroll(object sender, EventArgs e)
+        {
+            SetupParamZoom();
+        }
+
+        private void ctl_Param_LZoom_Scroll(object sender, EventArgs e)
+        {
+            SetupParamZoom();
         }
 
 

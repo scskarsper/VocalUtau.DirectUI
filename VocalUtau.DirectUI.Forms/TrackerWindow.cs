@@ -15,6 +15,7 @@ namespace VocalUtau.DirectUI.Forms
 {
     public partial class TrackerWindow : DockContent
     {
+        public AttributesWindow AttributeWindow = null;
         public delegate void OnTotalTimePosChangeHandler(double Time);
         public event OnTotalTimePosChangeHandler TotalTimePosChange;
         public class ViewController
@@ -121,6 +122,11 @@ namespace VocalUtau.DirectUI.Forms
             Controller = new ViewController(ref this.trackerRollWindow1);
             Controller.TickPosChange += Controller_TickPosChange;
             Controller.ShowingEditorChanged += Controller_ShowingEditorChanged;
+        }
+
+        public void BindAttributeWindow(AttributesWindow attrwin)
+        {
+            this.AttributeWindow = attrwin;
         }
 
         void Controller_TickPosChange(long Tick, double Time)

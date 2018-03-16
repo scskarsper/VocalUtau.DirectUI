@@ -29,6 +29,8 @@ namespace VocalUtau.DirectUI.Forms
             sw.ShowOnDock(this.MainDock);
             aw.ShowOnDock(this.MainDock);
             tw.ShowOnDock(this.MainDock);
+            tw.BindAttributeWindow(aw);
+            sw.BindAttributeWindow(aw);
             tw.ShowingEditorChanged += tw_ShowingEditorChanged;
             tw.TotalTimePosChange += tw_TotalTimePosChange;
             sw.TotalTimePosChange += sw_TotalTimePosChange;

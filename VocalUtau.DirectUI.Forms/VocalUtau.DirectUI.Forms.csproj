@@ -70,6 +70,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AttributesWindow.resx">
+      <DependentUpon>AttributesWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SingerWindow.resx">
       <DependentUpon>SingerWindow.cs</DependentUpon>
     </EmbeddedResource>

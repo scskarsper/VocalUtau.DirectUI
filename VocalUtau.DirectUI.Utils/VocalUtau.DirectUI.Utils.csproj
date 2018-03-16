@@ -45,6 +45,9 @@
     <Compile Include="AbilityUtils\UndoAbleUtils.cs" />
     <Compile Include="ActionUtils\PitchActionUtils.cs" />
     <Compile Include="ActionUtils\ControlActionUtils.cs" />
+    <Compile Include="AttributeUtils\Models\NoteAttributes.cs" />
+    <Compile Include="AttributeUtils\Models\PartAttributes.cs" />
+    <Compile Include="AttributeUtils\Models\PhonemeAttributes.cs" />
     <Compile Include="MathUtils\PitchMathUtils.cs" />
     <Compile Include="MathUtils\ControlMathUtils.cs" />
     <Compile Include="ParamUtils\PITParamView.cs" />

@@ -63,6 +63,8 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.FullAction_EditParts = new System.Windows.Forms.ToolStripMenuItem();
             this.ParamCurveTollMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.CurveAction_SetupCurrentToMouse = new System.Windows.Forms.ToolStripMenuItem();
+            this.CurveAction_SetupCurrentToMouse_Separator = new System.Windows.Forms.ToolStripSeparator();
             this.CurveTool_DrawLine = new System.Windows.Forms.ToolStripMenuItem();
             this.CurveTool_DrawJ = new System.Windows.Forms.ToolStripMenuItem();
             this.CurveTool_DrawR = new System.Windows.Forms.ToolStripMenuItem();
@@ -70,8 +72,6 @@
             this.CurveTool_EarseSelect = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.BindPianoRoll = new System.Windows.Forms.ToolStripMenuItem();
-            this.CurveAction_SetupCurrentToMouse = new System.Windows.Forms.ToolStripMenuItem();
-            this.CurveAction_SetupCurrentToMouse_Separator = new System.Windows.Forms.ToolStripSeparator();
             ((System.ComponentModel.ISupportInitialize)(this.ctl_Param_RZoom)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ctl_Track_NoteHeight)).BeginInit();
@@ -109,14 +109,12 @@
             this.ctl_Param_RZoom.LargeChange = 1;
             this.ctl_Param_RZoom.Location = new System.Drawing.Point(-3, 4);
             this.ctl_Param_RZoom.Margin = new System.Windows.Forms.Padding(2);
-            this.ctl_Param_RZoom.Maximum = 12;
-            this.ctl_Param_RZoom.Minimum = 1;
+            this.ctl_Param_RZoom.Maximum = 5;
             this.ctl_Param_RZoom.Name = "ctl_Param_RZoom";
             this.ctl_Param_RZoom.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.ctl_Param_RZoom.Size = new System.Drawing.Size(17, 116);
+            this.ctl_Param_RZoom.Size = new System.Drawing.Size(17, 128);
             this.ctl_Param_RZoom.TabIndex = 10;
             this.ctl_Param_RZoom.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-            this.ctl_Param_RZoom.Value = 1;
             this.ctl_Param_RZoom.Scroll += new System.EventHandler(this.ctl_Param_RZoom_Scroll);
             // 
             // panel1
@@ -128,7 +126,7 @@
             this.panel1.Controls.Add(this.ctl_Param_RZoom);
             this.panel1.Location = new System.Drawing.Point(924, -3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(23, 219);
+            this.panel1.Size = new System.Drawing.Size(23, 207);
             this.panel1.TabIndex = 11;
             // 
             // ctl_Track_NoteHeight
@@ -271,7 +269,7 @@
             this.ctl_Param_LZoom.Minimum = 1;
             this.ctl_Param_LZoom.Name = "ctl_Param_LZoom";
             this.ctl_Param_LZoom.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.ctl_Param_LZoom.Size = new System.Drawing.Size(16, 116);
+            this.ctl_Param_LZoom.Size = new System.Drawing.Size(16, 128);
             this.ctl_Param_LZoom.TabIndex = 7;
             this.ctl_Param_LZoom.Value = 1;
             this.ctl_Param_LZoom.Scroll += new System.EventHandler(this.ctl_Param_LZoom_Scroll);
@@ -453,6 +451,20 @@
             this.ParamCurveTollMenu.ShowImageMargin = false;
             this.ParamCurveTollMenu.Size = new System.Drawing.Size(264, 170);
             // 
+            // CurveAction_SetupCurrentToMouse
+            // 
+            this.CurveAction_SetupCurrentToMouse.Name = "CurveAction_SetupCurrentToMouse";
+            this.CurveAction_SetupCurrentToMouse.Size = new System.Drawing.Size(263, 22);
+            this.CurveAction_SetupCurrentToMouse.Text = "Setup Current Postion to Mouse";
+            this.CurveAction_SetupCurrentToMouse.Visible = false;
+            this.CurveAction_SetupCurrentToMouse.Click += new System.EventHandler(this.RollAction_SetCurrentPos_Click);
+            // 
+            // CurveAction_SetupCurrentToMouse_Separator
+            // 
+            this.CurveAction_SetupCurrentToMouse_Separator.Name = "CurveAction_SetupCurrentToMouse_Separator";
+            this.CurveAction_SetupCurrentToMouse_Separator.Size = new System.Drawing.Size(260, 6);
+            this.CurveAction_SetupCurrentToMouse_Separator.Visible = false;
+            // 
             // CurveTool_DrawLine
             // 
             this.CurveTool_DrawLine.Name = "CurveTool_DrawLine";
@@ -499,20 +511,6 @@
             this.BindPianoRoll.Size = new System.Drawing.Size(263, 22);
             this.BindPianoRoll.Text = "Bind Tools with PianoRoll";
             this.BindPianoRoll.Click += new System.EventHandler(this.BindPianoRoll_Click);
-            // 
-            // CurveAction_SetupCurrentToMouse
-            // 
-            this.CurveAction_SetupCurrentToMouse.Name = "CurveAction_SetupCurrentToMouse";
-            this.CurveAction_SetupCurrentToMouse.Size = new System.Drawing.Size(263, 22);
-            this.CurveAction_SetupCurrentToMouse.Text = "Setup Current Postion to Mouse";
-            this.CurveAction_SetupCurrentToMouse.Visible = false;
-            this.CurveAction_SetupCurrentToMouse.Click += new System.EventHandler(this.RollAction_SetCurrentPos_Click);
-            // 
-            // CurveAction_SetupCurrentToMouse_Separator
-            // 
-            this.CurveAction_SetupCurrentToMouse_Separator.Name = "CurveAction_SetupCurrentToMouse_Separator";
-            this.CurveAction_SetupCurrentToMouse_Separator.Size = new System.Drawing.Size(260, 6);
-            this.CurveAction_SetupCurrentToMouse_Separator.Visible = false;
             // 
             // SingerWindow
             // 

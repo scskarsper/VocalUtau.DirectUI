@@ -152,41 +152,17 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         }
 
 
-        List<PitchObject> getPitchObjLists()
-        {
-            List<KeyValuePair<long, long>> Partsy = new List<KeyValuePair<long, long>>();
-
-            long mt = PianoWindow.MaxShownTick;
-            long nt = PianoWindow.MinShownTick;
-            long st = -1;
-            long et = -1;
-            for (int i = 0; i < NoteList.Count; i++)
-            {
-                NoteObject PN = NoteList[i];
-                if (PN.Tick >= mt) break;
-                if (PN.Tick + PN.Length < nt) continue;
-                if (et!=-1 && PN.Tick - et > 480)
-                {
-                    if (st != -1)
-                    {
-                        Partsy.Add(new KeyValuePair<long, long>(st, et));
-                        st = -1;
-                        et = -1;
-                    }
-                }
-                if (st == -1) st = PN.Tick;
-                et = PN.Tick + PN.Length;
-            }
-
-            return new List<PitchObject>();
-        }
-
         private void PianoWindow_TrackPaint(object sender, VocalUtau.DirectUI.DrawUtils.TrackDrawUtils utils)
         {
+            List<PitchObject>[] PitchArray=getPitchObjLists();
+            foreach (List<PitchObject> PitchObjList in PitchArray)
+            {
+                utils.DrawPitchLine(PitchObjList, Color.Red);
+            }
+            /*
             List<PitchObject> PitchObjList=getShownPitchLine();
-            getPitchObjLists();
             utils.DrawPitchLine(PitchObjList, Color.Red);
-
+            */
             switch (PitchDragingStatus)
             {
                 case PitchDragingType.DrawLine: utils.DrawPitchLine(PitchMathUtils.CalcLineSilk(PitchStP1, PitchTmpP0), Color.DarkCyan); break;
@@ -340,8 +316,57 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                 N2 = NoteNum;
             }
         }
+
+
+        List<PitchObject>[] getPitchObjLists(long MinTick = -1, long MaxTick = -1)
+        {
+            long nt = MinTick > 0 ? MinTick : PianoWindow.MinShownTick;
+            long mt = MaxTick>nt ? MaxTick : PianoWindow.MaxShownTick;
+
+
+            List<KeyValuePair<long, long>> Partsy = new List<KeyValuePair<long, long>>();
+            long st = -1;
+            long et = -1;
+            for (int i = 0; i < NoteList.Count; i++)
+            {
+                NoteObject PN = NoteList[i];
+                if (PN.Tick >= mt) break;
+                if (PN.Tick + PN.Length < nt) continue;
+                if (et != -1 && PN.Tick - et > AntiBordTick)//AntiBordTick在这里为音符间最大间隔
+                {
+                    if (st != -1)
+                    {
+                        Partsy.Add(new KeyValuePair<long, long>(st, et));
+                        st = -1;
+                        et = -1;
+                    }
+                }
+                if (st == -1) st = PN.Tick;
+                et = PN.Tick + PN.Length;
+            }
+            if (st != -1 && et != -1)
+            {
+                Partsy.Add(new KeyValuePair<long, long>(st, et));
+                st = -1;
+                et = -1;
+            }
+            List<List<PitchObject>> Ret = new List<List<PitchObject>>();
+            foreach (KeyValuePair<long, long> SE in Partsy)
+            {
+                if (SE.Key < SE.Value)
+                {
+                    List<NoteObject> NL = NoteList;
+                    List<PitchObject> PN = PitchList;
+                    Ret.Add(PitchActionUtils.getShownPitchLine(ref NL, ref PN, SE.Key - (AntiBordTick / 2), SE.Value + (AntiBordTick/2), _ShowNoteSpace));
+                }
+            }
+            return Ret.ToArray();
+        }
+
+
         public List<PitchObject> getShownPitchLine(long MinTick=-1,long MaxTick=-1)
         {
+            if (MinTick < 0) MinTick = PianoWindow.MinShownTick;
             MinTick = MinTick<AntiBordTick?0:PianoWindow.MinShownTick - AntiBordTick;
             if(MaxTick<=MinTick)MaxTick = PianoWindow.MaxShownTick + AntiBordTick;
             List<NoteObject> NL = NoteList;

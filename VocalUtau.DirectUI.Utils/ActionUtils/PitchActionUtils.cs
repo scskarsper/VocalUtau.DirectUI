@@ -108,9 +108,14 @@ namespace VocalUtau.DirectUI.Utils.ActionUtils
                 PitchList.Add(new PitchObject(0, 0));
             }
             PitchObject LastObj = PitchList[0];
+            PitchObject PrevObj = LastObj;
             for (int i = 0; i < PitchList.Count; i++)
             {
-                if (PitchList[i].Tick < MinTick) continue;
+                if (PitchList[i].Tick < MinTick)
+                {
+                    PrevObj = PitchList[i];
+                    continue;
+                }
                 if (PitchList[i].Tick > MaxTick) break;
                 if (isFirst && i > 0)
                 {
@@ -123,6 +128,10 @@ namespace VocalUtau.DirectUI.Utils.ActionUtils
                 }
                 ret.Add(new PitchObject(PitchList[i].Tick, PitchList[i].PitchValue.PitchValue));
                 LastObj = PitchList[i];
+            }
+            if (isFirst && PrevObj.Tick<= MinTick)
+            {
+                ret.Add(new PitchObject(MinTick, PrevObj.PitchValue));
             }
             if (LastObj.Tick < MaxTick)
             {
