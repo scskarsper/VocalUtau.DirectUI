@@ -103,6 +103,9 @@ namespace Demo.USTViewer
                                     @"D:\VocalUtau\VocalUtau.DebugExampleFiles\DemoUSTS\Sakurane2.Tracks\Track-fc0b6027-d7fb-4c82-8ca0-6bc1e54cdfb2.ust",
                                     @"D:\VocalUtau\VocalUtau.DebugExampleFiles\DemoUSTS\Sakurane2.Tracks\Track-4b158252-eb7f-4223-b7b0-d78f32e044ec.ust"
                                 },renew);
+            poj.TrackerList[0].PartList[0].NoteList[0].PhonemeAtoms.Add(new NoteAtomObject("m"));
+            poj.TrackerList[0].PartList[0].NoteList[0].PhonemeAtoms[1].AtomLength = 120;
+            poj.TrackerList[0].PartList[0].NoteList[0].PhonemeAtoms.Add(new NoteAtomObject("r"));
             return poj;
         }
     }

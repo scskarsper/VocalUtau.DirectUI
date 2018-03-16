@@ -45,9 +45,15 @@
     <Compile Include="AbilityUtils\UndoAbleUtils.cs" />
     <Compile Include="ActionUtils\PitchActionUtils.cs" />
     <Compile Include="ActionUtils\ControlActionUtils.cs" />
+    <Compile Include="AttributeUtils\CategoryForms\PhonemeAtomCategoryWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AttributeUtils\CategoryForms\PhonemeAtomCategoryWindow.Designer.cs">
+      <DependentUpon>PhonemeAtomCategoryWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AttributeUtils\CategoryForms\PhonemeAtomCategoryModelEditor.cs" />
     <Compile Include="AttributeUtils\Models\NoteAttributes.cs" />
     <Compile Include="AttributeUtils\Models\PartAttributes.cs" />
-    <Compile Include="AttributeUtils\Models\PhonemeAttributes.cs" />
     <Compile Include="MathUtils\PitchMathUtils.cs" />
     <Compile Include="MathUtils\ControlMathUtils.cs" />
     <Compile Include="ParamUtils\PITParamView.cs" />
@@ -69,7 +75,11 @@
       <Name>VocalUtau.DirectUI</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="AttributeUtils\CategoryForms\PhonemeAtomCategoryWindow.resx">
+      <DependentUpon>PhonemeAtomCategoryWindow.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

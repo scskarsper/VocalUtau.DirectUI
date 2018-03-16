@@ -100,47 +100,21 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
             }
         }
 
-        public class PhonemeAtomListConverter : ExpandableObjectConverter
-        {
-            public override bool CanConvertTo(ITypeDescriptorContext context,
-                                   System.Type destinationType)
-            {
-                if (destinationType == typeof(List<NoteAtomObject>))
-                    return true;
-                return base.CanConvertTo(context, destinationType);
-            }
-            public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, System.Type destinationType)
-            {
-                if (destinationType == typeof(System.String) &&
-                     value is List<NoteAtomObject>)
-                {
-                    List<NoteAtomObject> so = (List<NoteAtomObject>)value;
-                    List<string> ovo=new List<string>();
-                    string Phoneme = "";
-                    foreach (NoteAtomObject NAO in so)
-                    {
-                        ovo.Add(NAO.PhonemeAtom);
-                    }
-                    return String.Join("|", ovo);
-                }
-                return base.ConvertTo(context, culture, value, destinationType);
-            }
-        }
         //http://blog.csdn.net/luyifeiniu/article/details/5426960
-        [CategoryAttribute("音符信息"), DisplayName("发音部件")]
-        [TypeConverterAttribute(typeof(PhonemeAtomListConverter)),  
-        DescriptionAttribute("展开以查看应用程序的拼写选项。")]  
-        public List<NoteAtomObject> Note_Phonemes
+        [CategoryAttribute("音符信息"), DisplayName("发音部件")]           
+        [TypeConverterAttribute(typeof(VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms.PhonemeAtomListConverter)),  
+        DescriptionAttribute("音符的发音部件集合，点击Editor编辑详情")] 
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+        [Editor(typeof(VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms.PhonemeAtomCategoryModelEditor), typeof(System.Drawing.Design.UITypeEditor))]
+        public VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms.PhonemeEditorModel Note_Phonemes
         {
             get
             {
-              //  List<PhonemeAttributes> ret=new List<PhonemeAttributes>();
-              //  ret.Add(new PhonemeAttributes());
-                return NoteObject.PhonemeAtoms;
+                return new VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms.PhonemeEditorModel(NoteObject);
             }
             set
             {
-                ;// NoteObject.PhonemeAtoms = value;
+                 NoteObject.PhonemeAtoms = value.Plist;
             }
         }
     }
