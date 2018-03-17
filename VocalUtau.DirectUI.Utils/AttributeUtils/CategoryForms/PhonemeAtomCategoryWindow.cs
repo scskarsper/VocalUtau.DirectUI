@@ -27,8 +27,13 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
                 this.ListValue = new List<NoteAtomObject>();
             }
         }
+        private List<NoteAtomObject> _ListValue;
+        public List<NoteAtomObject> ListValue
+        {
+            get { return _ListValue; }
+            set { _ListValue = value; }
+        }
 
-        public List<NoteAtomObject> ListValue{get;set;}
         int CurrentIndex = 0;
         private void PhonemeAtomCategoryWindow_Load(object sender, EventArgs e)
         {
@@ -131,6 +136,19 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
                     this.pnl_Phoneme.Controls[i].BackColor = i == ObjectIndex ? Color.Teal : Color.FromArgb(0, 192, 192);
                 }
             }
+            chk_Bfb.Checked = ListValue[CurrentIndex].LengthIsPercent;
+            chk_Bfb.Tag = CurrentIndex;
+            chk_ZyB.Checked = ListValue[CurrentIndex].AtomLength == 0;
+            chk_ZyB.Tag = CurrentIndex;
+
+            chk_Bfb.Enabled = !chk_ZyB.Checked;
+
+            setupAtomPropertyView(ObjectIndex);
+
+            if (chk_ZyB.Checked)
+            {
+                chk_ZyB.Enabled = !isSingleAuto;
+            }
         }
         void ReloadListValue()
         {
@@ -232,7 +250,6 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
             int Index = (int)CurLbl.Tag;
             SetCurrentObject(Index);
         }
-
         private void btn_OK_Click(object sender, EventArgs e)
         {
 
@@ -285,6 +302,127 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
             }
             ReCalcListValue();
             ResizeShown();
+            AtomPropertyGrid.Refresh();
+        }
+
+        private void setupAtomPropertyView(int ObjectIndex)
+        {
+            if (ObjectIndex > ListValue.Count)
+            {
+                ObjectIndex = 0;
+            };
+            if (CurrentIndex == ObjectIndex)
+            {
+                if (CurrentIndex == 1)
+                {
+                    //第一个
+                }
+                else if (CurrentIndex == ListValue.Count - 1)
+                {
+                    //最后一个
+                }
+                else
+                {
+                    //其他
+                }
+                NoteAtomObject curObj=_ListValue[CurrentIndex];
+                BasicPhonemeAttrModels bpam = new BasicPhonemeAttrModels(ref curObj);
+                AtomPropertyGrid.SelectedObject=bpam;
+            }
+        }
+
+        private void chk_Bfb_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (this.pnl_Phoneme.Tag == null || this.pnl_Phoneme.Tag.GetType() != typeof(List<long>))
+                {
+                    return;
+                }
+                if ((int)chk_Bfb.Tag != CurrentIndex) return;
+                if (ListValue[CurrentIndex].AtomLength == 0)
+                {
+                    chk_Bfb.Checked = false;
+                    return;
+                }
+                List<long> TickArray = (List<long>)this.pnl_Phoneme.Tag;
+                if (ListValue[CurrentIndex].LengthIsPercent != chk_Bfb.Checked)
+                {
+                    if (chk_Bfb.Checked)
+                    {
+                        try
+                        {
+                            long tot = 0;
+                            for (int i = 0; i < TickArray.Count; i++)
+                            {
+                                tot = tot + TickArray[CurrentIndex];
+                            }
+                            ListValue[CurrentIndex].AtomLength = (long)Math.Round(((double)TickArray[CurrentIndex] / (double)tot) * 100);
+                            ListValue[CurrentIndex].LengthIsPercent = true;
+                        }
+                        catch { ;}
+                    }
+                    else
+                    {
+                        try
+                        {
+                            ListValue[CurrentIndex].AtomLength = TickArray[CurrentIndex];
+                            ListValue[CurrentIndex].LengthIsPercent = false;
+                        }
+                        catch { ;}
+                    }
+                }
+                AtomPropertyGrid.Refresh();
+            }
+            catch { ;}
+        }
+
+        private void chk_ZyB_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (this.pnl_Phoneme.Tag == null || this.pnl_Phoneme.Tag.GetType() != typeof(List<long>))
+                {
+                    return;
+                }
+                if ((int)chk_ZyB.Tag != CurrentIndex) return;
+                List<long> TickArray = (List<long>)this.pnl_Phoneme.Tag;
+                if (chk_ZyB.Checked)
+                {
+                    bool ava = false;
+                    for (int i = 0; i < ListValue.Count; i++)
+                    {
+                        if (ListValue[i].AtomLength == 0)
+                        {
+                            ava = true;
+                        }
+                    }
+                    if (ava)
+                    {
+                        ListValue[CurrentIndex].AtomLength = 0;
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        ListValue[CurrentIndex].AtomLength = TickArray[CurrentIndex];
+                    }
+                    catch { ;}
+                }
+                ReCalcListValue();
+                ResizeShown();
+                if (ListValue[CurrentIndex].AtomLength == 0)
+                {
+                    this.pnl_Phoneme.Controls[CurrentIndex].BackColor = Color.Olive;
+                }
+                else
+                {
+                    this.pnl_Phoneme.Controls[CurrentIndex].BackColor = Color.Teal;
+                }
+                chk_Bfb.Enabled = !chk_ZyB.Checked;
+            }
+            catch { ;}
         }
     }
 }

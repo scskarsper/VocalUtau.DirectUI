@@ -39,7 +39,9 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.chk_Bfb = new System.Windows.Forms.CheckBox();
+            this.AtomPropertyGrid = new System.Windows.Forms.PropertyGrid();
+            this.chk_ZyB = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.ctl_pa_Start)).BeginInit();
             this.SuspendLayout();
             // 
@@ -47,9 +49,10 @@
             // 
             this.btn_OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btn_OK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btn_OK.Location = new System.Drawing.Point(23, 468);
+            this.btn_OK.Location = new System.Drawing.Point(31, 518);
+            this.btn_OK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btn_OK.Name = "btn_OK";
-            this.btn_OK.Size = new System.Drawing.Size(75, 23);
+            this.btn_OK.Size = new System.Drawing.Size(100, 29);
             this.btn_OK.TabIndex = 0;
             this.btn_OK.Text = "确定";
             this.btn_OK.UseVisualStyleBackColor = true;
@@ -59,9 +62,10 @@
             // 
             this.btn_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btn_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btn_Cancel.Location = new System.Drawing.Point(114, 468);
+            this.btn_Cancel.Location = new System.Drawing.Point(152, 518);
+            this.btn_Cancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btn_Cancel.Name = "btn_Cancel";
-            this.btn_Cancel.Size = new System.Drawing.Size(75, 23);
+            this.btn_Cancel.Size = new System.Drawing.Size(100, 29);
             this.btn_Cancel.TabIndex = 1;
             this.btn_Cancel.Text = "取消";
             this.btn_Cancel.UseVisualStyleBackColor = true;
@@ -69,18 +73,20 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(4, 141);
+            this.label3.Location = new System.Drawing.Point(5, 134);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(65, 12);
+            this.label3.Size = new System.Drawing.Size(82, 15);
             this.label3.TabIndex = 2;
             this.label3.Text = "音符总长：";
             // 
             // lbl_Length
             // 
             this.lbl_Length.AutoSize = true;
-            this.lbl_Length.Location = new System.Drawing.Point(65, 141);
+            this.lbl_Length.Location = new System.Drawing.Point(87, 134);
+            this.lbl_Length.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbl_Length.Name = "lbl_Length";
-            this.lbl_Length.Size = new System.Drawing.Size(41, 12);
+            this.lbl_Length.Size = new System.Drawing.Size(55, 15);
             this.lbl_Length.TabIndex = 2;
             this.lbl_Length.Text = "Length";
             // 
@@ -90,9 +96,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lbl_NoteView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
             this.lbl_NoteView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lbl_NoteView.Location = new System.Drawing.Point(91, 43);
+            this.lbl_NoteView.Location = new System.Drawing.Point(121, 12);
+            this.lbl_NoteView.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbl_NoteView.Name = "lbl_NoteView";
-            this.lbl_NoteView.Size = new System.Drawing.Size(374, 31);
+            this.lbl_NoteView.Size = new System.Drawing.Size(411, 38);
             this.lbl_NoteView.TabIndex = 3;
             this.lbl_NoteView.Text = "label2";
             this.lbl_NoteView.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -103,9 +110,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnl_Phoneme.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
             this.pnl_Phoneme.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnl_Phoneme.Location = new System.Drawing.Point(91, 77);
+            this.pnl_Phoneme.Location = new System.Drawing.Point(121, 54);
+            this.pnl_Phoneme.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnl_Phoneme.Name = "pnl_Phoneme";
-            this.pnl_Phoneme.Size = new System.Drawing.Size(374, 30);
+            this.pnl_Phoneme.Size = new System.Drawing.Size(411, 37);
             this.pnl_Phoneme.TabIndex = 4;
             this.pnl_Phoneme.Resize += new System.EventHandler(this.pnl_Phoneme_Resize);
             // 
@@ -116,11 +124,11 @@
             this.ctl_pa_Start.AutoSize = false;
             this.ctl_pa_Start.BackColor = System.Drawing.SystemColors.Control;
             this.ctl_pa_Start.LargeChange = 1;
-            this.ctl_pa_Start.Location = new System.Drawing.Point(84, 112);
+            this.ctl_pa_Start.Location = new System.Drawing.Point(112, 98);
             this.ctl_pa_Start.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
             this.ctl_pa_Start.Maximum = 10000;
             this.ctl_pa_Start.Name = "ctl_pa_Start";
-            this.ctl_pa_Start.Size = new System.Drawing.Size(388, 16);
+            this.ctl_pa_Start.Size = new System.Drawing.Size(430, 20);
             this.ctl_pa_Start.TabIndex = 6;
             this.ctl_pa_Start.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.ctl_pa_Start.Value = 13;
@@ -129,55 +137,86 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(4, 53);
+            this.label2.Location = new System.Drawing.Point(5, 24);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(65, 12);
+            this.label2.Size = new System.Drawing.Size(82, 15);
             this.label2.TabIndex = 7;
             this.label2.Text = "音符歌词：";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(4, 84);
+            this.label4.Location = new System.Drawing.Point(5, 63);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(77, 12);
+            this.label4.Size = new System.Drawing.Size(97, 15);
             this.label4.TabIndex = 8;
             this.label4.Text = "发音部件图：";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(4, 113);
+            this.label5.Location = new System.Drawing.Point(5, 99);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(77, 12);
+            this.label5.Size = new System.Drawing.Size(97, 15);
             this.label5.TabIndex = 9;
             this.label5.Text = "发音起始点：";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(169, 141);
+            this.label6.Location = new System.Drawing.Point(206, 134);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(113, 12);
+            this.label6.Size = new System.Drawing.Size(112, 15);
             this.label6.TabIndex = 11;
-            this.label6.Text = "发音部件长度类型：";
+            this.label6.Text = "发音部件类型：";
             // 
-            // checkBox1
+            // chk_Bfb
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(288, 140);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(60, 16);
-            this.checkBox1.TabIndex = 12;
-            this.checkBox1.Text = "百分比";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.chk_Bfb.AutoSize = true;
+            this.chk_Bfb.Location = new System.Drawing.Point(326, 133);
+            this.chk_Bfb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chk_Bfb.Name = "chk_Bfb";
+            this.chk_Bfb.Size = new System.Drawing.Size(74, 19);
+            this.chk_Bfb.TabIndex = 12;
+            this.chk_Bfb.Text = "百分比";
+            this.chk_Bfb.UseVisualStyleBackColor = true;
+            this.chk_Bfb.CheckedChanged += new System.EventHandler(this.chk_Bfb_CheckedChanged);
+            // 
+            // AtomPropertyGrid
+            // 
+            this.AtomPropertyGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.AtomPropertyGrid.LineColor = System.Drawing.SystemColors.ControlDark;
+            this.AtomPropertyGrid.Location = new System.Drawing.Point(545, 12);
+            this.AtomPropertyGrid.Name = "AtomPropertyGrid";
+            this.AtomPropertyGrid.Size = new System.Drawing.Size(318, 485);
+            this.AtomPropertyGrid.TabIndex = 13;
+            // 
+            // chk_ZyB
+            // 
+            this.chk_ZyB.AutoSize = true;
+            this.chk_ZyB.Location = new System.Drawing.Point(408, 133);
+            this.chk_ZyB.Margin = new System.Windows.Forms.Padding(4);
+            this.chk_ZyB.Name = "chk_ZyB";
+            this.chk_ZyB.Size = new System.Drawing.Size(74, 19);
+            this.chk_ZyB.TabIndex = 14;
+            this.chk_ZyB.Text = "自由部";
+            this.chk_ZyB.UseVisualStyleBackColor = true;
+            this.chk_ZyB.CheckedChanged += new System.EventHandler(this.chk_ZyB_CheckedChanged);
             // 
             // PhonemeAtomCategoryWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(477, 503);
-            this.Controls.Add(this.checkBox1);
+            this.ClientSize = new System.Drawing.Size(873, 562);
+            this.Controls.Add(this.chk_ZyB);
+            this.Controls.Add(this.AtomPropertyGrid);
+            this.Controls.Add(this.chk_Bfb);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label2);
@@ -189,6 +228,7 @@
             this.Controls.Add(this.btn_OK);
             this.Controls.Add(this.ctl_pa_Start);
             this.Controls.Add(this.label5);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "PhonemeAtomCategoryWindow";
             this.Text = "PhonemeAtomCategoryWindow";
             this.Load += new System.EventHandler(this.PhonemeAtomCategoryWindow_Load);
@@ -211,6 +251,8 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox chk_Bfb;
+        private System.Windows.Forms.PropertyGrid AtomPropertyGrid;
+        private System.Windows.Forms.CheckBox chk_ZyB;
     }
 }
