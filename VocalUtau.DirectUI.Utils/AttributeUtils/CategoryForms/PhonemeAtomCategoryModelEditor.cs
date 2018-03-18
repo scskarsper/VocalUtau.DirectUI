@@ -68,12 +68,12 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
             _Plist = note.PhonemeAtoms;
         }
     }
-    public class PhonemeAtomCategoryModelEditor:System.Drawing.Design.UITypeEditor
+    public class PhonemeAtomCategoryModelEditor : System.Drawing.Design.UITypeEditor
     {
         public PhonemeAtomCategoryModelEditor()
         {
         }
-        public override System.Drawing.Design.UITypeEditorEditStyle GetEditStyle (System.ComponentModel.ITypeDescriptorContext context)
+        public override System.Drawing.Design.UITypeEditorEditStyle GetEditStyle(System.ComponentModel.ITypeDescriptorContext context)
         {
             return UITypeEditorEditStyle.Modal;
         }
@@ -85,11 +85,13 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
             {
                 return null;
             }
-            
+
             PhonemeAtomCategoryWindow form = new PhonemeAtomCategoryWindow(value);
             if (service.ShowDialog(form) == DialogResult.OK)
             {
-                return form.ListValue;
+                PhonemeEditorModel pmodel = (PhonemeEditorModel)value;
+                pmodel.Plist = form.ListValue;
+                return pmodel;
             }
 
             return value;

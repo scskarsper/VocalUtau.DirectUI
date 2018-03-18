@@ -15,6 +15,7 @@ namespace VocalUtau.DirectUI.Forms
 {
     public partial class AttributesWindow : DockContent
     {
+        ObjectAlloc<ITrackerInterface> TrackerBinder = new ObjectAlloc<ITrackerInterface>();
         ObjectAlloc<NoteObject> NoteBinder = new ObjectAlloc<NoteObject>();
 
         public AttributesWindow()
@@ -24,6 +25,12 @@ namespace VocalUtau.DirectUI.Forms
         public void ShowOnDock(DockPanel DockPanel)
         {
             this.Show(DockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
+        }
+        public void LoadTracksPtr(IntPtr TracksPtr)
+        {
+            this.PropertyViewer.Tag = new PartAttributes(TracksPtr);
+
+            this.PropertyViewer.SelectedObject = this.PropertyViewer.Tag;
         }
         public void LoadPartsPtr(IntPtr PartsPtr)
         {

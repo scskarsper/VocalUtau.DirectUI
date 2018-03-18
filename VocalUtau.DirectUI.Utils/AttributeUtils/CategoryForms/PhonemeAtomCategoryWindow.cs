@@ -55,6 +55,8 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
                 return;
             }
             List<long> TickArray = (List<long>)this.pnl_Phoneme.Tag;
+
+            if (TickArray.Count > 0) this.pnl_Phoneme.BackColor = this.pnl_Phoneme.Controls[TickArray.Count - 1].BackColor;
             int totalwidth = this.pnl_Phoneme.ClientRectangle.Width;
             long totaltick = pmodel.Length;
             double w2t = (double)totalwidth / (double)totaltick;
@@ -62,8 +64,8 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
             int LastLeft = 0;
             for (int i = 0; i < TickArray.Count; i++)
             {
-                this.pnl_Phoneme.Controls[i].Left = LastLeft;
-                this.pnl_Phoneme.Controls[i].Width = (int)(TickArray[i] * w2t);
+                this.pnl_Phoneme.Controls[i].Left = LastLeft-1;
+                this.pnl_Phoneme.Controls[i].Width = (int)(TickArray[i] * w2t) + 1;
                 this.pnl_Phoneme.Controls[i].Text = ListValue[i].PhonemeAtom;
                 LastLeft = LastLeft + (int)(TickArray[i] * w2t);
             }
@@ -149,6 +151,10 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
             {
                 chk_ZyB.Enabled = !isSingleAuto;
             }
+            else
+            {
+                chk_ZyB.Enabled = true;
+            }
         }
         void ReloadListValue()
         {
@@ -167,9 +173,9 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
             for (int i = 0; i < TickArray.Count; i++)
             {
                 Label lb=new Label();
-                lb.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-                lb.Height = pnl_Phoneme.ClientRectangle.Height;
-                lb.Top = 0;
+                if(i!=TickArray.Count-1)lb.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+                lb.Height = pnl_Phoneme.ClientRectangle.Height+2;
+                lb.Top = -1;
                 lb.TextAlign = ContentAlignment.MiddleCenter;
                 lb.Tag = i;
                 lb.Click += Atom_Click;
@@ -267,7 +273,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
                 return;
             }
             List<long> TickArray = (List<long>)this.pnl_Phoneme.Tag;
-            if (ListValue[CurrentIndex - 1].AtomLength > 0 || !isSingleAuto)
+            if (ListValue[CurrentIndex - 1].AtomLength > 0)// || (!isSingleAuto && ListValue[CurrentIndex].AtomLength == 0))
             {
                 if (ListValue[CurrentIndex - 1].LengthIsPercent)
                 {
@@ -282,7 +288,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
                 }
                 this.pnl_Phoneme.Controls[CurrentIndex - 1].BackColor = Color.FromArgb(0, 192, 192);
             }
-            if (ListValue[CurrentIndex].AtomLength > 0 || !isSingleAuto)
+            if (ListValue[CurrentIndex].AtomLength > 0 || (!isSingleAuto && ListValue[CurrentIndex-1].AtomLength == 0))
             {
                 long tEnd = pmodel.Length;
                 if (CurrentIndex + 1 < ListValue.Count) tEnd = getStartTick(CurrentIndex + 1);
@@ -313,21 +319,36 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
             };
             if (CurrentIndex == ObjectIndex)
             {
-                if (CurrentIndex == 1)
+                if (ListValue.Count > 1)
                 {
-                    //第一个
+                    if (CurrentIndex == 0)
+                    {
+                        //第一个
+                        NoteAtomObject curObj = _ListValue[CurrentIndex];
+                        FirstPhonemeAttrModels bpam = new FirstPhonemeAttrModels(ref curObj);
+                        AtomPropertyGrid.SelectedObject = bpam;
+                    }
+                    else if (CurrentIndex == ListValue.Count - 1)
+                    {
+                        //最后一个
+                        NoteAtomObject curObj = _ListValue[CurrentIndex];
+                        LastPhonemeAttrModels bpam = new LastPhonemeAttrModels(ref curObj);
+                        AtomPropertyGrid.SelectedObject = bpam;
+                    }
+                    else
+                    {
+                        //其他
+                        NoteAtomObject curObj = _ListValue[CurrentIndex];
+                        BasicPhonemeAttrModels bpam = new BasicPhonemeAttrModels(ref curObj);
+                        AtomPropertyGrid.SelectedObject = bpam;
+                    }
                 }
-                else if (CurrentIndex == ListValue.Count - 1)
+                else if(ListValue.Count==1)
                 {
-                    //最后一个
+                    NoteAtomObject curObj = _ListValue[0];
+                    SinglePhonemeAttrModels bpam = new SinglePhonemeAttrModels(ref curObj);
+                    AtomPropertyGrid.SelectedObject = bpam;
                 }
-                else
-                {
-                    //其他
-                }
-                NoteAtomObject curObj=_ListValue[CurrentIndex];
-                BasicPhonemeAttrModels bpam = new BasicPhonemeAttrModels(ref curObj);
-                AtomPropertyGrid.SelectedObject=bpam;
             }
         }
 

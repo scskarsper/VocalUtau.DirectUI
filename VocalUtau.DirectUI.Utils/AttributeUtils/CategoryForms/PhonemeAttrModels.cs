@@ -34,7 +34,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
         public long AtomLength
         {
             get { return BaseObj.AtomLength; }
-        //    set { BaseObj.AtomLength = value; }
+            //    set { BaseObj.AtomLength = value; }
         }
         [CategoryAttribute("发音时长"), DisplayName("是否百分比")]
         public bool LengthIsPercent
@@ -56,46 +56,74 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
             set { BaseObj.Flags = value; }
         }
 
-        [CategoryAttribute("自定义发音属性"), DisplayName("先行发音(PreUtterance)")]
-        public double PreUtterance
+        public string Value2String(double value)
         {
-            get { return BaseObj.PreUtterance; }
-            set { BaseObj.PreUtterance = value; }
+            if (value == double.NaN) return "";
+            if (double.IsNaN(value)) return "";
+            return value.ToString();
         }
-        double _Intensity;
-
+        public double String2Value(string str)
+        {
+            if (str == "") return double.NaN;
+            double t;
+            if (double.TryParse(str, out t))
+            {
+                return t;
+            }
+            else
+            {
+                return double.NaN;
+            }
+        }
         [CategoryAttribute("自定义发音属性"), DisplayName("感情强度(Intensity)")]
-        public double Intensity
+        public string Intensity
         {
-            get { return _Intensity; }
-            set { _Intensity = value; }
+            get { return Value2String(BaseObj.Intensity); }
+            set { BaseObj.Intensity = String2Value(value); }
         }
-        double _Modulation;
 
         [CategoryAttribute("自定义发音属性"), DisplayName("移调幅度(Modulation)")]
-        public double Modulation
+        public string Modulation
         {
-            get { return _Modulation; }
-            set { _Modulation = value; }
+            get { return Value2String(BaseObj.Modulation); }
+            set { BaseObj.Modulation = String2Value(value); }
         }
 
-        double _StartPoint;
         [CategoryAttribute("自定义发音属性"), DisplayName("采样偏移(Offset)")]
-        public double StartPoint
+        public string StartPoint
         {
-            get { return _StartPoint; }
-            set { _StartPoint = value; }
+            get { return Value2String(BaseObj.StartPoint); }
+            set { BaseObj.StartPoint = String2Value(value); }
         }
+
         double _Velocity;
         [CategoryAttribute("自定义发音属性"), DisplayName("发音速度(Velocity)")]
-        public double Velocity
+        public string Velocity
         {
-            get { return _Velocity; }
-            set { _Velocity = value; }
+            get { return Value2String(BaseObj.Velocity); }
+            set { BaseObj.Velocity = String2Value(value); }
         }
 
         /*混合时重叠区域=Overlap=EnvA.P3=EnvB.P2*/
 
+        [CategoryAttribute("自定义过度属性"), DisplayName("先行发音(PreUtterance)")]
+        public string PreUtterance
+        {
+            get { return Value2String(BaseObj.PreUtterance); }
+            set { BaseObj.PreUtterance = String2Value(value); }
+        }
+        [CategoryAttribute("自定义过度属性"), DisplayName("交叠区域(PreUtterance)")]
+        public string Overlap
+        {
+            get { return Value2String(BaseObj.Overlap); }
+            set { BaseObj.Overlap = String2Value(value); }
+        }
+        [CategoryAttribute("包络属性"), DisplayName("音量百分比")]
+        public long VolumePercentInt
+        {
+            get { return BaseObj.VolumePercentInt; }
+            set { BaseObj.VolumePercentInt = value; }
+        }
         /* double _Overlap;
 
          public double Overlap
@@ -117,14 +145,102 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
         {
             get { return _fadeOutLengthMs; }
             set { _fadeOutLengthMs = value; }
+        }*/
+    }
+
+
+    [DefaultProperty("Note_Lyric")]
+    public class FirstPhonemeAttrModels : BasicPhonemeAttrModels
+    {
+        private NoteAtomObject _obj;
+
+        private NoteAtomObject BaseObj
+        {
+            get { return _obj; }
         }
 
-        long _volumePercentInt = 100;
+        private int _Index = 0;
 
-        public long VolumePercentInt
+        private int TickIndex
         {
-            get { return _volumePercentInt; }
-            set { _volumePercentInt = value; }
-        }*/
+            get { return _Index; }
+            set { _Index = value; }
+        }
+        public FirstPhonemeAttrModels(ref NoteAtomObject BasicObj)
+            : base(ref BasicObj)
+        {
+            this._obj = BasicObj;
+        }
+        [CategoryAttribute("包络属性"), DisplayName("音量淡入时长(ms)")]
+        public long FadeInLengthMs
+        {
+            get { return BaseObj.FadeInLengthMs; }
+            set { BaseObj.FadeInLengthMs = value; if (BaseObj.FadeInLengthMs < 0)BaseObj.FadeInLengthMs = 0; }
+        }
+    }
+
+    [DefaultProperty("Note_Lyric")]
+    public class LastPhonemeAttrModels : BasicPhonemeAttrModels
+    {
+        private NoteAtomObject _obj;
+
+        private NoteAtomObject BaseObj
+        {
+            get { return _obj; }
+        }
+        private int _Index = 0;
+
+        private int TickIndex
+        {
+            get { return _Index; }
+            set { _Index = value; }
+        }
+        public LastPhonemeAttrModels(ref NoteAtomObject BasicObj)
+            : base(ref BasicObj)
+        {
+            this._obj = BasicObj;
+        }
+        [CategoryAttribute("包络属性"), DisplayName("音量淡出时长(ms)")]
+        public long FadeOutLengthMs
+        {
+            get { return BaseObj.FadeOutLengthMs; }
+            set { BaseObj.FadeOutLengthMs = value; if (BaseObj.FadeOutLengthMs < 0)BaseObj.FadeOutLengthMs = 0; }
+        }
+    }
+
+
+    [DefaultProperty("Note_Lyric")]
+    public class SinglePhonemeAttrModels : BasicPhonemeAttrModels
+    {
+        private NoteAtomObject _obj;
+
+        private NoteAtomObject BaseObj
+        {
+            get { return _obj; }
+        }
+        private int _Index = 0;
+
+        private int TickIndex
+        {
+            get { return _Index; }
+            set { _Index = value; }
+        }
+        public SinglePhonemeAttrModels(ref NoteAtomObject BasicObj)
+            : base(ref BasicObj)
+        {
+            this._obj = BasicObj;
+        }
+        [CategoryAttribute("包络属性"), DisplayName("音量淡出时长(ms)")]
+        public long FadeOutLengthMs
+        {
+            get { return BaseObj.FadeOutLengthMs; }
+            set { BaseObj.FadeOutLengthMs = value; if (BaseObj.FadeOutLengthMs < 0)BaseObj.FadeOutLengthMs = 0; }
+        }
+        [CategoryAttribute("包络属性"), DisplayName("音量淡入时长(ms)")]
+        public long FadeInLengthMs
+        {
+            get { return BaseObj.FadeInLengthMs; }
+            set { BaseObj.FadeInLengthMs = value; if (BaseObj.FadeInLengthMs < 0)BaseObj.FadeInLengthMs = 0; }
+        }
     }
 }
