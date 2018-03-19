@@ -47,12 +47,12 @@ namespace Demo.USTViewer
             poj.TrackerList.Add(new TrackerObject((uint)ci));
             poj.TrackerList[ci].PartList.Add(new PartsObject());
             poj.TrackerList[ci].PartList[0].StartTime = 0.2;
-            poj.TrackerList[ci].PartList[0].TickLength = 1920;
+          //  poj.TrackerList[ci].PartList[0].TickLength = 1920;
             poj.TrackerList[ci].PartList[0].PartName = "NAME";
 
             poj.TrackerList[ci].PartList.Add(new PartsObject());
             poj.TrackerList[ci].PartList[1].StartTime = 2.5;
-            poj.TrackerList[ci].PartList[1].TickLength = 1920;
+          //  poj.TrackerList[ci].PartList[1].TickLength = 1920;
             poj.TrackerList[ci].PartList[1].PartName = "NAME2";
 
 
@@ -73,8 +73,16 @@ namespace Demo.USTViewer
             poj.BackerList[1].WavPartList[1].DuringTime = 100;
             poj.BackerList[1].WavPartList[1].PartName = "WA3";
 
-
-
+            poj.SingerList.Clear();
+            poj.SingerList.Add(new SingerObject("Singer1"));
+            poj.SingerList[0].PartResampler = "resampler.exe";
+            poj.SingerList[0].Flags = "B0Y0";
+            poj.SingerList[0].SingerFolder = @"D:\VocalUtau\VocalUtau.DebugExampleFiles\UTAUKernel\voice\uta";
+            
+            poj.SingerList.Add(new SingerObject("Singer2"));
+            poj.SingerList[1].PartResampler = "tn_fnds.exe";
+            poj.SingerList[1].Flags = "B0Y1";
+            poj.SingerList[1].SingerFolder = @"D:\VocalUtau\VocalUtau.DebugExampleFiles\UTAUKernel\voice\uta";
 
             return poj;
         }

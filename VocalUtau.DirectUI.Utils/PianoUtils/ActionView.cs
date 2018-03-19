@@ -273,6 +273,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                     if (HookPiano) ParamWindow.RedrawPiano();
                 }
             }
+
             utils.DrawString(new Point(10, 30), Color.FromArgb(60, 0, 0, 0), "Tempo:"+PartsObject.Tempo.ToString(), 15, FontStyle.Bold);
         }
     }

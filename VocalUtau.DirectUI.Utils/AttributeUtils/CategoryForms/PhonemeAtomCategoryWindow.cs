@@ -445,5 +445,18 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
             }
             catch { ;}
         }
+
+        private void AtomPropertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            try
+            {
+                for (int i = 0; i < ListValue.Count; i++)
+                {
+                    this.pnl_Phoneme.Controls[i].Text = ListValue[i].PhonemeAtom;
+                }
+            }
+            catch { ;}
+        }
+
     }
 }

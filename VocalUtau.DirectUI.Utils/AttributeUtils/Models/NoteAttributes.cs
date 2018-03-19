@@ -13,7 +13,8 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
     public class NoteAttributes:PartAttributes
     {
         IntPtr notePtr = IntPtr.Zero;
-        public NoteAttributes(IntPtr PartsObjectPtr,IntPtr NotesObjectPtr):base(PartsObjectPtr)
+        public NoteAttributes(IntPtr PartsObjectPtr, IntPtr NotesObjectPtr, IntPtr ProjectObjectPtr)
+            : base(PartsObjectPtr,ProjectObjectPtr)
         {
             notePtr = NotesObjectPtr;
         }

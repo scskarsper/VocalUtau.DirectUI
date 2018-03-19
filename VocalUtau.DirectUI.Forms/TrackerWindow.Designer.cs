@@ -28,22 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.ctl_Scroll_LeftPos = new System.Windows.Forms.HScrollBar();
             this.ctl_Track_PianoWidth = new System.Windows.Forms.TrackBar();
-            this.trackerRollWindow1 = new VocalUtau.DirectUI.TrackerRollWindow();
             this.ctl_Track_TrackHeight = new System.Windows.Forms.TrackBar();
+            this.menu_TrackEditor = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.track_AddNewTrack = new System.Windows.Forms.ToolStripMenuItem();
+            this.track_AddNewBackerTrack = new System.Windows.Forms.ToolStripMenuItem();
+            this.track_DelTracks = new System.Windows.Forms.ToolStripMenuItem();
+            this.track_AddParts = new System.Windows.Forms.ToolStripMenuItem();
+            this.track_DelectParts = new System.Windows.Forms.ToolStripMenuItem();
+            this.trackerRollWindow1 = new VocalUtau.DirectUI.TrackerRollWindow();
             ((System.ComponentModel.ISupportInitialize)(this.ctl_Track_PianoWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ctl_Track_TrackHeight)).BeginInit();
+            this.menu_TrackEditor.SuspendLayout();
             this.SuspendLayout();
             // 
             // ctl_Scroll_LeftPos
             // 
             this.ctl_Scroll_LeftPos.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.ctl_Scroll_LeftPos.Location = new System.Drawing.Point(81, 163);
+            this.ctl_Scroll_LeftPos.Location = new System.Drawing.Point(108, 204);
             this.ctl_Scroll_LeftPos.Maximum = 20000000;
             this.ctl_Scroll_LeftPos.Name = "ctl_Scroll_LeftPos";
-            this.ctl_Scroll_LeftPos.Size = new System.Drawing.Size(581, 18);
+            this.ctl_Scroll_LeftPos.Size = new System.Drawing.Size(775, 18);
             this.ctl_Scroll_LeftPos.SmallChange = 10;
             this.ctl_Scroll_LeftPos.TabIndex = 5;
             this.ctl_Scroll_LeftPos.Scroll += new System.Windows.Forms.ScrollEventHandler(this.ctl_Scroll_LeftPos_Scroll);
@@ -53,16 +61,80 @@
             this.ctl_Track_PianoWidth.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ctl_Track_PianoWidth.AutoSize = false;
             this.ctl_Track_PianoWidth.BackColor = System.Drawing.SystemColors.Control;
-            this.ctl_Track_PianoWidth.Location = new System.Drawing.Point(0, 163);
-            this.ctl_Track_PianoWidth.Margin = new System.Windows.Forms.Padding(2);
+            this.ctl_Track_PianoWidth.Location = new System.Drawing.Point(0, 204);
+            this.ctl_Track_PianoWidth.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ctl_Track_PianoWidth.Maximum = 300;
             this.ctl_Track_PianoWidth.Minimum = 32;
             this.ctl_Track_PianoWidth.Name = "ctl_Track_PianoWidth";
-            this.ctl_Track_PianoWidth.Size = new System.Drawing.Size(79, 16);
+            this.ctl_Track_PianoWidth.Size = new System.Drawing.Size(105, 20);
             this.ctl_Track_PianoWidth.TabIndex = 6;
             this.ctl_Track_PianoWidth.TickFrequency = 10;
             this.ctl_Track_PianoWidth.Value = 100;
             this.ctl_Track_PianoWidth.Scroll += new System.EventHandler(this.ctl_Track_PianoWidth_Scroll);
+            // 
+            // ctl_Track_TrackHeight
+            // 
+            this.ctl_Track_TrackHeight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ctl_Track_TrackHeight.AutoSize = false;
+            this.ctl_Track_TrackHeight.BackColor = System.Drawing.SystemColors.Control;
+            this.ctl_Track_TrackHeight.LargeChange = 18;
+            this.ctl_Track_TrackHeight.Location = new System.Drawing.Point(885, 204);
+            this.ctl_Track_TrackHeight.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ctl_Track_TrackHeight.Maximum = 108;
+            this.ctl_Track_TrackHeight.Minimum = 18;
+            this.ctl_Track_TrackHeight.Name = "ctl_Track_TrackHeight";
+            this.ctl_Track_TrackHeight.Size = new System.Drawing.Size(105, 20);
+            this.ctl_Track_TrackHeight.SmallChange = 18;
+            this.ctl_Track_TrackHeight.TabIndex = 7;
+            this.ctl_Track_TrackHeight.TickFrequency = 18;
+            this.ctl_Track_TrackHeight.Value = 18;
+            this.ctl_Track_TrackHeight.Scroll += new System.EventHandler(this.ctl_Track_TrackHeight_Scroll);
+            // 
+            // menu_TrackEditor
+            // 
+            this.menu_TrackEditor.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.track_AddNewTrack,
+            this.track_AddNewBackerTrack,
+            this.track_DelTracks,
+            this.track_AddParts,
+            this.track_DelectParts});
+            this.menu_TrackEditor.Name = "menu_TrackEditor";
+            this.menu_TrackEditor.Size = new System.Drawing.Size(286, 146);
+            // 
+            // track_AddNewTrack
+            // 
+            this.track_AddNewTrack.Name = "track_AddNewTrack";
+            this.track_AddNewTrack.Size = new System.Drawing.Size(285, 24);
+            this.track_AddNewTrack.Text = "Add New Vocal Track";
+            this.track_AddNewTrack.Click += new System.EventHandler(this.track_AddNewTrack_Click);
+            // 
+            // track_AddNewBackerTrack
+            // 
+            this.track_AddNewBackerTrack.Name = "track_AddNewBackerTrack";
+            this.track_AddNewBackerTrack.Size = new System.Drawing.Size(285, 24);
+            this.track_AddNewBackerTrack.Text = "Add New Backgroud Track";
+            this.track_AddNewBackerTrack.Click += new System.EventHandler(this.track_AddNewBackerTrack_Click);
+            // 
+            // track_DelTracks
+            // 
+            this.track_DelTracks.Name = "track_DelTracks";
+            this.track_DelTracks.Size = new System.Drawing.Size(285, 24);
+            this.track_DelTracks.Text = "Delete the Selecting Track";
+            this.track_DelTracks.Click += new System.EventHandler(this.track_DelTracks_Click);
+            // 
+            // track_AddParts
+            // 
+            this.track_AddParts.Name = "track_AddParts";
+            this.track_AddParts.Size = new System.Drawing.Size(285, 24);
+            this.track_AddParts.Text = "Add A Part In SelectingTrack";
+            this.track_AddParts.Click += new System.EventHandler(this.track_AddParts_Click);
+            // 
+            // track_DelectParts
+            // 
+            this.track_DelectParts.Name = "track_DelectParts";
+            this.track_DelectParts.Size = new System.Drawing.Size(285, 24);
+            this.track_DelectParts.Text = "Delete the Selecting Part";
+            this.track_DelectParts.Click += new System.EventHandler(this.track_DelectParts_Click);
             // 
             // trackerRollWindow1
             // 
@@ -73,42 +145,26 @@
             this.trackerRollWindow1.Location = new System.Drawing.Point(0, 0);
             this.trackerRollWindow1.Margin = new System.Windows.Forms.Padding(1);
             this.trackerRollWindow1.Name = "trackerRollWindow1";
-            this.trackerRollWindow1.Size = new System.Drawing.Size(743, 161);
+            this.trackerRollWindow1.Size = new System.Drawing.Size(991, 201);
             this.trackerRollWindow1.TabIndex = 0;
-            // 
-            // ctl_Track_TrackHeight
-            // 
-            this.ctl_Track_TrackHeight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ctl_Track_TrackHeight.AutoSize = false;
-            this.ctl_Track_TrackHeight.BackColor = System.Drawing.SystemColors.Control;
-            this.ctl_Track_TrackHeight.LargeChange = 18;
-            this.ctl_Track_TrackHeight.Location = new System.Drawing.Point(664, 163);
-            this.ctl_Track_TrackHeight.Margin = new System.Windows.Forms.Padding(2);
-            this.ctl_Track_TrackHeight.Maximum = 108;
-            this.ctl_Track_TrackHeight.Minimum = 18;
-            this.ctl_Track_TrackHeight.Name = "ctl_Track_TrackHeight";
-            this.ctl_Track_TrackHeight.Size = new System.Drawing.Size(79, 16);
-            this.ctl_Track_TrackHeight.SmallChange = 18;
-            this.ctl_Track_TrackHeight.TabIndex = 7;
-            this.ctl_Track_TrackHeight.TickFrequency = 18;
-            this.ctl_Track_TrackHeight.Value = 18;
-            this.ctl_Track_TrackHeight.Scroll += new System.EventHandler(this.ctl_Track_TrackHeight_Scroll);
             // 
             // TrackerWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(743, 181);
+            this.ClientSize = new System.Drawing.Size(991, 226);
             this.Controls.Add(this.ctl_Track_TrackHeight);
             this.Controls.Add(this.ctl_Scroll_LeftPos);
             this.Controls.Add(this.ctl_Track_PianoWidth);
             this.Controls.Add(this.trackerRollWindow1);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "TrackerWindow";
             this.Text = "TrackerWindow";
             this.Load += new System.EventHandler(this.TrackerWindow_Load);
             this.Enter += new System.EventHandler(this.TrackerWindow_Enter);
             ((System.ComponentModel.ISupportInitialize)(this.ctl_Track_PianoWidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ctl_Track_TrackHeight)).EndInit();
+            this.menu_TrackEditor.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -119,5 +175,11 @@
         private System.Windows.Forms.HScrollBar ctl_Scroll_LeftPos;
         private System.Windows.Forms.TrackBar ctl_Track_PianoWidth;
         private System.Windows.Forms.TrackBar ctl_Track_TrackHeight;
+        private System.Windows.Forms.ContextMenuStrip menu_TrackEditor;
+        private System.Windows.Forms.ToolStripMenuItem track_AddNewTrack;
+        private System.Windows.Forms.ToolStripMenuItem track_AddNewBackerTrack;
+        private System.Windows.Forms.ToolStripMenuItem track_DelTracks;
+        private System.Windows.Forms.ToolStripMenuItem track_AddParts;
+        private System.Windows.Forms.ToolStripMenuItem track_DelectParts;
     }
 }

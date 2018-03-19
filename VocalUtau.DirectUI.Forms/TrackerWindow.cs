@@ -18,14 +18,37 @@ namespace VocalUtau.DirectUI.Forms
         public AttributesWindow AttributeWindow = null;
         public delegate void OnTotalTimePosChangeHandler(double Time);
         public event OnTotalTimePosChangeHandler TotalTimePosChange;
+        public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnSelectingPartChangeHandler SelectingPartChanged;
+        public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnSelectingWavPartChangeHandler SelectingWavePartChanged;
         public class ViewController
         {   
             bool Alloced = false;
             TrackerRollWindow TrackerWindow;
-           
+            public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnSelectingPartChangeHandler SelectingPartChanged;
+            public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnSelectingWavPartChangeHandler SelectingWavePartChanged;
+            
             public ViewController(ref TrackerRollWindow TrackerWin)
             {
                 this.TrackerWindow = TrackerWin;
+            }
+            public void AddNewTrack(bool isBackTrack)
+            {
+                _Track_View.AddNewTrack(isBackTrack);
+            }
+            public void AddNewPart()
+            {
+                VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.PartLocation pl=_Track_View.getSelectingParts();
+                if(pl!=null) _Track_View.AddNewPart(pl.TrackLocation);
+            }
+            public void DeletePart()
+            {
+                VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.PartLocation pl = _Track_View.getSelectingParts();
+                if (pl != null) _Track_View.DeleteAPart(pl);
+            }
+            public void DeleteTrack()
+            {
+                VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.PartLocation pl = _Track_View.getSelectingParts();
+                if (pl != null) _Track_View.DeleteATrack(pl.TrackLocation);
             }
             public void AllocView(IntPtr ObjectPtr)
             {
@@ -42,6 +65,8 @@ namespace VocalUtau.DirectUI.Forms
                     _Track_View.ShowingEditorChanged += Track_View_ShowingEditorChanged;
                     _Track_View.ShowingEditorStartPosMoved += _Track_View_ShowingEditorStartPosMoved;
                     _Action_View.TickPosChange += _Action_View_TickPosChange;
+                    _Track_View.SelectingPartChanged += _Track_View_SelectingPartChanged;
+                    _Track_View.SelectingWavePartChanged += _Track_View_SelectingWavePartChanged;
                     _Track_View.HandleEvents = true;
                     Alloced = true;
                     _Track_View.ResetShowingParts();
@@ -51,6 +76,22 @@ namespace VocalUtau.DirectUI.Forms
                     this.TrackerWindow.RedrawPiano();
                 }
                 catch { ;}
+            }
+
+            void _Track_View_SelectingWavePartChanged(WavePartsObject PartObject)
+            {
+                if (SelectingWavePartChanged != null)
+                {
+                    SelectingWavePartChanged(PartObject);
+                }
+            }
+
+            void _Track_View_SelectingPartChanged(PartsObject PartObject,bool isEditing)
+            {
+                if (SelectingPartChanged != null)
+                {
+                    SelectingPartChanged(PartObject,isEditing);
+                }
             }
 
             void _Track_View_ShowingEditorStartPosMoved()
@@ -122,11 +163,45 @@ namespace VocalUtau.DirectUI.Forms
             Controller = new ViewController(ref this.trackerRollWindow1);
             Controller.TickPosChange += Controller_TickPosChange;
             Controller.ShowingEditorChanged += Controller_ShowingEditorChanged;
+            Controller.SelectingPartChanged += Controller_SelectingPartChanged;
+            Controller.SelectingWavePartChanged += Controller_SelectingWavePartChanged;
+            this.trackerRollWindow1.PartsMouseClick += trackerRollWindow1_PartsMouseClick;
+        }
+
+        void trackerRollWindow1_PartsMouseClick(object sender, Models.TrackerMouseEventArgs e)
+        {
+            if (e.MouseEventArgs.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                Point p=PointToScreen(new Point(e.MouseEventArgs.X, e.MouseEventArgs.Y));
+                menu_TrackEditor.Show(p);
+            }
+        }
+
+        void Controller_SelectingWavePartChanged(WavePartsObject PartObject)
+        {
+            if (SelectingWavePartChanged != null)
+            {
+                SelectingWavePartChanged(PartObject);
+            }
+        }
+
+        void Controller_SelectingPartChanged(PartsObject PartObject, bool isEditing)
+        {
+            if (SelectingPartChanged != null)
+            {
+                SelectingPartChanged(PartObject,isEditing);
+            }
         }
 
         public void BindAttributeWindow(AttributesWindow attrwin)
         {
             this.AttributeWindow = attrwin;
+            this.AttributeWindow.AttributeChange += AttributeWindow_AttributeChange;
+        }
+
+        void AttributeWindow_AttributeChange()
+        {
+            GuiRefresh();
         }
 
         void Controller_TickPosChange(long Tick, double Time)
@@ -147,6 +222,14 @@ namespace VocalUtau.DirectUI.Forms
         public void RealarmTickPosition()
         {
             Controller.Action_View.RealarmTickPosition();
+        }
+
+        public void GuiRefresh()
+        {
+            Controller.Track_View.reloadBaseTempo();
+            ProjectObject Po = (ProjectObject)OAC.AllocedObject;
+            this.Text = Po.ProjectName;
+            this.trackerRollWindow1.RedrawPiano();
         }
 
         public void ShowOnDock(DockPanel DockPanel)
@@ -184,6 +267,31 @@ namespace VocalUtau.DirectUI.Forms
 
         private void TrackerWindow_Enter(object sender, EventArgs e)
         {
+        }
+
+        private void track_AddNewBackerTrack_Click(object sender, EventArgs e)
+        {
+            Controller.AddNewTrack(true);
+        }
+
+        private void track_AddNewTrack_Click(object sender, EventArgs e)
+        {
+            Controller.AddNewTrack(false);
+        }
+
+        private void track_AddParts_Click(object sender, EventArgs e)
+        {
+            Controller.AddNewPart();
+        }
+
+        private void track_DelTracks_Click(object sender, EventArgs e)
+        {
+            Controller.DeleteTrack();
+        }
+
+        private void track_DelectParts_Click(object sender, EventArgs e)
+        {
+            Controller.DeletePart();
         }
     }
 }

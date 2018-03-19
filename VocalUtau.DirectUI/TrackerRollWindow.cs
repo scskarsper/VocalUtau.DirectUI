@@ -103,7 +103,21 @@ namespace VocalUtau.DirectUI
             d2DPainterBox1.Left = 0;
             d2DPainterBox1.Width = this.ClientRectangle.Width;
             d2DPainterBox1.Height = this.ClientRectangle.Height;
+            d2DPainterBox1.MouseWheel += d2DPainterBox1_MouseWheel;
             if (pprops != null) genShownArea();
+        }
+
+        void d2DPainterBox1_MouseWheel(object sender, MouseEventArgs e)
+        {
+            try
+            {
+                noteScrollBar1.Value -= (int)(e.Delta / 120);
+                noteScrollBar1.Refresh();
+                noteScrollBar1.Invalidate();
+                noteScrollBar1.Update();
+                noteScrollBar1_Scroll(null, null);
+            }
+            catch { ;}
         }
         private void TrackerRollWindow_Resize(object sender, EventArgs e)
         {

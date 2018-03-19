@@ -55,6 +55,13 @@
     <Compile Include="AttributeUtils\CategoryForms\PhonemeAttrModels.cs" />
     <Compile Include="AttributeUtils\Models\NoteAttributes.cs" />
     <Compile Include="AttributeUtils\Models\PartAttributes.cs" />
+    <Compile Include="AttributeUtils\SingerTools\SingerAtomCategoryWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AttributeUtils\SingerTools\SingerAtomCategoryWindow.Designer.cs">
+      <DependentUpon>SingerAtomCategoryWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AttributeUtils\SingerTools\SingerFinder.cs" />
     <Compile Include="MathUtils\PitchMathUtils.cs" />
     <Compile Include="MathUtils\ControlMathUtils.cs" />
     <Compile Include="ParamUtils\PITParamView.cs" />
@@ -79,6 +86,9 @@
   <ItemGroup>
     <EmbeddedResource Include="AttributeUtils\CategoryForms\PhonemeAtomCategoryWindow.resx">
       <DependentUpon>PhonemeAtomCategoryWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AttributeUtils\SingerTools\SingerAtomCategoryWindow.resx">
+      <DependentUpon>SingerAtomCategoryWindow.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

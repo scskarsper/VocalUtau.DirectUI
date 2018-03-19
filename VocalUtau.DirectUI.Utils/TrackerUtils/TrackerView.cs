@@ -12,10 +12,14 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
     public class TrackerView
     {
         public delegate void OnShowingEditorChangeHandler(PartsObject PartObject);
+        public delegate void OnSelectingPartChangeHandler(PartsObject PartObject,bool isEditing);
+        public delegate void OnSelectingWavPartChangeHandler(WavePartsObject PartObject);
         public delegate void OnPartsEventHandler(PartsDragingType eventType);
         public event OnPartsEventHandler TrackerActionEnd;
         public event OnPartsEventHandler TrackerActionBegin;
         public event OnShowingEditorChangeHandler ShowingEditorChanged;
+        public event OnSelectingPartChangeHandler SelectingPartChanged;
+        public event OnSelectingWavPartChangeHandler SelectingWavePartChanged;
         public delegate void OnShowingEditorStartPosMovedHandler();
         public event OnShowingEditorStartPosMovedHandler ShowingEditorStartPosMoved;
         public enum PartsDragingType
@@ -111,8 +115,6 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
             {
                 this.TrackerWindow.setScrollBarMax(0);
             }
-            //this.TrackerWindow.Height-this.TrackerWindow.TrackerProps.max
-            //);
         }
         public PartsObject getShowingPart()
         {
@@ -144,7 +146,10 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
             }
             return false;
         }
-
+        public void reloadBaseTempo()
+        {
+            TrackerWindow.TrackerProps.Tempo = ProjectObject.BaseTempo;
+        }
         public void hookTrackerWindow()
         {
             TrackerWindow.TrackerProps.Tempo = ProjectObject.BaseTempo;
@@ -419,6 +424,7 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
         void TrackerWindow_PartsMouseDoubleClick(object sender, Models.TrackerMouseEventArgs e)
         {
             PartLocation pLocate = GetLocation(e);
+            if (pLocate == null) return;
             if (pLocate.TrackLocation.Type == TrackLocation.TrackType.Tracker)
             {
                 if (pLocate.TrackLocation.TrackID < ProjectObject.TrackerList.Count)
@@ -584,6 +590,150 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
             return pLocate;
         }
 
+        public void AddNewTrack(bool isBackTrack)
+        {
+            if (isBackTrack)
+            {
+                BackerObject bo = new BackerObject((uint)ProjectObject.BackerList.Count);
+                bo.WavPartList.Add(new WavePartsObject());
+                bo.WavPartList[0].DuringTime = 1;
+                bo.WavPartList[0].PartName = "UnnamedWavePart";
+                bo.Name = "BGM " + ProjectObject.BackerList.Count.ToString();
+                ProjectObject.BackerList.Add(bo);
+            }
+            else
+            {
+                TrackerObject to = new TrackerObject((uint)ProjectObject.TrackerList.Count);
+                to.PartList.Add(new PartsObject());
+                to.Name = "Track " + ProjectObject.TrackerList.Count.ToString();
+                to.PartList[0].PartName = "UnnamedPart";
+                ProjectObject.TrackerList.Add(to);
+            }
+            this.TrackerWindow.RedrawPiano();
+        }
+        public void DeleteAPart(PartLocation partLocate)
+        {
+            TrackLocation trackLocate = partLocate.TrackLocation;
+            if (trackLocate.Type == TrackLocation.TrackType.Tracker)
+            {
+                TrackerObject to = TrackerList[(int)trackLocate.TrackID];
+                if (to.PartList.Count > 1)
+                {
+                    string name = to.PartList[(int)partLocate.PartID].PartName;
+                    bool isEditing = false;
+                    if (to.PartList[(int)partLocate.PartID].GUID == _ShowingGUID)
+                    {
+                        isEditing = true;
+                    }
+                    if (MessageBox.Show("您确认要删除声轨区块" + name + "么？", "删除确认", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    {
+                        to.PartList.RemoveAt((int)partLocate.PartID);
+                    }
+                    if (isEditing)
+                    {
+                        ResetShowingParts();
+                    }
+                }
+            }
+            else if (trackLocate.Type == TrackLocation.TrackType.Barker)
+            {
+                BackerObject bo = BackerList[(int)trackLocate.TrackID];
+                if (bo.WavPartList.Count > 1)
+                {
+                    string name = bo.WavPartList[(int)partLocate.PartID].PartName;
+                    if (MessageBox.Show("您确认要删除伴奏区块" + name + "么？", "删除确认", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    {
+                        bo.WavPartList.RemoveAt((int)partLocate.PartID);
+                    }
+                }
+            }
+        }
+        public void DeleteATrack(TrackLocation trackLocate)
+        {
+            if (trackLocate.Type == TrackLocation.TrackType.Tracker)
+            {
+                TrackerObject to = TrackerList[(int)trackLocate.TrackID];
+                if (TrackerList.Count > 1)
+                {
+                    string name = to.Name;
+                    bool isEditing = false;
+                    for (int i = 0; i < to.PartList.Count; i++)
+                    {
+                        if (to.PartList[i].GUID==_ShowingGUID)
+                        {
+                            isEditing = true;
+                            break;
+                        }
+                    }
+                    if (MessageBox.Show("您确认要删除声轨" + name + "么？", "删除确认", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    {
+                        TrackerList.RemoveAt((int)trackLocate.TrackID);
+                    }
+                    if (isEditing)
+                    {
+                        ResetShowingParts();
+                    }
+                }
+            }
+            else if (trackLocate.Type == TrackLocation.TrackType.Barker)
+            {
+                BackerObject bo=BackerList[(int)trackLocate.TrackID];
+                if(BackerList.Count>1)
+                {
+                    string name = bo.Name;
+                    if (MessageBox.Show("您确认要删除伴奏轨" + name + "么？", "删除确认", MessageBoxButtons.YesNo)==DialogResult.Yes)
+                    {
+                        BackerList.RemoveAt((int)trackLocate.TrackID);
+                    }
+                }
+            }
+        }
+        public void AddNewPart(TrackLocation trackLocate)
+        {
+            if (trackLocate.Type == TrackLocation.TrackType.Tracker)
+            {
+                PartsObject pop = new PartsObject();
+                pop.PartName="UnnamedPart";
+                pop.StartTime = this.TrackerList[(int)trackLocate.TrackID].TotalLength;
+                this.TrackerList[(int)trackLocate.TrackID].PartList.Add(pop);
+            }
+            else if (trackLocate.Type == TrackLocation.TrackType.Barker)
+            {
+                WavePartsObject pop = new WavePartsObject();
+                pop.PartName = "UnnamedWavPart";
+                pop.StartTime = this.BackerList[(int)trackLocate.TrackID].TotalLength;
+                pop.DuringTime = 1;
+                this.BackerList[(int)trackLocate.TrackID].WavPartList.Add(pop);
+            }
+        }
+        public PartLocation getSelectingParts()
+        {
+            PartLocation ret = null;
+            for (int i = 0; i < this.TrackerList.Count; i++)
+            {
+                for (int j = 0; j < this.TrackerList[i].PartList.Count; j++)
+                {
+                    if (this.TrackerList[i].PartList[j].getGuid() == SelectGUID)
+                    {
+                        ret = new PartLocation(new TrackLocation((uint)i, (uint)i, TrackLocation.TrackType.Tracker), (uint)j, null);
+                        return ret;
+                    }
+                }
+            }
+            for (int i = 0; i < this.BackerList.Count; i++)
+            {
+                for (int j = 0; j < this.BackerList[i].WavPartList.Count; j++)
+                {
+                    if (this.BackerList[i].WavPartList[j].getGuid() == SelectGUID)
+                    {
+                        ret = new PartLocation(new TrackLocation((uint)i, (uint)(this.TrackerList.Count+i), TrackLocation.TrackType.Barker), (uint)j, null);
+                        return ret;
+                    }
+                }
+            }
+            return ret;
+        }
+
         //PartLocation SelectPartLocation = null;
         PartLocation CurrentPartLocation = null;
         string _ShowingGUID = "";
@@ -614,6 +764,22 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
                     if (TrackerActionBegin != null)
                     {
                         TrackerActionBegin(PartsDragingType.PartsMove);
+                    }
+                    switch(CurrentPartLocation.TrackLocation.Type)
+                    {
+                        case TrackLocation.TrackType.Tracker:
+                            if (SelectingPartChanged != null)
+                            {
+                                bool isEditing=(SelectGUID==_ShowingGUID);
+                                SelectingPartChanged(ProjectObject.TrackerList[(int)CurrentPartLocation.TrackLocation.TrackID].PartList[(int)CurrentPartLocation.PartID],isEditing);
+                            }
+                            break;
+                        case TrackLocation.TrackType.Barker:
+                            if (SelectingWavePartChanged != null)
+                            {
+                                SelectingWavePartChanged(ProjectObject.BackerList[(int)CurrentPartLocation.TrackLocation.TrackID].WavPartList[(int)CurrentPartLocation.PartID]);
+                            }
+                            break;
                     }
                 }
             }

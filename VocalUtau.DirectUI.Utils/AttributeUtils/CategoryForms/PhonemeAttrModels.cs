@@ -52,18 +52,26 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
         [CategoryAttribute("自定义发音属性"), DisplayName("预处理标记(Flags)")]
         public string Flags
         {
-            get { return BaseObj.Flags; }
-            set { BaseObj.Flags = value; }
+            get { return Flg2String(BaseObj.Flags); }
+            set { BaseObj.Flags = String2Flg(value); }
         }
 
         public string Value2String(double value)
         {
-            if (value == double.NaN) return "";
-            if (double.IsNaN(value)) return "";
+            if (value == null) return "(默认)";
+            if (value == double.NaN) return "(默认)";
+            if (double.IsNaN(value)) return "(默认)";
+            return value.ToString();
+        }
+        public string Flg2String(string value)
+        {
+            if (value == "") return "(默认)";
+            if (value == null) return "(默认)";
             return value.ToString();
         }
         public double String2Value(string str)
         {
+            if (str.IndexOf("默认")!=-1) return double.NaN;
             if (str == "") return double.NaN;
             double t;
             if (double.TryParse(str, out t))
@@ -74,6 +82,10 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
             {
                 return double.NaN;
             }
+        }
+        public string String2Flg(string str)
+        {
+            return str.Replace("(","").Replace(")","").Replace("默","").Replace("认","");
         }
         [CategoryAttribute("自定义发音属性"), DisplayName("感情强度(Intensity)")]
         public string Intensity

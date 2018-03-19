@@ -15,8 +15,12 @@ namespace VocalUtau.DirectUI.Forms
 {
     public partial class AttributesWindow : DockContent
     {
-        ObjectAlloc<ITrackerInterface> TrackerBinder = new ObjectAlloc<ITrackerInterface>();
+        ObjectAlloc<ProjectObject> ProjectBinder = new ObjectAlloc<ProjectObject>();
         ObjectAlloc<NoteObject> NoteBinder = new ObjectAlloc<NoteObject>();
+        ObjectAlloc<PartsObject> PartsBinder = new ObjectAlloc<PartsObject>();
+        public delegate void OnAttributeChangeHandler();
+        public event OnAttributeChangeHandler AttributeChange;
+
 
         public AttributesWindow()
         {
@@ -26,25 +30,41 @@ namespace VocalUtau.DirectUI.Forms
         {
             this.Show(DockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
         }
-        public void LoadTracksPtr(IntPtr TracksPtr)
+
+        public void LoadProjectObject(ref ProjectObject projects)
         {
-            this.PropertyViewer.Tag = new PartAttributes(TracksPtr);
+            ProjectBinder.ReAlloc(projects);
+        }
+
+        public void LoadPartsPtr(ref PartsObject PartsObj,bool isCurrentEditing=true)
+        {
+            PartsBinder.ReAlloc(PartsObj);
+
+            PartAttributes pa = new PartAttributes(PartsBinder.IntPtr,ProjectBinder.IntPtr);
+
+            pa.setIsCurrent(isCurrentEditing);
+
+            this.PropertyViewer.Tag = pa;
 
             this.PropertyViewer.SelectedObject = this.PropertyViewer.Tag;
         }
-        public void LoadPartsPtr(IntPtr PartsPtr)
+        public void LoadNotesPtr(ref PartsObject PartsObj, ref NoteObject CurrentNote)
         {
-            this.PropertyViewer.Tag = new PartAttributes(PartsPtr);
+            PartsBinder.ReAlloc(PartsObj);
 
-            this.PropertyViewer.SelectedObject = this.PropertyViewer.Tag;
-        }
-        public void LoadNotesPtr(IntPtr PartsPtr,ref NoteObject CurrentNote)
-        {
             NoteBinder.ReAlloc(CurrentNote);
 
-            this.PropertyViewer.Tag = new NoteAttributes(PartsPtr, NoteBinder.IntPtr);
+            this.PropertyViewer.Tag = new NoteAttributes(PartsBinder.IntPtr, NoteBinder.IntPtr, ProjectBinder.IntPtr);
 
             this.PropertyViewer.SelectedObject = this.PropertyViewer.Tag;
+        }
+
+        private void PropertyViewer_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            /*
+             (ProjectObject)ProjectBinder.AllocedObject
+             */
+            if (AttributeChange != null) AttributeChange();
         }
     }
 }

@@ -240,6 +240,7 @@
             this.UtauPic.Location = new System.Drawing.Point(7, 11);
             this.UtauPic.Name = "UtauPic";
             this.UtauPic.Size = new System.Drawing.Size(51, 50);
+            this.UtauPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.UtauPic.TabIndex = 12;
             this.UtauPic.TabStop = false;
             // 

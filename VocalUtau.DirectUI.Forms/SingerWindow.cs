@@ -98,15 +98,23 @@ namespace VocalUtau.DirectUI.Forms
                 {
                     ParamWindow.RedrawPiano();
                     PianoWindow.RedrawPiano();
+                    LastSelectIndex = -1;
                 }
                 catch { ;}
             }
 
+            public void RealaramNoteSelecting()
+            {
+                Track_NoteView_NoteSelecting(LastSelectIndex);
+            }
+
+            int LastSelectIndex = -1;
             void Track_NoteView_NoteSelecting(int SelectedNoteIndex)
             {
                 if (NoteSelecting != null)
                 {
                     NoteSelecting(SelectedNoteIndex);
+                    LastSelectIndex = SelectedNoteIndex;
                 }
             }
                         
@@ -353,6 +361,7 @@ namespace VocalUtau.DirectUI.Forms
 
         ViewController Controller;
         ObjectAlloc<PartsObject> OAC = new ObjectAlloc<PartsObject>();
+        ObjectAlloc<ProjectObject> ProjectBeeper = new ObjectAlloc<ProjectObject>();
 
         public SingerWindow()
         {
@@ -363,14 +372,15 @@ namespace VocalUtau.DirectUI.Forms
             this.pianoRollWindow1.TrackMouseClick += pianoRollWindow1_TrackMouseClick;
             this.paramCurveWindow1.ParamAreaMouseClick += paramCurveWindow1_ParamAreaMouseClick;
         }
-
+        
         void Controller_NoteSelecting(int SelectedNoteIndex)
         {
             if (AttributeWindow != null)
             {
+                PartsObject PO = (PartsObject)OAC.AllocedObject;
                 if (SelectedNoteIndex < 0)
                 {
-                    AttributeWindow.LoadPartsPtr(OAC.IntPtr);
+                    AttributeWindow.LoadPartsPtr(ref PO);
                 }
                 else
                 {
@@ -378,7 +388,7 @@ namespace VocalUtau.DirectUI.Forms
                     if (NoteList.Count > SelectedNoteIndex)
                     {
                         NoteObject NoteObj = NoteList[SelectedNoteIndex];
-                        AttributeWindow.LoadNotesPtr(OAC.IntPtr, ref NoteObj);
+                        AttributeWindow.LoadNotesPtr(ref PO, ref NoteObj);
                     }
                 }
             }
@@ -387,7 +397,14 @@ namespace VocalUtau.DirectUI.Forms
         public void BindAttributeWindow(AttributesWindow attrwin)
         {
             this.AttributeWindow = attrwin;
+            this.AttributeWindow.AttributeChange += AttributeWindow_AttributeChange;
         }
+
+        void AttributeWindow_AttributeChange()
+        {
+            GuiRefresh();
+        }
+
 
         void Controller_TickPosChange(long Tick, double Time)
         {
@@ -423,6 +440,17 @@ namespace VocalUtau.DirectUI.Forms
                 ParamCurveTollMenu.Show(PointToScreen(new Point(e.MouseEventArgs.X, e.MouseEventArgs.Y + MainPianoSplitContainer.Top + MainPianoSplitContainer.SplitterDistance + MainPianoSplitContainer.SplitterWidth)), ToolStripDropDownDirection.AboveRight);
             }
         }
+        public void GuiRefresh()
+        {
+            this.paramCurveWindow1.RedrawPiano();
+            this.pianoRollWindow1.RedrawPiano();
+            try
+            {
+                this.Text = ((PartsObject)OAC.AllocedObject).PartName;
+                setupSingerIcon();
+            }
+            catch { ;}
+        }
 
         void pianoRollWindow1_TrackMouseClick(object sender, PianoMouseEventArgs e)
         {
@@ -431,11 +459,20 @@ namespace VocalUtau.DirectUI.Forms
                 SetPianoActionMenu();
                 PianoRollActionMenu.Show(PointToScreen(new Point(e.MouseEventArgs.X, e.MouseEventArgs.Y)), ToolStripDropDownDirection.BelowRight);
             }
+            else
+            {
+                Controller.RealaramNoteSelecting();
+            }
         }
 
         public void ShowOnDock(DockPanel DockPanel)
         {
             this.Show(DockPanel, WeifenLuo.WinFormsUI.Docking.DockState.Document);
+        }
+
+        public void LoadProjectObject(ref ProjectObject proj)
+        {
+            ProjectBeeper.ReAlloc(proj);
         }
 
         public void LoadParts(ref PartsObject parts)
@@ -446,7 +483,40 @@ namespace VocalUtau.DirectUI.Forms
             ctl_Scroll_LeftPos.Value = 0;
             ctl_Scroll_LeftPos_Scroll(null, null);
             this.Text = parts.PartName;
-            AttributeWindow.LoadPartsPtr(OAC.IntPtr);
+            AttributeWindow.LoadPartsPtr(ref parts);
+            setupSingerIcon();
+        }
+
+        void setupSingerIcon()
+        {
+            if (ProjectBeeper==null || ProjectBeeper.AllocedObject == null)
+            {
+                return;
+            }
+            if (OAC == null || OAC.AllocedObject == null)
+            {
+                return;
+            }
+            ProjectObject po = (ProjectObject)ProjectBeeper.AllocedObject;
+            PartsObject pt = (PartsObject)OAC.AllocedObject;
+            string avatar = "";
+            if (po.SingerList.Count > 0) avatar = po.SingerList[0].Avatar;
+            foreach (SingerObject so in po.SingerList)
+            {
+                if(so.getGuid() == pt.SingerGUID)
+                {
+                    avatar = so.Avatar;
+                    break;
+                }
+            }
+            if (System.IO.File.Exists(avatar))
+            {
+                UtauPic.Image = Image.FromFile(avatar);
+            }
+            else
+            {
+                UtauPic.Image = null;
+            }
         }
 
         #region
@@ -703,8 +773,7 @@ namespace VocalUtau.DirectUI.Forms
         {
             SetupParamZoom();
         }
-
-
+        
 
     }
 }

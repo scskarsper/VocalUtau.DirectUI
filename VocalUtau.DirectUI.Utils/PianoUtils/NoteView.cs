@@ -25,7 +25,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         const int AntiShakePixel = 3;
 
         bool _HandleEvents = false;
-
+        
         public bool HandleEvents
         {
             get { return _HandleEvents; }

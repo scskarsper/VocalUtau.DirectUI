@@ -76,7 +76,7 @@ namespace VocalUtau.DirectUI.DrawUtils
                 if (RightTick <= LeftRectangleTick || LeftTick >= RightRectangleTick)
                 {
                     //抛弃音符（超界）
-                    return;
+                    continue;
                 }
 
                 long StartTick = LeftTick - LeftRectangleTick;//获得左边界距离启绘点距离；
