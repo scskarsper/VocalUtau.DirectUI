@@ -371,76 +371,7 @@ namespace VocalUtau.DirectUI.Forms
             Controller.NoteSelecting += Controller_NoteSelecting;
             this.pianoRollWindow1.TrackMouseClick += pianoRollWindow1_TrackMouseClick;
             this.paramCurveWindow1.ParamAreaMouseClick += paramCurveWindow1_ParamAreaMouseClick;
-            ResetComponent();
         }
-        void ResetComponent()
-        {
-            this.btn_SelectCurve.Location = new System.Drawing.Point(-1, 93);
-            this.btn_SelectCurve.Size = new System.Drawing.Size(59, 22);
-            this.panel1.Location = new System.Drawing.Point(924, -3);
-            this.panel1.Size = new System.Drawing.Size(23, 207);
-            this.ctl_Track_NoteHeight.Location = new System.Drawing.Point(864, 344);
-            this.ctl_Track_NoteHeight.Margin = new System.Windows.Forms.Padding(2);
-            this.ctl_Track_NoteHeight.Size = new System.Drawing.Size(79, 16);
-            this.btn_PianoRollAction.Size = new System.Drawing.Size(81, 27);
-            this.ctl_Scroll_LeftPos.Location = new System.Drawing.Point(81, 344);
-            this.ctl_Scroll_LeftPos.Size = new System.Drawing.Size(781, 18);
-            this.ctl_Track_PianoWidth.Location = new System.Drawing.Point(0, 344);
-            this.ctl_Track_PianoWidth.Margin = new System.Windows.Forms.Padding(2);
-            this.ctl_Track_PianoWidth.Size = new System.Drawing.Size(79, 16);
-            this.UtauPic.Location = new System.Drawing.Point(7, 11);
-            this.UtauPic.Size = new System.Drawing.Size(51, 50);
-            this.btn_SelectAction.Location = new System.Drawing.Point(-1, 72);
-            this.btn_SelectAction.Size = new System.Drawing.Size(59, 22);
-            this.ParamCurveTypeMenu.Size = new System.Drawing.Size(103, 48);
-            this.CurveSelector_PIT.Size = new System.Drawing.Size(102, 22);
-            this.CurveSelector_DYN.Size = new System.Drawing.Size(102, 22);
-            this.PianoRollActionMenu.Size = new System.Drawing.Size(264, 292);
-            this.RollAction_SetCurrentPos.Size = new System.Drawing.Size(263, 22);
-            this.toolStripSeparator5.Size = new System.Drawing.Size(260, 6);
-            this.RollTool_NoteSelect.Size = new System.Drawing.Size(263, 22);
-            this.RollTool_NoteAdd.Size = new System.Drawing.Size(263, 22);
-            this.toolStripSeparator3.Size = new System.Drawing.Size(260, 6);
-            this.RollTool_DrawLine.Size = new System.Drawing.Size(263, 22);
-            this.RollTool_DrawJ.Size = new System.Drawing.Size(263, 22);
-            this.RollTool_DrawR.Size = new System.Drawing.Size(263, 22);
-            this.RollTool_DrawS.Size = new System.Drawing.Size(263, 22);
-            this.RollTool_Earse.Size = new System.Drawing.Size(263, 22);
-            this.toolStripSeparator4.Size = new System.Drawing.Size(260, 6);
-            this.RollAction_NoteCopy.Size = new System.Drawing.Size(263, 22);
-            this.RollAction_NotePaste.Size = new System.Drawing.Size(263, 22);
-            this.RollAction_EditLyrics.Size = new System.Drawing.Size(263, 22);
-            this.ParamCurveTollMenu.Size = new System.Drawing.Size(264, 170);
-            this.CurveAction_SetupCurrentToMouse.Size = new System.Drawing.Size(263, 22);
-            this.CurveAction_SetupCurrentToMouse_Separator.Size = new System.Drawing.Size(260, 6);
-            this.CurveTool_DrawLine.Size = new System.Drawing.Size(263, 22);
-            this.CurveTool_DrawJ.Size = new System.Drawing.Size(263, 22);
-            this.CurveTool_DrawR.Size = new System.Drawing.Size(263, 22);
-            this.CurveTool_DrawS.Size = new System.Drawing.Size(263, 22);
-            this.CurveTool_EarseSelect.Size = new System.Drawing.Size(263, 22);
-            this.toolStripSeparator1.Size = new System.Drawing.Size(260, 6);
-
-            this.ctl_Param_LZoom.Location = new System.Drawing.Point(63, 2);
-            this.ctl_Param_LZoom.Margin = new System.Windows.Forms.Padding(2);
-            this.ctl_Param_LZoom.Size = new System.Drawing.Size(16, 128);
-
-            this.ctl_Param_RZoom.Location = new System.Drawing.Point(-3, 4);
-            this.ctl_Param_RZoom.Margin = new System.Windows.Forms.Padding(2);
-            this.ctl_Param_RZoom.Size = new System.Drawing.Size(17, 128);
-
-            this.paramCurveWindow1.Size = new System.Drawing.Size(945, 141);
-            this.paramCurveWindow1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-
-            this.pianoRollWindow1.Size = new System.Drawing.Size(943, 342);
-
-            this.MainPianoSplitContainer.Size = new System.Drawing.Size(945, 513);
-            this.MainPianoSplitContainer.SplitterDistance = 362;
-            this.MainPianoSplitContainer.SplitterWidth = 10;
-            this.BindPianoRoll.Size = new System.Drawing.Size(263, 22);
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
-            this.ClientSize = new System.Drawing.Size(945, 513);
-        }
-
         
         void Controller_NoteSelecting(int SelectedNoteIndex)
         {

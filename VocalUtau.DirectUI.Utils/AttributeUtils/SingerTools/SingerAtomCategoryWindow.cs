@@ -46,11 +46,11 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools
             int defidx = 0;
             for (int i = 0; i < ProjectObject.SingerList.Count; i++)
             {
-                if (defidx==0 && setupSelect != "" && setupSelect == ProjectObject.SingerList[i].SingerName)
+                if (defidx==0 && setupSelect != "" && setupSelect == ProjectObject.SingerList[i].VocalName)
                 {
                     defidx = i;
                 }
-                list_Singer.Items.Add(ProjectObject.SingerList[i].SingerName);
+                list_Singer.Items.Add(ProjectObject.SingerList[i].VocalName);
             }
             if (ProjectObject.SingerList.Count <= defidx && ProjectObject.SingerList.Count > 0) defidx = 0;
             if (ProjectObject.SingerList.Count > defidx)
@@ -71,7 +71,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools
             if (txt_Resampler.Text.Trim() == "") return false;
             for (int i = 0; i < ProjectObject.SingerList.Count; i++)
             {
-                if (ProjectObject.SingerList[i].SingerName.Trim() == NewName)
+                if (ProjectObject.SingerList[i].VocalName.Trim() == NewName)
                 {
                     if (ProjectObject.SingerList[i].getGuid().Trim() != NewGUID)
                     {
@@ -89,7 +89,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools
                 {
                     //添加歌姬
                     SingerObject so = new SingerObject();
-                    so.SingerName = txt_Name.Text;
+                    so.VocalName = txt_Name.Text;
                     so.SingerFolder = txt_Dir.Text;
                     so.Flags = txt_Flags.Text;
                     so.PartResampler = txt_Resampler.Text;
@@ -103,7 +103,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools
                     {
                         if (ProjectObject.SingerList[i].getGuid().Trim() == txt_GUID.Text.Trim())
                         {
-                            ProjectObject.SingerList[i].SingerName = txt_Name.Text;
+                            ProjectObject.SingerList[i].VocalName = txt_Name.Text;
                             ProjectObject.SingerList[i].SingerFolder = txt_Dir.Text;
                             ProjectObject.SingerList[i].Flags = txt_Flags.Text;
                             ProjectObject.SingerList[i].PartResampler = txt_Resampler.Text;
@@ -129,7 +129,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools
                     {
                         for (int i = 0; i < ProjectObject.SingerList.Count; i++)
                         {
-                            if (ProjectObject.SingerList[i].SingerName.Trim() == singerName.Trim())
+                            if (ProjectObject.SingerList[i].VocalName.Trim() == singerName.Trim())
                             {
                                 if (ProjectObject.SingerList[i].getGuid().Trim() == txt_GUID.Text.Trim())
                                 {
@@ -153,10 +153,10 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools
                     string singerName = list_Singer.Items[list_Singer.SelectedIndex].ToString();
                     for (int i = 0; i < ProjectObject.SingerList.Count; i++)
                     {
-                        if (ProjectObject.SingerList[i].SingerName.Trim() == singerName.Trim())
+                        if (ProjectObject.SingerList[i].VocalName.Trim() == singerName.Trim())
                         {
                             txt_Dir.Text=ProjectObject.SingerList[i].SingerFolder;
-                            txt_Name.Text = ProjectObject.SingerList[i].SingerName;
+                            txt_Name.Text = ProjectObject.SingerList[i].VocalName;
                             txt_Flags.Text = ProjectObject.SingerList[i].Flags;
                             txt_Resampler.Text = ProjectObject.SingerList[i].PartResampler;
                             txt_GUID.Text = ProjectObject.SingerList[i].getGuid();

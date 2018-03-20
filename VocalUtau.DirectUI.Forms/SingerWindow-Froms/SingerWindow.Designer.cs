@@ -60,6 +60,8 @@
             this.RollAction_NoteCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.RollAction_NotePaste = new System.Windows.Forms.ToolStripMenuItem();
             this.RollAction_EditLyrics = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.FullAction_EditParts = new System.Windows.Forms.ToolStripMenuItem();
             this.ParamCurveTollMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.CurveAction_SetupCurrentToMouse = new System.Windows.Forms.ToolStripMenuItem();
             this.CurveAction_SetupCurrentToMouse_Separator = new System.Windows.Forms.ToolStripSeparator();
@@ -90,10 +92,9 @@
             this.btn_SelectCurve.BackColor = System.Drawing.Color.Black;
             this.btn_SelectCurve.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_SelectCurve.ForeColor = System.Drawing.Color.White;
-            this.btn_SelectCurve.Location = new System.Drawing.Point(-1, 116);
-            this.btn_SelectCurve.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btn_SelectCurve.Location = new System.Drawing.Point(-1, 93);
             this.btn_SelectCurve.Name = "btn_SelectCurve";
-            this.btn_SelectCurve.Size = new System.Drawing.Size(79, 28);
+            this.btn_SelectCurve.Size = new System.Drawing.Size(59, 22);
             this.btn_SelectCurve.TabIndex = 9;
             this.btn_SelectCurve.Text = "Type>";
             this.btn_SelectCurve.UseVisualStyleBackColor = false;
@@ -106,12 +107,12 @@
             this.ctl_Param_RZoom.AutoSize = false;
             this.ctl_Param_RZoom.BackColor = System.Drawing.Color.Black;
             this.ctl_Param_RZoom.LargeChange = 1;
-            this.ctl_Param_RZoom.Location = new System.Drawing.Point(-4, 5);
-            this.ctl_Param_RZoom.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ctl_Param_RZoom.Location = new System.Drawing.Point(-3, 4);
+            this.ctl_Param_RZoom.Margin = new System.Windows.Forms.Padding(2);
             this.ctl_Param_RZoom.Maximum = 5;
             this.ctl_Param_RZoom.Name = "ctl_Param_RZoom";
             this.ctl_Param_RZoom.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.ctl_Param_RZoom.Size = new System.Drawing.Size(23, 153);
+            this.ctl_Param_RZoom.Size = new System.Drawing.Size(17, 128);
             this.ctl_Param_RZoom.TabIndex = 10;
             this.ctl_Param_RZoom.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.ctl_Param_RZoom.Scroll += new System.EventHandler(this.ctl_Param_RZoom_Scroll);
@@ -123,10 +124,9 @@
             this.panel1.BackColor = System.Drawing.Color.Black;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.ctl_Param_RZoom);
-            this.panel1.Location = new System.Drawing.Point(1232, -4);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel1.Location = new System.Drawing.Point(924, -3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(30, 252);
+            this.panel1.Size = new System.Drawing.Size(23, 207);
             this.panel1.TabIndex = 11;
             // 
             // ctl_Track_NoteHeight
@@ -135,12 +135,12 @@
             this.ctl_Track_NoteHeight.AutoSize = false;
             this.ctl_Track_NoteHeight.BackColor = System.Drawing.SystemColors.Control;
             this.ctl_Track_NoteHeight.LargeChange = 13;
-            this.ctl_Track_NoteHeight.Location = new System.Drawing.Point(1152, 430);
-            this.ctl_Track_NoteHeight.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ctl_Track_NoteHeight.Location = new System.Drawing.Point(864, 344);
+            this.ctl_Track_NoteHeight.Margin = new System.Windows.Forms.Padding(2);
             this.ctl_Track_NoteHeight.Maximum = 130;
             this.ctl_Track_NoteHeight.Minimum = 13;
             this.ctl_Track_NoteHeight.Name = "ctl_Track_NoteHeight";
-            this.ctl_Track_NoteHeight.Size = new System.Drawing.Size(105, 20);
+            this.ctl_Track_NoteHeight.Size = new System.Drawing.Size(79, 16);
             this.ctl_Track_NoteHeight.SmallChange = 13;
             this.ctl_Track_NoteHeight.TabIndex = 5;
             this.ctl_Track_NoteHeight.TickFrequency = 13;
@@ -152,7 +152,6 @@
             this.MainPianoSplitContainer.BackColor = System.Drawing.Color.Black;
             this.MainPianoSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainPianoSplitContainer.Location = new System.Drawing.Point(0, 0);
-            this.MainPianoSplitContainer.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MainPianoSplitContainer.Name = "MainPianoSplitContainer";
             this.MainPianoSplitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -176,9 +175,9 @@
             this.MainPianoSplitContainer.Panel2.Controls.Add(this.ctl_Param_LZoom);
             this.MainPianoSplitContainer.Panel2.Controls.Add(this.paramCurveWindow1);
             this.MainPianoSplitContainer.Panel2MinSize = 120;
-            this.MainPianoSplitContainer.Size = new System.Drawing.Size(1260, 641);
-            this.MainPianoSplitContainer.SplitterDistance = 452;
-            this.MainPianoSplitContainer.SplitterWidth = 12;
+            this.MainPianoSplitContainer.Size = new System.Drawing.Size(945, 513);
+            this.MainPianoSplitContainer.SplitterDistance = 362;
+            this.MainPianoSplitContainer.SplitterWidth = 10;
             this.MainPianoSplitContainer.TabIndex = 9;
             // 
             // btn_PianoRollAction
@@ -187,9 +186,8 @@
             this.btn_PianoRollAction.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_PianoRollAction.ForeColor = System.Drawing.Color.White;
             this.btn_PianoRollAction.Location = new System.Drawing.Point(1, 0);
-            this.btn_PianoRollAction.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btn_PianoRollAction.Name = "btn_PianoRollAction";
-            this.btn_PianoRollAction.Size = new System.Drawing.Size(108, 34);
+            this.btn_PianoRollAction.Size = new System.Drawing.Size(81, 27);
             this.btn_PianoRollAction.TabIndex = 13;
             this.btn_PianoRollAction.Text = "Action>";
             this.btn_PianoRollAction.UseVisualStyleBackColor = false;
@@ -205,7 +203,7 @@
             this.pianoRollWindow1.Margin = new System.Windows.Forms.Padding(1);
             this.pianoRollWindow1.Name = "pianoRollWindow1";
             this.pianoRollWindow1.OctaveType = VocalUtau.Formats.Model.VocalObject.PitchAtomObject.OctaveTypeEnum.Voice;
-            this.pianoRollWindow1.Size = new System.Drawing.Size(1257, 428);
+            this.pianoRollWindow1.Size = new System.Drawing.Size(943, 342);
             this.pianoRollWindow1.TabIndex = 0;
             this.pianoRollWindow1.RollMouseDown += new VocalUtau.DirectUI.PianoRollWindow.OnMouseEventHandler(this.pianoRollWindow1_RollMouseDown);
             // 
@@ -213,10 +211,10 @@
             // 
             this.ctl_Scroll_LeftPos.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.ctl_Scroll_LeftPos.Location = new System.Drawing.Point(108, 430);
+            this.ctl_Scroll_LeftPos.Location = new System.Drawing.Point(81, 344);
             this.ctl_Scroll_LeftPos.Maximum = 20000000;
             this.ctl_Scroll_LeftPos.Name = "ctl_Scroll_LeftPos";
-            this.ctl_Scroll_LeftPos.Size = new System.Drawing.Size(1041, 18);
+            this.ctl_Scroll_LeftPos.Size = new System.Drawing.Size(781, 18);
             this.ctl_Scroll_LeftPos.SmallChange = 10;
             this.ctl_Scroll_LeftPos.TabIndex = 3;
             this.ctl_Scroll_LeftPos.Scroll += new System.Windows.Forms.ScrollEventHandler(this.ctl_Scroll_LeftPos_Scroll);
@@ -226,12 +224,12 @@
             this.ctl_Track_PianoWidth.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ctl_Track_PianoWidth.AutoSize = false;
             this.ctl_Track_PianoWidth.BackColor = System.Drawing.SystemColors.Control;
-            this.ctl_Track_PianoWidth.Location = new System.Drawing.Point(0, 430);
-            this.ctl_Track_PianoWidth.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ctl_Track_PianoWidth.Location = new System.Drawing.Point(0, 344);
+            this.ctl_Track_PianoWidth.Margin = new System.Windows.Forms.Padding(2);
             this.ctl_Track_PianoWidth.Maximum = 300;
             this.ctl_Track_PianoWidth.Minimum = 32;
             this.ctl_Track_PianoWidth.Name = "ctl_Track_PianoWidth";
-            this.ctl_Track_PianoWidth.Size = new System.Drawing.Size(105, 20);
+            this.ctl_Track_PianoWidth.Size = new System.Drawing.Size(79, 16);
             this.ctl_Track_PianoWidth.TabIndex = 4;
             this.ctl_Track_PianoWidth.TickFrequency = 10;
             this.ctl_Track_PianoWidth.Value = 100;
@@ -239,10 +237,9 @@
             // 
             // UtauPic
             // 
-            this.UtauPic.Location = new System.Drawing.Point(9, 14);
-            this.UtauPic.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.UtauPic.Location = new System.Drawing.Point(7, 11);
             this.UtauPic.Name = "UtauPic";
-            this.UtauPic.Size = new System.Drawing.Size(68, 62);
+            this.UtauPic.Size = new System.Drawing.Size(51, 50);
             this.UtauPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.UtauPic.TabIndex = 12;
             this.UtauPic.TabStop = false;
@@ -252,10 +249,9 @@
             this.btn_SelectAction.BackColor = System.Drawing.Color.Black;
             this.btn_SelectAction.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_SelectAction.ForeColor = System.Drawing.Color.White;
-            this.btn_SelectAction.Location = new System.Drawing.Point(-1, 90);
-            this.btn_SelectAction.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btn_SelectAction.Location = new System.Drawing.Point(-1, 72);
             this.btn_SelectAction.Name = "btn_SelectAction";
-            this.btn_SelectAction.Size = new System.Drawing.Size(79, 28);
+            this.btn_SelectAction.Size = new System.Drawing.Size(59, 22);
             this.btn_SelectAction.TabIndex = 9;
             this.btn_SelectAction.Text = "Tool>";
             this.btn_SelectAction.UseVisualStyleBackColor = false;
@@ -268,13 +264,13 @@
             this.ctl_Param_LZoom.AutoSize = false;
             this.ctl_Param_LZoom.BackColor = System.Drawing.Color.Black;
             this.ctl_Param_LZoom.LargeChange = 1;
-            this.ctl_Param_LZoom.Location = new System.Drawing.Point(84, 2);
-            this.ctl_Param_LZoom.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ctl_Param_LZoom.Location = new System.Drawing.Point(63, 2);
+            this.ctl_Param_LZoom.Margin = new System.Windows.Forms.Padding(2);
             this.ctl_Param_LZoom.Maximum = 12;
             this.ctl_Param_LZoom.Minimum = 1;
             this.ctl_Param_LZoom.Name = "ctl_Param_LZoom";
             this.ctl_Param_LZoom.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.ctl_Param_LZoom.Size = new System.Drawing.Size(21, 153);
+            this.ctl_Param_LZoom.Size = new System.Drawing.Size(16, 128);
             this.ctl_Param_LZoom.TabIndex = 7;
             this.ctl_Param_LZoom.Value = 1;
             this.ctl_Param_LZoom.Scroll += new System.EventHandler(this.ctl_Param_LZoom_Scroll);
@@ -283,9 +279,9 @@
             // 
             this.paramCurveWindow1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.paramCurveWindow1.Location = new System.Drawing.Point(0, 0);
-            this.paramCurveWindow1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.paramCurveWindow1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.paramCurveWindow1.Name = "paramCurveWindow1";
-            this.paramCurveWindow1.Size = new System.Drawing.Size(1260, 177);
+            this.paramCurveWindow1.Size = new System.Drawing.Size(945, 141);
             this.paramCurveWindow1.TabIndex = 0;
             // 
             // ParamCurveTypeMenu
@@ -296,19 +292,19 @@
             this.ParamCurveTypeMenu.Name = "SwitchTypeBtn";
             this.ParamCurveTypeMenu.ShowCheckMargin = true;
             this.ParamCurveTypeMenu.ShowImageMargin = false;
-            this.ParamCurveTypeMenu.Size = new System.Drawing.Size(111, 52);
+            this.ParamCurveTypeMenu.Size = new System.Drawing.Size(103, 48);
             // 
             // CurveSelector_PIT
             // 
             this.CurveSelector_PIT.Name = "CurveSelector_PIT";
-            this.CurveSelector_PIT.Size = new System.Drawing.Size(110, 24);
+            this.CurveSelector_PIT.Size = new System.Drawing.Size(102, 22);
             this.CurveSelector_PIT.Text = "PIT";
             this.CurveSelector_PIT.Click += new System.EventHandler(this.CurveSelector_PIT_Click);
             // 
             // CurveSelector_DYN
             // 
             this.CurveSelector_DYN.Name = "CurveSelector_DYN";
-            this.CurveSelector_DYN.Size = new System.Drawing.Size(110, 24);
+            this.CurveSelector_DYN.Size = new System.Drawing.Size(102, 22);
             this.CurveSelector_DYN.Text = "DYN";
             this.CurveSelector_DYN.Click += new System.EventHandler(this.CurveSelector_DYN_Click);
             // 
@@ -328,103 +324,116 @@
             this.toolStripSeparator4,
             this.RollAction_NoteCopy,
             this.RollAction_NotePaste,
-            this.RollAction_EditLyrics});
+            this.RollAction_EditLyrics,
+            this.toolStripSeparator2,
+            this.FullAction_EditParts});
             this.PianoRollActionMenu.Name = "SwitchTypeBtn";
             this.PianoRollActionMenu.ShowCheckMargin = true;
             this.PianoRollActionMenu.ShowImageMargin = false;
-            this.PianoRollActionMenu.Size = new System.Drawing.Size(293, 308);
+            this.PianoRollActionMenu.Size = new System.Drawing.Size(264, 292);
             // 
             // RollAction_SetCurrentPos
             // 
             this.RollAction_SetCurrentPos.Name = "RollAction_SetCurrentPos";
-            this.RollAction_SetCurrentPos.Size = new System.Drawing.Size(292, 24);
-            this.RollAction_SetCurrentPos.Text = "设置当前位置到鼠标位置(&G)";
+            this.RollAction_SetCurrentPos.Size = new System.Drawing.Size(263, 22);
+            this.RollAction_SetCurrentPos.Text = "Setup Current Postion to Mouse";
             this.RollAction_SetCurrentPos.Click += new System.EventHandler(this.RollAction_SetCurrentPos_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(319, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(260, 6);
             // 
             // RollTool_NoteSelect
             // 
             this.RollTool_NoteSelect.Name = "RollTool_NoteSelect";
-            this.RollTool_NoteSelect.Size = new System.Drawing.Size(292, 24);
-            this.RollTool_NoteSelect.Text = "音符选择(&N)";
+            this.RollTool_NoteSelect.Size = new System.Drawing.Size(263, 22);
+            this.RollTool_NoteSelect.Text = "Select Notes";
             this.RollTool_NoteSelect.Click += new System.EventHandler(this.RollTool_NoteSelect_Click);
             // 
             // RollTool_NoteAdd
             // 
             this.RollTool_NoteAdd.Name = "RollTool_NoteAdd";
-            this.RollTool_NoteAdd.Size = new System.Drawing.Size(292, 24);
-            this.RollTool_NoteAdd.Text = "音符添加(&A)";
+            this.RollTool_NoteAdd.Size = new System.Drawing.Size(263, 22);
+            this.RollTool_NoteAdd.Text = "Add New Note";
             this.RollTool_NoteAdd.Click += new System.EventHandler(this.RollTool_NoteAdd_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(319, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(260, 6);
             // 
             // RollTool_DrawLine
             // 
             this.RollTool_DrawLine.Name = "RollTool_DrawLine";
-            this.RollTool_DrawLine.Size = new System.Drawing.Size(292, 24);
-            this.RollTool_DrawLine.Text = "绘制直线音高(&L)";
+            this.RollTool_DrawLine.Size = new System.Drawing.Size(263, 22);
+            this.RollTool_DrawLine.Text = "Draw PitchBends with Line";
             this.RollTool_DrawLine.Click += new System.EventHandler(this.RollTool_DrawLine_Click);
             // 
             // RollTool_DrawJ
             // 
             this.RollTool_DrawJ.Name = "RollTool_DrawJ";
-            this.RollTool_DrawJ.Size = new System.Drawing.Size(292, 24);
-            this.RollTool_DrawJ.Text = "绘制J曲线音高(&J)";
+            this.RollTool_DrawJ.Size = new System.Drawing.Size(263, 22);
+            this.RollTool_DrawJ.Text = "Draw PitchBends with Graphic J";
             this.RollTool_DrawJ.Click += new System.EventHandler(this.RollTool_DrawJ_Click);
             // 
             // RollTool_DrawR
             // 
             this.RollTool_DrawR.Name = "RollTool_DrawR";
-            this.RollTool_DrawR.Size = new System.Drawing.Size(292, 24);
-            this.RollTool_DrawR.Text = "绘制R曲线音高(&R)";
+            this.RollTool_DrawR.Size = new System.Drawing.Size(263, 22);
+            this.RollTool_DrawR.Text = "Draw PitchBends with Graphic R";
             this.RollTool_DrawR.Click += new System.EventHandler(this.RollTool_DrawR_Click);
             // 
             // RollTool_DrawS
             // 
             this.RollTool_DrawS.Name = "RollTool_DrawS";
-            this.RollTool_DrawS.Size = new System.Drawing.Size(292, 24);
-            this.RollTool_DrawS.Text = "绘制S曲线音高(&S)";
+            this.RollTool_DrawS.Size = new System.Drawing.Size(263, 22);
+            this.RollTool_DrawS.Text = "Draw PitchBends with Graphic S";
             this.RollTool_DrawS.Click += new System.EventHandler(this.RollTool_DrawS_Click);
             // 
             // RollTool_Earse
             // 
             this.RollTool_Earse.Name = "RollTool_Earse";
-            this.RollTool_Earse.Size = new System.Drawing.Size(292, 24);
-            this.RollTool_Earse.Text = "擦除选中区域音高(&E)";
+            this.RollTool_Earse.Size = new System.Drawing.Size(263, 22);
+            this.RollTool_Earse.Text = "Select And Earse PitchBends";
             this.RollTool_Earse.Click += new System.EventHandler(this.RollTool_Earse_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(319, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(260, 6);
             // 
             // RollAction_NoteCopy
             // 
             this.RollAction_NoteCopy.Name = "RollAction_NoteCopy";
-            this.RollAction_NoteCopy.Size = new System.Drawing.Size(292, 24);
-            this.RollAction_NoteCopy.Text = "复制选中区域音符(&C)";
+            this.RollAction_NoteCopy.Size = new System.Drawing.Size(263, 22);
+            this.RollAction_NoteCopy.Text = "Copy Selected Notes";
             this.RollAction_NoteCopy.Click += new System.EventHandler(this.RollAction_NoteCopy_Click);
             // 
             // RollAction_NotePaste
             // 
             this.RollAction_NotePaste.Name = "RollAction_NotePaste";
-            this.RollAction_NotePaste.Size = new System.Drawing.Size(292, 24);
-            this.RollAction_NotePaste.Text = "粘贴音符到当前坐标空白区域(&P)";
+            this.RollAction_NotePaste.Size = new System.Drawing.Size(263, 22);
+            this.RollAction_NotePaste.Text = "Paste Copyed Notes";
             this.RollAction_NotePaste.Click += new System.EventHandler(this.RollAction_NotePaste_Click);
             // 
             // RollAction_EditLyrics
             // 
             this.RollAction_EditLyrics.Name = "RollAction_EditLyrics";
-            this.RollAction_EditLyrics.Size = new System.Drawing.Size(292, 24);
-            this.RollAction_EditLyrics.Text = "编辑歌词(&I)";
+            this.RollAction_EditLyrics.Size = new System.Drawing.Size(263, 22);
+            this.RollAction_EditLyrics.Text = "Edit Selected Lyrics";
             this.RollAction_EditLyrics.Click += new System.EventHandler(this.RollAction_EditLyrics_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(260, 6);
+            // 
+            // FullAction_EditParts
+            // 
+            this.FullAction_EditParts.Name = "FullAction_EditParts";
+            this.FullAction_EditParts.Size = new System.Drawing.Size(263, 22);
+            this.FullAction_EditParts.Text = "Edit Parts Attributes";
             // 
             // ParamCurveTollMenu
             // 
@@ -441,76 +450,75 @@
             this.ParamCurveTollMenu.Name = "SwitchTypeBtn";
             this.ParamCurveTollMenu.ShowCheckMargin = true;
             this.ParamCurveTollMenu.ShowImageMargin = false;
-            this.ParamCurveTollMenu.Size = new System.Drawing.Size(265, 184);
+            this.ParamCurveTollMenu.Size = new System.Drawing.Size(264, 170);
             // 
             // CurveAction_SetupCurrentToMouse
             // 
             this.CurveAction_SetupCurrentToMouse.Name = "CurveAction_SetupCurrentToMouse";
-            this.CurveAction_SetupCurrentToMouse.Size = new System.Drawing.Size(264, 24);
-            this.CurveAction_SetupCurrentToMouse.Text = "设置当前位置到鼠标位置(&G)";
+            this.CurveAction_SetupCurrentToMouse.Size = new System.Drawing.Size(263, 22);
+            this.CurveAction_SetupCurrentToMouse.Text = "Setup Current Postion to Mouse";
             this.CurveAction_SetupCurrentToMouse.Visible = false;
             this.CurveAction_SetupCurrentToMouse.Click += new System.EventHandler(this.RollAction_SetCurrentPos_Click);
             // 
             // CurveAction_SetupCurrentToMouse_Separator
             // 
             this.CurveAction_SetupCurrentToMouse_Separator.Name = "CurveAction_SetupCurrentToMouse_Separator";
-            this.CurveAction_SetupCurrentToMouse_Separator.Size = new System.Drawing.Size(310, 6);
+            this.CurveAction_SetupCurrentToMouse_Separator.Size = new System.Drawing.Size(260, 6);
             this.CurveAction_SetupCurrentToMouse_Separator.Visible = false;
             // 
             // CurveTool_DrawLine
             // 
             this.CurveTool_DrawLine.Name = "CurveTool_DrawLine";
-            this.CurveTool_DrawLine.Size = new System.Drawing.Size(264, 24);
-            this.CurveTool_DrawLine.Text = "绘制直线音高(&L)";
+            this.CurveTool_DrawLine.Size = new System.Drawing.Size(263, 22);
+            this.CurveTool_DrawLine.Text = "Draw PitchBends with Line";
             this.CurveTool_DrawLine.Click += new System.EventHandler(this.CurveTool_DrawLine_Click);
             // 
             // CurveTool_DrawJ
             // 
             this.CurveTool_DrawJ.Name = "CurveTool_DrawJ";
-            this.CurveTool_DrawJ.Size = new System.Drawing.Size(264, 24);
-            this.CurveTool_DrawJ.Text = "绘制J曲线音高(&J)";
+            this.CurveTool_DrawJ.Size = new System.Drawing.Size(263, 22);
+            this.CurveTool_DrawJ.Text = "Draw PitchBends with Graphic J";
             this.CurveTool_DrawJ.Click += new System.EventHandler(this.CurveTool_DrawJ_Click);
             // 
             // CurveTool_DrawR
             // 
             this.CurveTool_DrawR.Name = "CurveTool_DrawR";
-            this.CurveTool_DrawR.Size = new System.Drawing.Size(264, 24);
-            this.CurveTool_DrawR.Text = "绘制R曲线音高(&R)";
+            this.CurveTool_DrawR.Size = new System.Drawing.Size(263, 22);
+            this.CurveTool_DrawR.Text = "Draw PitchBends with Graphic R";
             this.CurveTool_DrawR.Click += new System.EventHandler(this.CurveTool_DrawR_Click);
             // 
             // CurveTool_DrawS
             // 
             this.CurveTool_DrawS.Name = "CurveTool_DrawS";
-            this.CurveTool_DrawS.Size = new System.Drawing.Size(264, 24);
-            this.CurveTool_DrawS.Text = "绘制S曲线音高(&S)";
+            this.CurveTool_DrawS.Size = new System.Drawing.Size(263, 22);
+            this.CurveTool_DrawS.Text = "Draw PitchBends with Graphic S";
             this.CurveTool_DrawS.Click += new System.EventHandler(this.CurveTool_DrawS_Click);
             // 
             // CurveTool_EarseSelect
             // 
             this.CurveTool_EarseSelect.Name = "CurveTool_EarseSelect";
-            this.CurveTool_EarseSelect.Size = new System.Drawing.Size(264, 24);
-            this.CurveTool_EarseSelect.Text = "擦除选中区域音高(&E)";
+            this.CurveTool_EarseSelect.Size = new System.Drawing.Size(263, 22);
+            this.CurveTool_EarseSelect.Text = "Select And Earse PitchBends";
             this.CurveTool_EarseSelect.Click += new System.EventHandler(this.CurveTool_EarseSelect_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(310, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(260, 6);
             // 
             // BindPianoRoll
             // 
             this.BindPianoRoll.Name = "BindPianoRoll";
-            this.BindPianoRoll.Size = new System.Drawing.Size(264, 24);
-            this.BindPianoRoll.Text = "与钢琴窗联动(&B)";
+            this.BindPianoRoll.Size = new System.Drawing.Size(263, 22);
+            this.BindPianoRoll.Text = "Bind Tools with PianoRoll";
             this.BindPianoRoll.Click += new System.EventHandler(this.BindPianoRoll_Click);
             // 
             // SingerWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1260, 641);
+            this.ClientSize = new System.Drawing.Size(945, 513);
             this.Controls.Add(this.MainPianoSplitContainer);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "SingerWindow";
             this.Text = "SingerWindow";
             ((System.ComponentModel.ISupportInitialize)(this.ctl_Param_RZoom)).EndInit();
@@ -571,6 +579,8 @@
         private System.Windows.Forms.ToolStripMenuItem CurveTool_EarseSelect;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem BindPianoRoll;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem FullAction_EditParts;
         private System.Windows.Forms.ToolStripMenuItem CurveAction_SetupCurrentToMouse;
         private System.Windows.Forms.ToolStripSeparator CurveAction_SetupCurrentToMouse_Separator;
     }

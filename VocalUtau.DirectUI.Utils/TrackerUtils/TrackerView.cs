@@ -634,6 +634,10 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
                         ResetShowingParts();
                     }
                 }
+                else
+                {
+                    MessageBox.Show("轨道中至少要有一个区块！如果这条轨道和区块是不必要的，请删除这条轨道。");
+                }
             }
             else if (trackLocate.Type == TrackLocation.TrackType.Barker)
             {
@@ -645,6 +649,10 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
                     {
                         bo.WavPartList.RemoveAt((int)partLocate.PartID);
                     }
+                }
+                else
+                {
+                    MessageBox.Show("轨道中至少要有一个区块！如果这条轨道和区块是不必要的，请删除这条轨道。");
                 }
             }
         }
@@ -659,7 +667,7 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
                     bool isEditing = false;
                     for (int i = 0; i < to.PartList.Count; i++)
                     {
-                        if (to.PartList[i].GUID==_ShowingGUID)
+                        if (to.PartList[i].GUID == _ShowingGUID)
                         {
                             isEditing = true;
                             break;
@@ -674,6 +682,10 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
                         ResetShowingParts();
                     }
                 }
+                else
+                {
+                    MessageBox.Show("工程中至少要有一条声轨！");
+                }
             }
             else if (trackLocate.Type == TrackLocation.TrackType.Barker)
             {
@@ -685,6 +697,10 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
                     {
                         BackerList.RemoveAt((int)trackLocate.TrackID);
                     }
+                }
+                else
+                {
+                    MessageBox.Show("工程中至少要有一条伴奏声轨！");
                 }
             }
         }

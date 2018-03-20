@@ -99,41 +99,41 @@
             this.track_AddParts,
             this.track_DelectParts});
             this.menu_TrackEditor.Name = "menu_TrackEditor";
-            this.menu_TrackEditor.Size = new System.Drawing.Size(286, 146);
+            this.menu_TrackEditor.Size = new System.Drawing.Size(214, 146);
             // 
             // track_AddNewTrack
             // 
             this.track_AddNewTrack.Name = "track_AddNewTrack";
-            this.track_AddNewTrack.Size = new System.Drawing.Size(285, 24);
-            this.track_AddNewTrack.Text = "Add New Vocal Track";
+            this.track_AddNewTrack.Size = new System.Drawing.Size(213, 24);
+            this.track_AddNewTrack.Text = "添加新声轨";
             this.track_AddNewTrack.Click += new System.EventHandler(this.track_AddNewTrack_Click);
             // 
             // track_AddNewBackerTrack
             // 
             this.track_AddNewBackerTrack.Name = "track_AddNewBackerTrack";
-            this.track_AddNewBackerTrack.Size = new System.Drawing.Size(285, 24);
-            this.track_AddNewBackerTrack.Text = "Add New Backgroud Track";
+            this.track_AddNewBackerTrack.Size = new System.Drawing.Size(213, 24);
+            this.track_AddNewBackerTrack.Text = "添加新伴奏轨";
             this.track_AddNewBackerTrack.Click += new System.EventHandler(this.track_AddNewBackerTrack_Click);
             // 
             // track_DelTracks
             // 
             this.track_DelTracks.Name = "track_DelTracks";
-            this.track_DelTracks.Size = new System.Drawing.Size(285, 24);
-            this.track_DelTracks.Text = "Delete the Selecting Track";
+            this.track_DelTracks.Size = new System.Drawing.Size(213, 24);
+            this.track_DelTracks.Text = "删除选中的轨道";
             this.track_DelTracks.Click += new System.EventHandler(this.track_DelTracks_Click);
             // 
             // track_AddParts
             // 
             this.track_AddParts.Name = "track_AddParts";
-            this.track_AddParts.Size = new System.Drawing.Size(285, 24);
-            this.track_AddParts.Text = "Add A Part In SelectingTrack";
+            this.track_AddParts.Size = new System.Drawing.Size(213, 24);
+            this.track_AddParts.Text = "在选中轨道添加区块";
             this.track_AddParts.Click += new System.EventHandler(this.track_AddParts_Click);
             // 
             // track_DelectParts
             // 
             this.track_DelectParts.Name = "track_DelectParts";
-            this.track_DelectParts.Size = new System.Drawing.Size(285, 24);
-            this.track_DelectParts.Text = "Delete the Selecting Part";
+            this.track_DelectParts.Size = new System.Drawing.Size(213, 24);
+            this.track_DelectParts.Text = "删除选中区块";
             this.track_DelectParts.Click += new System.EventHandler(this.track_DelectParts_Click);
             // 
             // trackerRollWindow1
@@ -157,7 +157,7 @@
             this.Controls.Add(this.ctl_Scroll_LeftPos);
             this.Controls.Add(this.ctl_Track_PianoWidth);
             this.Controls.Add(this.trackerRollWindow1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "TrackerWindow";
             this.Text = "TrackerWindow";
             this.Load += new System.EventHandler(this.TrackerWindow_Load);

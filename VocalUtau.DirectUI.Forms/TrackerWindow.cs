@@ -173,6 +173,18 @@ namespace VocalUtau.DirectUI.Forms
             if (e.MouseEventArgs.Button == System.Windows.Forms.MouseButtons.Right)
             {
                 Point p=PointToScreen(new Point(e.MouseEventArgs.X, e.MouseEventArgs.Y));
+                if (Controller.Track_View.getSelectingParts() == null)
+                {
+                    track_DelectParts.Enabled = false;
+                    track_DelTracks.Enabled = false;
+                    track_AddParts.Enabled = false;
+                }
+                else
+                {
+                    track_DelectParts.Enabled = true;
+                    track_DelTracks.Enabled = true;
+                    track_AddParts.Enabled = true;
+                }
                 menu_TrackEditor.Show(p);
             }
         }

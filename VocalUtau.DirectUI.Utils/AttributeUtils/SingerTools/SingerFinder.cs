@@ -28,10 +28,10 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools
             ProjectObject poj=getProjectObject(ProjectPtr);
             for (int i = 0; i < poj.SingerList.Count; i++)
             {
-                if (ret == "") ret = poj.SingerList[i].SingerName;
+                if (ret == "") ret = poj.SingerList[i].VocalName;
                 if (poj.SingerList[i].getGuid() == SingerGUID)
                 {
-                    return poj.SingerList[i].SingerName;
+                    return poj.SingerList[i].VocalName;
                 }
             }
             return ret;
@@ -43,7 +43,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools
             for (int i = 0; i < poj.SingerList.Count; i++)
             {
                 if (ret == "") ret = poj.SingerList[i].getGuid();
-                if (poj.SingerList[i].SingerName == SingerName)
+                if (poj.SingerList[i].VocalName == SingerName)
                 {
                     return poj.SingerList[i].getGuid();
                 }
@@ -73,7 +73,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools
 
                 for (int i = 0; i < (context.Instance as PartAttributes).ProjectObject.SingerList.Count; i++)
                 {
-                    values.Add((context.Instance as PartAttributes).ProjectObject.SingerList[i].SingerName);
+                    values.Add((context.Instance as PartAttributes).ProjectObject.SingerList[i].VocalName);
                 }
                 values.Add("添加/删除歌手...");
                 return new StandardValuesCollection(values);

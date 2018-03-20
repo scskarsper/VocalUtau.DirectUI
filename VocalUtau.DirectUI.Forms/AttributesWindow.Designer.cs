@@ -37,8 +37,8 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.PropertyViewer.LineColor = System.Drawing.SystemColors.ControlDark;
-            this.PropertyViewer.Location = new System.Drawing.Point(4, 20);
-            this.PropertyViewer.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.PropertyViewer.Location = new System.Drawing.Point(4, 2);
+            this.PropertyViewer.Margin = new System.Windows.Forms.Padding(4);
             this.PropertyViewer.Name = "PropertyViewer";
             this.PropertyViewer.Size = new System.Drawing.Size(372, 432);
             this.PropertyViewer.TabIndex = 0;
@@ -51,7 +51,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(379, 546);
             this.Controls.Add(this.PropertyViewer);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "AttributesWindow";
             this.Text = "AttributesWindow";
             this.ResumeLayout(false);
