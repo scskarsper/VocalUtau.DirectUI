@@ -188,6 +188,8 @@ namespace VocalUtau.DirectUI.Forms
             public event VocalUtau.DirectUI.Utils.PianoUtils.PitchView.OnPitchEventHandler PitchActionBegin;
             public event VocalUtau.DirectUI.Utils.PianoUtils.ActionView.OnTickPosChangeHandler TickPosChange;
             public event VocalUtau.DirectUI.Utils.PianoUtils.NoteView.OnNoteSelectHandler NoteSelecting;
+            public delegate void OnToolStatusChangeHandler(object StatusEnum);
+            public event OnToolStatusChangeHandler ToolStatusChange;
             #endregion
 
             public PitchView Track_PitchView;
@@ -277,6 +279,7 @@ namespace VocalUtau.DirectUI.Forms
             {
                 Track_NoteView.NoteToolsStatus = Tool;
                 SwitchRollAction(RollActionType.Note);
+                if (ToolStatusChange != null) ToolStatusChange(Tool);
             }
             public void SetPitchViewTool(PitchView.PitchDragingType Tool)
             {
@@ -288,6 +291,7 @@ namespace VocalUtau.DirectUI.Forms
                     Param_DynamicView.DynToolsStatus = Tool;
                     ParamWindow.RedrawPiano();
                 }
+                if (ToolStatusChange != null) ToolStatusChange(Tool);
             }
             public void SetParamGraphicTool(PitchView.PitchDragingType Tool)
             {
@@ -299,6 +303,7 @@ namespace VocalUtau.DirectUI.Forms
                     SwitchRollAction(RollActionType.Pitch);
                     Track_PitchView.PitchToolsStatus = Tool;
                     PianoWindow.RedrawPiano();
+                    if (ToolStatusChange != null) ToolStatusChange(Tool);
                 }
             }
             public void setTimePos(double Time)
@@ -360,6 +365,11 @@ namespace VocalUtau.DirectUI.Forms
         public event OnTotalTimePosChangeHandler TotalTimePosChange;
 
         ViewController Controller;
+
+        public ViewController BaseController
+        {
+            get { return Controller; }
+        }
         ObjectAlloc<PartsObject> OAC = new ObjectAlloc<PartsObject>();
         ObjectAlloc<ProjectObject> ProjectBeeper = new ObjectAlloc<ProjectObject>();
 
@@ -373,6 +383,7 @@ namespace VocalUtau.DirectUI.Forms
             this.paramCurveWindow1.ParamAreaMouseClick += paramCurveWindow1_ParamAreaMouseClick;
             ResetComponent();
         }
+
         void ResetComponent()
         {
             this.btn_SelectCurve.Location = new System.Drawing.Point(-1, 93);
@@ -469,7 +480,7 @@ namespace VocalUtau.DirectUI.Forms
             this.AttributeWindow.AttributeChange += AttributeWindow_AttributeChange;
         }
 
-        void AttributeWindow_AttributeChange()
+        void AttributeWindow_AttributeChange(PropertyValueChangedEventArgs e, ProjectObject oldObj)
         {
             GuiRefresh();
         }
@@ -543,8 +554,8 @@ namespace VocalUtau.DirectUI.Forms
         {
             ProjectBeeper.ReAlloc(proj);
         }
-
-        public void LoadParts(ref PartsObject parts)
+        
+        public void LoadParts(ref PartsObject parts,bool KeepSelecting=false)
         {
             OAC.ReAlloc(parts);
             Controller.AllocView(OAC.IntPtr);
@@ -553,6 +564,15 @@ namespace VocalUtau.DirectUI.Forms
             ctl_Scroll_LeftPos_Scroll(null, null);
             this.Text = parts.PartName;
             AttributeWindow.LoadPartsPtr(ref parts);
+            if (KeepSelecting)
+            {
+                Controller.RealaramNoteSelecting();
+            }
+            else
+            {
+
+                Controller.Track_NoteView.ClearSelect();
+            }
             setupSingerIcon();
         }
 

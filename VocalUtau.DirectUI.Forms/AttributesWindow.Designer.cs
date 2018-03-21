@@ -44,6 +44,7 @@
             this.PropertyViewer.TabIndex = 0;
             this.PropertyViewer.UseCompatibleTextRendering = true;
             this.PropertyViewer.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.PropertyViewer_PropertyValueChanged);
+            this.PropertyViewer.SelectedGridItemChanged += new System.Windows.Forms.SelectedGridItemChangedEventHandler(this.PropertyViewer_SelectedGridItemChanged);
             // 
             // AttributesWindow
             // 

@@ -12,6 +12,9 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
     [DefaultProperty("Note_Lyric")]
     public class NoteAttributes:PartAttributes
     {
+        public delegate void OnPhonemeChangedHandler();
+        public event OnPhonemeChangedHandler PhonemesChanged;
+
         IntPtr notePtr = IntPtr.Zero;
         public NoteAttributes(IntPtr PartsObjectPtr, IntPtr NotesObjectPtr, IntPtr ProjectObjectPtr)
             : base(PartsObjectPtr,ProjectObjectPtr)
@@ -105,7 +108,6 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
         [CategoryAttribute("音符信息"), DisplayName("发音部件")]           
         [TypeConverterAttribute(typeof(VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms.PhonemeAtomListConverter)),  
         DescriptionAttribute("音符的发音部件集合，点击Editor编辑详情")] 
-        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [Editor(typeof(VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms.PhonemeAtomCategoryModelEditor), typeof(System.Drawing.Design.UITypeEditor))]
         public VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms.PhonemeEditorModel Note_Phonemes
         {
@@ -115,7 +117,8 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
             }
             set
             {
-                 NoteObject.PhonemeAtoms = value.Plist;
+                NoteObject.PhonemeAtoms = value.Plist;
+                if (PhonemesChanged != null) PhonemesChanged();
             }
         }
     }

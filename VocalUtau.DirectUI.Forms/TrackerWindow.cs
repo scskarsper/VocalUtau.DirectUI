@@ -153,6 +153,10 @@ namespace VocalUtau.DirectUI.Forms
 
         }
 
+        public ViewController BaseController
+        {
+            get { return Controller; }
+        }
         ViewController Controller;
         ObjectAlloc<ProjectObject> OAC = new ObjectAlloc<ProjectObject>();
         public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnShowingEditorChangeHandler ShowingEditorChanged;
@@ -211,10 +215,11 @@ namespace VocalUtau.DirectUI.Forms
             this.AttributeWindow.AttributeChange += AttributeWindow_AttributeChange;
         }
 
-        void AttributeWindow_AttributeChange()
+        void AttributeWindow_AttributeChange(PropertyValueChangedEventArgs e, ProjectObject oldObj)
         {
             GuiRefresh();
         }
+
 
         void Controller_TickPosChange(long Tick, double Time)
         {

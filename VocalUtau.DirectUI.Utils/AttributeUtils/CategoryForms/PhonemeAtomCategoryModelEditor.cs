@@ -96,6 +96,5 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
 
             return value;
         }
-
     }
 }

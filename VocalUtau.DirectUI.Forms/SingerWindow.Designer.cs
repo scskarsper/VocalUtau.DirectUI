@@ -91,11 +91,11 @@
             this.btn_SelectCurve.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_SelectCurve.ForeColor = System.Drawing.Color.White;
             this.btn_SelectCurve.Location = new System.Drawing.Point(-1, 116);
-            this.btn_SelectCurve.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btn_SelectCurve.Margin = new System.Windows.Forms.Padding(4);
             this.btn_SelectCurve.Name = "btn_SelectCurve";
             this.btn_SelectCurve.Size = new System.Drawing.Size(79, 28);
             this.btn_SelectCurve.TabIndex = 9;
-            this.btn_SelectCurve.Text = "Type>";
+            this.btn_SelectCurve.Text = "参数>";
             this.btn_SelectCurve.UseVisualStyleBackColor = false;
             this.btn_SelectCurve.Click += new System.EventHandler(this.btn_SelectCurve_Click);
             // 
@@ -111,7 +111,7 @@
             this.ctl_Param_RZoom.Maximum = 5;
             this.ctl_Param_RZoom.Name = "ctl_Param_RZoom";
             this.ctl_Param_RZoom.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.ctl_Param_RZoom.Size = new System.Drawing.Size(23, 153);
+            this.ctl_Param_RZoom.Size = new System.Drawing.Size(23, 145);
             this.ctl_Param_RZoom.TabIndex = 10;
             this.ctl_Param_RZoom.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.ctl_Param_RZoom.Scroll += new System.EventHandler(this.ctl_Param_RZoom_Scroll);
@@ -124,9 +124,9 @@
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.ctl_Param_RZoom);
             this.panel1.Location = new System.Drawing.Point(1232, -4);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(30, 252);
+            this.panel1.Size = new System.Drawing.Size(30, 244);
             this.panel1.TabIndex = 11;
             // 
             // ctl_Track_NoteHeight
@@ -152,7 +152,7 @@
             this.MainPianoSplitContainer.BackColor = System.Drawing.Color.Black;
             this.MainPianoSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainPianoSplitContainer.Location = new System.Drawing.Point(0, 0);
-            this.MainPianoSplitContainer.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.MainPianoSplitContainer.Margin = new System.Windows.Forms.Padding(4);
             this.MainPianoSplitContainer.Name = "MainPianoSplitContainer";
             this.MainPianoSplitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -187,11 +187,11 @@
             this.btn_PianoRollAction.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_PianoRollAction.ForeColor = System.Drawing.Color.White;
             this.btn_PianoRollAction.Location = new System.Drawing.Point(1, 0);
-            this.btn_PianoRollAction.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btn_PianoRollAction.Margin = new System.Windows.Forms.Padding(4);
             this.btn_PianoRollAction.Name = "btn_PianoRollAction";
             this.btn_PianoRollAction.Size = new System.Drawing.Size(108, 34);
             this.btn_PianoRollAction.TabIndex = 13;
-            this.btn_PianoRollAction.Text = "Action>";
+            this.btn_PianoRollAction.Text = "快捷>";
             this.btn_PianoRollAction.UseVisualStyleBackColor = false;
             this.btn_PianoRollAction.Click += new System.EventHandler(this.btn_PianoRollAction_Click);
             // 
@@ -240,7 +240,7 @@
             // UtauPic
             // 
             this.UtauPic.Location = new System.Drawing.Point(9, 14);
-            this.UtauPic.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.UtauPic.Margin = new System.Windows.Forms.Padding(4);
             this.UtauPic.Name = "UtauPic";
             this.UtauPic.Size = new System.Drawing.Size(68, 62);
             this.UtauPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -253,11 +253,11 @@
             this.btn_SelectAction.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_SelectAction.ForeColor = System.Drawing.Color.White;
             this.btn_SelectAction.Location = new System.Drawing.Point(-1, 90);
-            this.btn_SelectAction.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btn_SelectAction.Margin = new System.Windows.Forms.Padding(4);
             this.btn_SelectAction.Name = "btn_SelectAction";
             this.btn_SelectAction.Size = new System.Drawing.Size(79, 28);
             this.btn_SelectAction.TabIndex = 9;
-            this.btn_SelectAction.Text = "Tool>";
+            this.btn_SelectAction.Text = "线型>";
             this.btn_SelectAction.UseVisualStyleBackColor = false;
             this.btn_SelectAction.Click += new System.EventHandler(this.btn_SelectAction_Click);
             // 
@@ -274,7 +274,7 @@
             this.ctl_Param_LZoom.Minimum = 1;
             this.ctl_Param_LZoom.Name = "ctl_Param_LZoom";
             this.ctl_Param_LZoom.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.ctl_Param_LZoom.Size = new System.Drawing.Size(21, 153);
+            this.ctl_Param_LZoom.Size = new System.Drawing.Size(21, 145);
             this.ctl_Param_LZoom.TabIndex = 7;
             this.ctl_Param_LZoom.Value = 1;
             this.ctl_Param_LZoom.Scroll += new System.EventHandler(this.ctl_Param_LZoom_Scroll);
@@ -344,7 +344,7 @@
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(319, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(289, 6);
             // 
             // RollTool_NoteSelect
             // 
@@ -363,7 +363,7 @@
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(319, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(289, 6);
             // 
             // RollTool_DrawLine
             // 
@@ -403,10 +403,11 @@
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(319, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(289, 6);
             // 
             // RollAction_NoteCopy
             // 
+            this.RollAction_NoteCopy.Enabled = false;
             this.RollAction_NoteCopy.Name = "RollAction_NoteCopy";
             this.RollAction_NoteCopy.Size = new System.Drawing.Size(292, 24);
             this.RollAction_NoteCopy.Text = "复制选中区域音符(&C)";
@@ -454,48 +455,48 @@
             // CurveAction_SetupCurrentToMouse_Separator
             // 
             this.CurveAction_SetupCurrentToMouse_Separator.Name = "CurveAction_SetupCurrentToMouse_Separator";
-            this.CurveAction_SetupCurrentToMouse_Separator.Size = new System.Drawing.Size(310, 6);
+            this.CurveAction_SetupCurrentToMouse_Separator.Size = new System.Drawing.Size(261, 6);
             this.CurveAction_SetupCurrentToMouse_Separator.Visible = false;
             // 
             // CurveTool_DrawLine
             // 
             this.CurveTool_DrawLine.Name = "CurveTool_DrawLine";
             this.CurveTool_DrawLine.Size = new System.Drawing.Size(264, 24);
-            this.CurveTool_DrawLine.Text = "绘制直线音高(&L)";
+            this.CurveTool_DrawLine.Text = "绘制直线参数(&L)";
             this.CurveTool_DrawLine.Click += new System.EventHandler(this.CurveTool_DrawLine_Click);
             // 
             // CurveTool_DrawJ
             // 
             this.CurveTool_DrawJ.Name = "CurveTool_DrawJ";
             this.CurveTool_DrawJ.Size = new System.Drawing.Size(264, 24);
-            this.CurveTool_DrawJ.Text = "绘制J曲线音高(&J)";
+            this.CurveTool_DrawJ.Text = "绘制J曲线参数(&J)";
             this.CurveTool_DrawJ.Click += new System.EventHandler(this.CurveTool_DrawJ_Click);
             // 
             // CurveTool_DrawR
             // 
             this.CurveTool_DrawR.Name = "CurveTool_DrawR";
             this.CurveTool_DrawR.Size = new System.Drawing.Size(264, 24);
-            this.CurveTool_DrawR.Text = "绘制R曲线音高(&R)";
+            this.CurveTool_DrawR.Text = "绘制R曲线参数(&R)";
             this.CurveTool_DrawR.Click += new System.EventHandler(this.CurveTool_DrawR_Click);
             // 
             // CurveTool_DrawS
             // 
             this.CurveTool_DrawS.Name = "CurveTool_DrawS";
             this.CurveTool_DrawS.Size = new System.Drawing.Size(264, 24);
-            this.CurveTool_DrawS.Text = "绘制S曲线音高(&S)";
+            this.CurveTool_DrawS.Text = "绘制S曲线参数(&S)";
             this.CurveTool_DrawS.Click += new System.EventHandler(this.CurveTool_DrawS_Click);
             // 
             // CurveTool_EarseSelect
             // 
             this.CurveTool_EarseSelect.Name = "CurveTool_EarseSelect";
             this.CurveTool_EarseSelect.Size = new System.Drawing.Size(264, 24);
-            this.CurveTool_EarseSelect.Text = "擦除选中区域音高(&E)";
+            this.CurveTool_EarseSelect.Text = "擦除选中区域参数(&E)";
             this.CurveTool_EarseSelect.Click += new System.EventHandler(this.CurveTool_EarseSelect_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(310, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(261, 6);
             // 
             // BindPianoRoll
             // 
@@ -510,7 +511,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1260, 641);
             this.Controls.Add(this.MainPianoSplitContainer);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SingerWindow";
             this.Text = "SingerWindow";
             ((System.ComponentModel.ISupportInitialize)(this.ctl_Param_RZoom)).EndInit();

@@ -129,8 +129,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
         }
 
         [CategoryAttribute("段落歌手属性"), DisplayName("歌手")]
-        [TypeConverterAttribute(typeof(SingerItemConverter)),
-        DescriptionAttribute("音符的发音部件集合，点击Editor编辑详情")] 
+        [TypeConverterAttribute(typeof(SingerItemConverter))] 
         public string Part_Singer
         {
             get { return SingerFinder.getSingerName(PartsObject.SingerGUID,ProjectObjectPtr); }

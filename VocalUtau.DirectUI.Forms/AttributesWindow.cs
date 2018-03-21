@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Windows.Forms;
 using VocalUtau.DirectUI.Utils.AttributeUtils.Models;
@@ -18,9 +21,9 @@ namespace VocalUtau.DirectUI.Forms
         ObjectAlloc<ProjectObject> ProjectBinder = new ObjectAlloc<ProjectObject>();
         ObjectAlloc<NoteObject> NoteBinder = new ObjectAlloc<NoteObject>();
         ObjectAlloc<PartsObject> PartsBinder = new ObjectAlloc<PartsObject>();
-        public delegate void OnAttributeChangeHandler();
+        public delegate void OnAttributeChangeHandler(PropertyValueChangedEventArgs e, ProjectObject oldObj);
         public event OnAttributeChangeHandler AttributeChange;
-
+        object CurrentObject;
 
         public AttributesWindow()
         {
@@ -31,11 +34,21 @@ namespace VocalUtau.DirectUI.Forms
             this.Show(DockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
         }
 
+        public object Clone(object source)
+        {
+            BinaryFormatter Formatter = new BinaryFormatter(null, new StreamingContext(StreamingContextStates.Clone));
+            MemoryStream stream = new MemoryStream();
+            Formatter.Serialize(stream, source);
+            stream.Position = 0;
+            object clonedObj = Formatter.Deserialize(stream);
+            stream.Close();
+            return clonedObj;
+        }
+
         public void LoadProjectObject(ref ProjectObject projects)
         {
             ProjectBinder.ReAlloc(projects);
         }
-
         public void LoadPartsPtr(ref PartsObject PartsObj,bool isCurrentEditing=true)
         {
             PartsBinder.ReAlloc(PartsObj);
@@ -54,17 +67,39 @@ namespace VocalUtau.DirectUI.Forms
 
             NoteBinder.ReAlloc(CurrentNote);
 
-            this.PropertyViewer.Tag = new NoteAttributes(PartsBinder.IntPtr, NoteBinder.IntPtr, ProjectBinder.IntPtr);
+            NoteAttributes NA = new NoteAttributes(PartsBinder.IntPtr, NoteBinder.IntPtr, ProjectBinder.IntPtr);
+
+            NA.PhonemesChanged += NA_PhonemesChanged;
+
+            this.PropertyViewer.Tag = NA;
 
             this.PropertyViewer.SelectedObject = this.PropertyViewer.Tag;
         }
 
+
+        ProjectObject Cache = null;
+        void AddCache()
+        {
+            if (ProjectBinder.AllocedObject != null && ProjectBinder.AllocedObject is ProjectObject)
+            {
+                Cache = (ProjectObject)Clone(ProjectBinder.AllocedObject);
+            }
+        }
+        void NA_PhonemesChanged()
+        {
+            if (AttributeChange != null) AttributeChange(null, Cache);
+        }
+
         private void PropertyViewer_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
-            /*
-             (ProjectObject)ProjectBinder.AllocedObject
-             */
-            if (AttributeChange != null) AttributeChange();
+            if (AttributeChange != null) AttributeChange(e,Cache);
+            AddCache();
         }
+
+        private void PropertyViewer_SelectedGridItemChanged(object sender, SelectedGridItemChangedEventArgs e)
+        {
+            AddCache();
+        }
+
     }
 }

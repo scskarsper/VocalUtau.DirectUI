@@ -121,28 +121,34 @@ namespace VocalUtau.DirectUI.Utils.AbilityUtils
                 return UndoRepoList[UndoRepoList.Count - 1];
             }
         }
-        public KeyValuePair<T, string> PeekUndo()
+        public KeyValuePair<T, string> PeekUndo(bool KeepData=false)
         {
             if (UndoList.Count <= 0) return new KeyValuePair<T, string>(default(T), "");
             try
             {
                 T Obj = UndoList[UndoList.Count - 1];
                 String Repo = UndoRepoList[UndoRepoList.Count - 1];
-                UndoList.RemoveAt(UndoList.Count - 1);
-                UndoRepoList.RemoveAt(UndoRepoList.Count - 1);
+                if (!KeepData)
+                {
+                    UndoList.RemoveAt(UndoList.Count - 1);
+                    UndoRepoList.RemoveAt(UndoRepoList.Count - 1);
+                }
                 return new KeyValuePair<T, string>(Obj, Repo);
             }
             catch { return new KeyValuePair<T, string>(default(T), ""); }
         }
-        public KeyValuePair<T,string> PeekRepeat()
+        public KeyValuePair<T, string> PeekRepeat(bool KeepData = false)
         {
             if (RepeatList.Count <= 0) return new KeyValuePair<T, string>(default(T), "");
             try
             {
                 T Obj = RepeatList[RepeatList.Count - 1];
                 String Repo = RepeatRepoList[RepeatRepoList.Count - 1];
-                RepeatList.RemoveAt(RepeatList.Count - 1);
-                RepeatRepoList.RemoveAt(RepeatRepoList.Count - 1);
+                if (!KeepData)
+                {
+                    RepeatList.RemoveAt(RepeatList.Count - 1);
+                    RepeatRepoList.RemoveAt(RepeatRepoList.Count - 1);
+                }
                 return new KeyValuePair<T,string>(Obj,Repo);
             }
             catch { return new KeyValuePair<T, string>(default(T), ""); }

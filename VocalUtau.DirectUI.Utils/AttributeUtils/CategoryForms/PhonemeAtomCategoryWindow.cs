@@ -64,8 +64,8 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
             int LastLeft = 0;
             for (int i = 0; i < TickArray.Count; i++)
             {
-                this.pnl_Phoneme.Controls[i].Left = LastLeft-1;
-                this.pnl_Phoneme.Controls[i].Width = (int)(TickArray[i] * w2t) + 1;
+                this.pnl_Phoneme.Controls[i].Left = LastLeft;
+                this.pnl_Phoneme.Controls[i].Width = (int)(TickArray[i] * w2t);
                 this.pnl_Phoneme.Controls[i].Text = ListValue[i].PhonemeAtom;
                 LastLeft = LastLeft + (int)(TickArray[i] * w2t);
             }
@@ -121,7 +121,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
         }
         void SetCurrentObject(int ObjectIndex)
         {
-            if (ObjectIndex > ListValue.Count)
+            if (ObjectIndex >= ListValue.Count)
             {
                 ObjectIndex = 0;
             };
@@ -155,6 +155,10 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
             {
                 chk_ZyB.Enabled = true;
             }
+
+            btn_ForwardPhonObj.Enabled = CurrentIndex < ListValue.Count - 1;
+            btn_BackPhonObj.Enabled = CurrentIndex > 0;
+            btn_DelPhonObj.Enabled = ListValue.Count > 1;
         }
         void ReloadListValue()
         {
@@ -166,20 +170,35 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
             }
             List<long> TickArray = (List<long>)this.pnl_Phoneme.Tag;
             //添加等数量Lbl
-            foreach (Label l in this.pnl_Phoneme.Controls)
+            for (int i = TickArray.Count; i < this.pnl_Phoneme.Controls.Count; i++)
             {
-                this.pnl_Phoneme.Controls.Remove(l);
+                this.pnl_Phoneme.Controls[i].Visible = false;
             }
             for (int i = 0; i < TickArray.Count; i++)
             {
-                Label lb=new Label();
-                if(i!=TickArray.Count-1)lb.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+                Label lb;
+                if (i >= this.pnl_Phoneme.Controls.Count)
+                    lb = new Label();
+                else
+                    lb = (Label)this.pnl_Phoneme.Controls[i];
+                lb.Visible = true;
+                //if(i!=TickArray.Count-1)lb.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
                 lb.Height = pnl_Phoneme.ClientRectangle.Height+2;
                 lb.Top = -1;
                 lb.TextAlign = ContentAlignment.MiddleCenter;
                 lb.Tag = i;
                 lb.Click += Atom_Click;
+                lb.Paint += Atom_Paint;
                 this.pnl_Phoneme.Controls.Add(lb);
+            }
+            btn_DelPhonObj.Enabled = ListValue.Count > 1;
+        }
+
+        void Atom_Paint(object sender, PaintEventArgs e)
+        {
+            if (!sender.Equals(pnl_Phoneme.Controls[0]))
+            {
+                e.Graphics.DrawLine(Pens.Black, 0, 0, 0, e.ClipRectangle.Height);
             }
         }
         void ReCalcListValue()
@@ -253,7 +272,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
         void Atom_Click(object sender, EventArgs e)
         {
             Label CurLbl = (Label)sender;
-            int Index = (int)CurLbl.Tag;
+            int Index=pnl_Phoneme.Controls.IndexOf(CurLbl);
             SetCurrentObject(Index);
         }
         private void btn_OK_Click(object sender, EventArgs e)
@@ -273,36 +292,62 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
                 return;
             }
             List<long> TickArray = (List<long>)this.pnl_Phoneme.Tag;
-            if (ListValue[CurrentIndex - 1].AtomLength > 0)// || (!isSingleAuto && ListValue[CurrentIndex].AtomLength == 0))
+            long st1 = getStartTick(CurrentIndex - 1);
+            long Tl1 = ctl_pa_Start.Value - st1;
+            long tEnd = pmodel.Length;
+            long st2 = getStartTick(CurrentIndex + 1);
+            if (CurrentIndex + 1 < ListValue.Count) tEnd = st2;
+            long Tl2 = tEnd - ctl_pa_Start.Value;
+            long MinTickNote=10;
+            try
+            {
+                if (ListValue[CurrentIndex - 1].AtomLength > 0 && Tl1 < MinTickNote)
+                {
+                    //前置音符过短
+                    long MinValue = MinTickNote + st1;
+                    ctl_pa_Start.Value = (int)MinValue;
+                    ctl_pa_Start_Scroll(null, null);
+                    return;
+                }
+                if (ListValue[CurrentIndex].AtomLength > 0 || (!isSingleAuto && ListValue[CurrentIndex - 1].AtomLength == 0))
+                {
+                    if (Tl2 < MinTickNote)
+                    {
+                        //后置音符过短
+                        long MinValue = tEnd - MinTickNote;
+                        ctl_pa_Start.Value = (int)MinValue;
+                        ctl_pa_Start_Scroll(null, null);
+                        return;
+                    }
+                }
+            }
+            catch { ;}
+
+            if (ListValue[CurrentIndex - 1].AtomLength > 0)
             {
                 if (ListValue[CurrentIndex - 1].LengthIsPercent)
                 {
-                    long Tl = ctl_pa_Start.Value - getStartTick(CurrentIndex - 1);
-                    double bfb = (double)Tl / (double)pmodel.Length;
+                    double bfb = (double)Tl1 / (double)pmodel.Length;
                     bfb = bfb * 100;
                     ListValue[CurrentIndex - 1].AtomLength = (long)Math.Round(bfb);
                 }
                 else
                 {
-                    ListValue[CurrentIndex - 1].AtomLength = ctl_pa_Start.Value - getStartTick(CurrentIndex - 1);
+                    ListValue[CurrentIndex - 1].AtomLength = Tl1;
                 }
                 this.pnl_Phoneme.Controls[CurrentIndex - 1].BackColor = Color.FromArgb(0, 192, 192);
             }
             if (ListValue[CurrentIndex].AtomLength > 0 || (!isSingleAuto && ListValue[CurrentIndex-1].AtomLength == 0))
             {
-                long tEnd = pmodel.Length;
-                if (CurrentIndex + 1 < ListValue.Count) tEnd = getStartTick(CurrentIndex + 1);
-
                 if (ListValue[CurrentIndex].LengthIsPercent)
                 {
-                    long Tl = tEnd-ctl_pa_Start.Value;
-                    double bfb = (double)Tl / (double)pmodel.Length;
+                    double bfb = (double)Tl2 / (double)pmodel.Length;
                     bfb = bfb * 100;
                     ListValue[CurrentIndex].AtomLength = (long)Math.Round(bfb);
                 }
                 else
                 {
-                    ListValue[CurrentIndex].AtomLength = tEnd - ctl_pa_Start.Value;
+                    ListValue[CurrentIndex].AtomLength = Tl2;
                 }
                 this.pnl_Phoneme.Controls[CurrentIndex].BackColor = Color.Teal;
             }
@@ -454,6 +499,67 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
                 {
                     this.pnl_Phoneme.Controls[i].Text = ListValue[i].PhonemeAtom;
                 }
+            }
+            catch { ;}
+        }
+
+        private void btn_AddPhonObj_Click(object sender, EventArgs e)
+        {
+            string input = Microsoft.VisualBasic.Interaction.InputBox("请输入要插入的部件发音符号", "添加部件", "a");
+            if (input.Trim().Length > 0)
+            {
+                NoteAtomObject nao = new NoteAtomObject(input);
+                nao.InitNoteAtom();
+                try
+                {
+                    nao.FadeOutLengthMs = ListValue[ListValue.Count - 1].FadeOutLengthMs;
+                    nao.Flags = ListValue[ListValue.Count - 1].Flags;
+                }
+                catch { ;}
+                nao.AtomLength = 0;
+                nao.VolumePercentInt = 100;
+                ListValue.Add(nao);
+                ReloadListValue();
+                ResizeShown();
+                SetCurrentObject(ListValue.Count-1);
+            }
+        }
+
+        private void btn_DelPhonObj_Click(object sender, EventArgs e)
+        {
+            if (ListValue.Count > 1)
+            {
+                ListValue.RemoveAt(CurrentIndex); 
+                ReloadListValue();
+                ResizeShown();
+                SetCurrentObject(0);
+            }
+        }
+
+        private void btn_ForwardPhonObj_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                NoteAtomObject NAO1 = ListValue[CurrentIndex];
+                ListValue.RemoveAt(CurrentIndex);
+                ListValue.Insert(CurrentIndex + 1, NAO1);
+                ReloadListValue();
+                SetCurrentObject(CurrentIndex + 1);
+                ResizeShown();
+            }
+            catch { ;}
+        }
+
+        private void btn_BackPhonObj_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                NoteAtomObject NAO1 = ListValue[CurrentIndex];
+                ListValue.RemoveAt(CurrentIndex);
+                ListValue.Insert(CurrentIndex - 1, NAO1);
+                ReloadListValue();
+                SetCurrentObject(CurrentIndex - 1);
+                ResizeShown();
             }
             catch { ;}
         }

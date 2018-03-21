@@ -46,6 +46,10 @@
             this.dynPainterBox = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.btn_AddPhonObj = new System.Windows.Forms.Button();
+            this.btn_DelPhonObj = new System.Windows.Forms.Button();
+            this.btn_BackPhonObj = new System.Windows.Forms.Button();
+            this.btn_ForwardPhonObj = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.ctl_pa_Start)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dynPainterBox)).BeginInit();
             this.SuspendLayout();
@@ -104,7 +108,7 @@
             this.lbl_NoteView.Location = new System.Drawing.Point(121, 12);
             this.lbl_NoteView.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbl_NoteView.Name = "lbl_NoteView";
-            this.lbl_NoteView.Size = new System.Drawing.Size(411, 38);
+            this.lbl_NoteView.Size = new System.Drawing.Size(376, 38);
             this.lbl_NoteView.TabIndex = 3;
             this.lbl_NoteView.Text = "label2";
             this.lbl_NoteView.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -118,7 +122,7 @@
             this.pnl_Phoneme.Location = new System.Drawing.Point(121, 54);
             this.pnl_Phoneme.Margin = new System.Windows.Forms.Padding(4);
             this.pnl_Phoneme.Name = "pnl_Phoneme";
-            this.pnl_Phoneme.Size = new System.Drawing.Size(411, 37);
+            this.pnl_Phoneme.Size = new System.Drawing.Size(376, 37);
             this.pnl_Phoneme.TabIndex = 4;
             this.pnl_Phoneme.Resize += new System.EventHandler(this.pnl_Phoneme_Resize);
             // 
@@ -133,7 +137,7 @@
             this.ctl_pa_Start.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
             this.ctl_pa_Start.Maximum = 10000;
             this.ctl_pa_Start.Name = "ctl_pa_Start";
-            this.ctl_pa_Start.Size = new System.Drawing.Size(429, 20);
+            this.ctl_pa_Start.Size = new System.Drawing.Size(394, 20);
             this.ctl_pa_Start.TabIndex = 6;
             this.ctl_pa_Start.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.ctl_pa_Start.Value = 13;
@@ -172,7 +176,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(205, 134);
+            this.label6.Location = new System.Drawing.Point(166, 134);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(112, 15);
@@ -182,7 +186,7 @@
             // chk_Bfb
             // 
             this.chk_Bfb.AutoSize = true;
-            this.chk_Bfb.Location = new System.Drawing.Point(325, 132);
+            this.chk_Bfb.Location = new System.Drawing.Point(286, 132);
             this.chk_Bfb.Margin = new System.Windows.Forms.Padding(4);
             this.chk_Bfb.Name = "chk_Bfb";
             this.chk_Bfb.Size = new System.Drawing.Size(74, 19);
@@ -196,17 +200,17 @@
             this.AtomPropertyGrid.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.AtomPropertyGrid.LineColor = System.Drawing.SystemColors.ControlDark;
-            this.AtomPropertyGrid.Location = new System.Drawing.Point(545, 12);
+            this.AtomPropertyGrid.Location = new System.Drawing.Point(510, 54);
             this.AtomPropertyGrid.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.AtomPropertyGrid.Name = "AtomPropertyGrid";
-            this.AtomPropertyGrid.Size = new System.Drawing.Size(317, 531);
+            this.AtomPropertyGrid.Size = new System.Drawing.Size(374, 489);
             this.AtomPropertyGrid.TabIndex = 13;
             this.AtomPropertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.AtomPropertyGrid_PropertyValueChanged);
             // 
             // chk_ZyB
             // 
             this.chk_ZyB.AutoSize = true;
-            this.chk_ZyB.Location = new System.Drawing.Point(408, 132);
+            this.chk_ZyB.Location = new System.Drawing.Point(369, 132);
             this.chk_ZyB.Margin = new System.Windows.Forms.Padding(4);
             this.chk_ZyB.Name = "chk_ZyB";
             this.chk_ZyB.Size = new System.Drawing.Size(74, 19);
@@ -224,7 +228,7 @@
             this.dynPainterBox.Location = new System.Drawing.Point(8, 195);
             this.dynPainterBox.Margin = new System.Windows.Forms.Padding(4);
             this.dynPainterBox.Name = "dynPainterBox";
-            this.dynPainterBox.Size = new System.Drawing.Size(531, 220);
+            this.dynPainterBox.Size = new System.Drawing.Size(496, 220);
             this.dynPainterBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.dynPainterBox.TabIndex = 17;
             this.dynPainterBox.TabStop = false;
@@ -246,17 +250,68 @@
             this.label7.Location = new System.Drawing.Point(5, 419);
             this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(528, 125);
+            this.label7.Size = new System.Drawing.Size(493, 125);
             this.label7.TabIndex = 19;
             this.label7.Text = "参数说明：\r\n    第一个发音元件的交叠参数和先行发音参数等价于整个发音的交叠参数和先行发音参数。\r\n    第一个和最后一个发音元件的淡入淡出参数分别用于设置" +
     "该发音整体的前置过度和后置过度\r\n    中间的发音元件包络淡入淡出过度与交叠（Overlap）等长。\r\n    自定义属性值为\"空\"时代表使用默认值，默认值来" +
     "自音源的oto设定。\r\n";
             // 
+            // btn_AddPhonObj
+            // 
+            this.btn_AddPhonObj.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btn_AddPhonObj.Location = new System.Drawing.Point(510, 12);
+            this.btn_AddPhonObj.Name = "btn_AddPhonObj";
+            this.btn_AddPhonObj.Size = new System.Drawing.Size(89, 32);
+            this.btn_AddPhonObj.TabIndex = 20;
+            this.btn_AddPhonObj.Text = "添加部件";
+            this.btn_AddPhonObj.UseVisualStyleBackColor = true;
+            this.btn_AddPhonObj.Click += new System.EventHandler(this.btn_AddPhonObj_Click);
+            // 
+            // btn_DelPhonObj
+            // 
+            this.btn_DelPhonObj.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btn_DelPhonObj.Enabled = false;
+            this.btn_DelPhonObj.Location = new System.Drawing.Point(605, 12);
+            this.btn_DelPhonObj.Name = "btn_DelPhonObj";
+            this.btn_DelPhonObj.Size = new System.Drawing.Size(92, 32);
+            this.btn_DelPhonObj.TabIndex = 21;
+            this.btn_DelPhonObj.Text = "删除部件";
+            this.btn_DelPhonObj.UseVisualStyleBackColor = true;
+            this.btn_DelPhonObj.Click += new System.EventHandler(this.btn_DelPhonObj_Click);
+            // 
+            // btn_BackPhonObj
+            // 
+            this.btn_BackPhonObj.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btn_BackPhonObj.Enabled = false;
+            this.btn_BackPhonObj.Location = new System.Drawing.Point(703, 12);
+            this.btn_BackPhonObj.Name = "btn_BackPhonObj";
+            this.btn_BackPhonObj.Size = new System.Drawing.Size(90, 32);
+            this.btn_BackPhonObj.TabIndex = 22;
+            this.btn_BackPhonObj.Text = "前移部件";
+            this.btn_BackPhonObj.UseVisualStyleBackColor = true;
+            this.btn_BackPhonObj.Click += new System.EventHandler(this.btn_BackPhonObj_Click);
+            // 
+            // btn_ForwardPhonObj
+            // 
+            this.btn_ForwardPhonObj.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btn_ForwardPhonObj.Enabled = false;
+            this.btn_ForwardPhonObj.Location = new System.Drawing.Point(799, 12);
+            this.btn_ForwardPhonObj.Name = "btn_ForwardPhonObj";
+            this.btn_ForwardPhonObj.Size = new System.Drawing.Size(85, 32);
+            this.btn_ForwardPhonObj.TabIndex = 23;
+            this.btn_ForwardPhonObj.Text = "后移部件";
+            this.btn_ForwardPhonObj.UseVisualStyleBackColor = true;
+            this.btn_ForwardPhonObj.Click += new System.EventHandler(this.btn_ForwardPhonObj_Click);
+            // 
             // PhonemeAtomCategoryWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(873, 609);
+            this.ClientSize = new System.Drawing.Size(896, 609);
+            this.Controls.Add(this.btn_ForwardPhonObj);
+            this.Controls.Add(this.btn_BackPhonObj);
+            this.Controls.Add(this.btn_DelPhonObj);
+            this.Controls.Add(this.btn_AddPhonObj);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.dynPainterBox);
@@ -275,7 +330,7 @@
             this.Controls.Add(this.ctl_pa_Start);
             this.Controls.Add(this.label5);
             this.Margin = new System.Windows.Forms.Padding(4);
-            this.MinimumSize = new System.Drawing.Size(889, 646);
+            this.MinimumSize = new System.Drawing.Size(914, 656);
             this.Name = "PhonemeAtomCategoryWindow";
             this.Text = "PhonemeAtomCategoryWindow";
             this.Load += new System.EventHandler(this.PhonemeAtomCategoryWindow_Load);
@@ -305,5 +360,9 @@
         private System.Windows.Forms.PictureBox dynPainterBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button btn_AddPhonObj;
+        private System.Windows.Forms.Button btn_DelPhonObj;
+        private System.Windows.Forms.Button btn_BackPhonObj;
+        private System.Windows.Forms.Button btn_ForwardPhonObj;
     }
 }

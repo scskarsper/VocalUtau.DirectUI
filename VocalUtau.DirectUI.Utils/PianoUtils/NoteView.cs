@@ -411,7 +411,10 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             {
                 foreach (BlockDia NoteDia in NoteDias)
                 {
-                    utils.DrawDia(NoteDia.TickStart, NoteDia.TickEnd, NoteDia.TopNoteNum, NoteDia.BottomNoteNum);
+                    if (NoteDia.TickEnd - NoteDia.TickStart >= 32)
+                    {
+                        utils.DrawDia(NoteDia.TickStart, NoteDia.TickEnd, NoteDia.TopNoteNum, NoteDia.BottomNoteNum);
+                    }
                 }
             }
             if (_HandleEvents)
@@ -510,8 +513,9 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                         if (Math.Abs(TickDert) > minTickChange)
                         {
                             NoteList[CurrentNoteIndex].Tick = NoteList[CurrentNoteIndex].Tick - TickDert;
-                            NoteList.Sort();
                         }
+                        long NoteDert = NoteList[CurrentNoteIndex].PitchValue.NoteNumber - e.PitchValue.NoteNumber;
+                        NotMove = (NoteDert == 0 && Math.Abs(TickDert) < minTickChange);
                     }
                     else
                     {
@@ -519,7 +523,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                         NewTick = (long)(NewTick / _TickStepTick) * _TickStepTick;
                         long TickDert = NoteList[CurrentNoteIndex].Tick - NewTick;
                         long NoteDert = NoteList[CurrentNoteIndex].PitchValue.NoteNumber - e.PitchValue.NoteNumber;
-                        NotMove = (NoteDert == 0 && TickDert < minTickChange);
+                        NotMove = (NoteDert == 0 && Math.Abs(TickDert) < minTickChange);
                         for (int i = 0; i < NoteSelectIndexs.Count; i++)
                         {
                             uint NewNoteNumber = (uint)(NoteList[NoteSelectIndexs[i]].PitchValue.NoteNumber - NoteDert);
@@ -539,10 +543,16 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                 else if (NoteDragingWork == NoteDragingType.NoteAdd)
                 {
                     NoteObject nPN = new NoteObject(NoteDias[0].TickStart, NoteDias[0].TickEnd - NoteDias[0].TickStart, NoteDias[0].TopNoteNum);
-                    nPN.InitNote();
-                    NoteList.Add(nPN);
-                    NoteList.Sort();
-                    NoteDias.Clear();
+                    if (nPN.Length >= 32)
+                    {
+                        nPN.InitNote();
+                        NoteList.Add(nPN);
+                        NoteList.Sort();
+                        NoteDias.Clear();
+                    }else
+                    {
+                        NoteDragingWork = NoteDragingType.AreaSelect;
+                    }
                 }
                 else if (NoteDragingWork == NoteDragingType.AreaSelect)
                 {
