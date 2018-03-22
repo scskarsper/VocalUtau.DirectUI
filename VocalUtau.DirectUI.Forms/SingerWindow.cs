@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using VocalUtau.DirectUI.Utils.AbilityUtils;
 using VocalUtau.DirectUI.Utils.ParamUtils;
 using VocalUtau.DirectUI.Utils.PianoUtils;
+using VocalUtau.DirectUI.Utils.SingerUtils;
 using VocalUtau.Formats.Model.Utils;
 using VocalUtau.Formats.Model.VocalObject;
 using WeifenLuo.WinFormsUI.Docking;
@@ -21,6 +22,8 @@ namespace VocalUtau.DirectUI.Forms
     public partial class SingerWindow : DockContent
     {
         public AttributesWindow AttributeWindow = null;
+        public event VocalUtau.DirectUI.Utils.PianoUtils.NoteView.OnNoteSelectListChangedHandler NoteSelectListChange;
+        public event VocalUtau.DirectUI.Forms.SingerWindow.ViewController.OnNoteCopyMemoryChangedHandler NoteCopyMemoryChanged;
 
         public enum ParamViewType
         {
@@ -65,16 +68,19 @@ namespace VocalUtau.DirectUI.Forms
                     Global_ActionView.setPartsObjectPtr(ObjectPtr);
                     Param_PitchView.setPartsObjectPtr(ObjectPtr);
                     Param_DynamicView.setPartsObjectPtr(ObjectPtr);
+                    Track_NoteView.setLyricSpliter(LyricSpliters);
                 }
                 else
                 {
                     Track_NoteView = new NoteView(ObjectPtr, this.PianoWindow);
+                    Track_NoteView.setLyricSpliter(LyricSpliters);
                     Track_PitchView = new PitchView(ObjectPtr, this.PianoWindow);
                     Param_PitchView = new PITParamView(ObjectPtr, this.ParamWindow);
                     Param_DynamicView = new DYNParamView(ObjectPtr, this.ParamWindow);
                     Global_ActionView = new ActionView(ObjectPtr, this.PianoWindow, this.ParamWindow);
 
                     CopyPasteController = new CopyPaste(ref Track_NoteView, ref Track_PitchView);
+                    CopyPasteController.NoteCopyMemoryChanged += CopyPasteController_NoteCopyMemoryChanged;
 
                     Track_NoteView.NoteActionBegin += Track_NoteView_NoteActionBegin;
                     Track_NoteView.NoteActionEnd += Track_NoteView_NoteActionEnd;
@@ -87,6 +93,8 @@ namespace VocalUtau.DirectUI.Forms
                     Param_PitchView.PitchActionEnd += Param_PitchView_PitchActionEnd;
 
                     Global_ActionView.TickPosChange += Global_ActionView_TickPosChange;
+
+                    Track_NoteView.NoteSelectListChange += Track_NoteView_NoteSelectListChange;
 
                     Alloced = true;
 
@@ -101,6 +109,16 @@ namespace VocalUtau.DirectUI.Forms
                     LastSelectIndex = -1;
                 }
                 catch { ;}
+            }
+
+            void CopyPasteController_NoteCopyMemoryChanged(bool isCopyed)
+            {
+                if (NoteCopyMemoryChanged != null) NoteCopyMemoryChanged(isCopyed);
+            }
+
+            void Track_NoteView_NoteSelectListChange(List<int> SelectedIndexs)
+            {
+                if (NoteSelectListChange != null) NoteSelectListChange(SelectedIndexs);
             }
 
             public void RealaramNoteSelecting()
@@ -188,6 +206,9 @@ namespace VocalUtau.DirectUI.Forms
             public event VocalUtau.DirectUI.Utils.PianoUtils.PitchView.OnPitchEventHandler PitchActionBegin;
             public event VocalUtau.DirectUI.Utils.PianoUtils.ActionView.OnTickPosChangeHandler TickPosChange;
             public event VocalUtau.DirectUI.Utils.PianoUtils.NoteView.OnNoteSelectHandler NoteSelecting;
+            public delegate void OnNoteCopyMemoryChangedHandler(bool isCopyed);
+            public event OnNoteCopyMemoryChangedHandler NoteCopyMemoryChanged;
+            public event VocalUtau.DirectUI.Utils.PianoUtils.NoteView.OnNoteSelectListChangedHandler NoteSelectListChange;
             public delegate void OnToolStatusChangeHandler(object StatusEnum);
             public event OnToolStatusChangeHandler ToolStatusChange;
             #endregion
@@ -197,6 +218,7 @@ namespace VocalUtau.DirectUI.Forms
             public ActionView Global_ActionView;
             public DYNParamView Param_DynamicView;
             public PITParamView Param_PitchView;
+            SingerLyricSpliter LyricSpliters;
             public void SwitchParamView(ParamViewType type)
             {
                 if (type == ParamViewType.Pitch)
@@ -275,6 +297,15 @@ namespace VocalUtau.DirectUI.Forms
                 }
             }
 
+            public void ResetLyricSpliter(ref SingerLyricSpliter LyricSpliter)
+            {
+                this.LyricSpliters = LyricSpliter;
+                if (Track_NoteView != null)
+                {
+                    Track_NoteView.setLyricSpliter(LyricSpliters);
+                }
+            }
+
             public void SetNoteViewTool(NoteView.NoteToolsType Tool)
             {
                 Track_NoteView.NoteToolsStatus = Tool;
@@ -323,6 +354,7 @@ namespace VocalUtau.DirectUI.Forms
             public CopyPaste CopyPasteController;
             public class CopyPaste
             {
+                public event OnNoteCopyMemoryChangedHandler NoteCopyMemoryChanged;
                 NoteView NV;
                 PitchView PV;
                 public CopyPaste(ref NoteView nNV, ref PitchView pPV)
@@ -338,6 +370,7 @@ namespace VocalUtau.DirectUI.Forms
                     PNV = NV.getSelectNotes(true);
                     if (PNV.Count <= 0) return false;
                     PPV = NV.getSelectPitchs(true);
+                    if (NoteCopyMemoryChanged != null) NoteCopyMemoryChanged(isCopyed);
                     return true;
                 }
                 public bool isCopyed
@@ -351,12 +384,17 @@ namespace VocalUtau.DirectUI.Forms
                 {
                     bool R = NV.AddNotes(StartTick, PNV);
                     PNV.Clear();
-                    if (!R) return false;
+                    if (!R)
+                    {
+                        if (NoteCopyMemoryChanged != null) NoteCopyMemoryChanged(isCopyed);
+                        return false;
+                    }
                     else
                     {
                         PV.AddPitchs(StartTick, PPV);
+                        if (NoteCopyMemoryChanged != null) NoteCopyMemoryChanged(isCopyed);
+                        return true;
                     }
-                    return true;
                 }
             }
 
@@ -379,9 +417,30 @@ namespace VocalUtau.DirectUI.Forms
             Controller = new ViewController(ref this.pianoRollWindow1, ref this.paramCurveWindow1);
             Controller.TickPosChange += Controller_TickPosChange;
             Controller.NoteSelecting += Controller_NoteSelecting;
+            Controller.NoteSelectListChange += Controller_NoteSelectListChange;
+            Controller.NoteCopyMemoryChanged += Controller_NoteCopyMemoryChanged;
+            Controller.NoteActionEnd += Controller_NoteActionEnd;
             this.pianoRollWindow1.TrackMouseClick += pianoRollWindow1_TrackMouseClick;
             this.paramCurveWindow1.ParamAreaMouseClick += paramCurveWindow1_ParamAreaMouseClick;
             ResetComponent();
+        }
+
+        void Controller_NoteActionEnd(NoteView.NoteDragingType eventType)
+        {
+            if (eventType == NoteView.NoteDragingType.LyricEdit)
+            {
+                this.AttributeWindow.GuiRefresh();
+            }
+        }
+
+        void Controller_NoteCopyMemoryChanged(bool isCopyed)
+        {
+            if (NoteCopyMemoryChanged != null) NoteCopyMemoryChanged(isCopyed);
+        }
+
+        void Controller_NoteSelectListChange(List<int> SelectedIndexs)
+        {
+            if (NoteSelectListChange != null) NoteSelectListChange(SelectedIndexs);
         }
 
         void ResetComponent()
@@ -549,7 +608,10 @@ namespace VocalUtau.DirectUI.Forms
         {
             this.Show(DockPanel, WeifenLuo.WinFormsUI.Docking.DockState.Document);
         }
-
+        public void SetupLyricSpliter(ref SingerLyricSpliter sls)
+        {
+            this.Controller.ResetLyricSpliter(ref sls);
+        }
         public void LoadProjectObject(ref ProjectObject proj)
         {
             ProjectBeeper.ReAlloc(proj);
@@ -769,23 +831,48 @@ namespace VocalUtau.DirectUI.Forms
 
         private void RollAction_NoteCopy_Click(object sender, EventArgs e)
         {
-            Controller.CopyPasteController.CopySelectsNote();
+            CopyNotes();
         }
 
-        private void RollAction_NotePaste_Click(object sender, EventArgs e)
+        public void CopyNotes()
+        {
+            Controller.CopyPasteController.CopySelectsNote();
+        }
+        public void PasteNotes()
         {
             if (Controller.CopyPasteController.isCopyed)
             {
                 if (!Controller.CopyPasteController.PasteNotes(Controller.Global_ActionView.TickPos))
                 {
-                    MessageBox.Show("Paste Error! No Enough Spaces!");  
+                    MessageBox.Show("粘贴错误,没有足够的空白用于粘贴剪贴板内段落!");
+                }
+                else
+                {
+                    this.pianoRollWindow1.RedrawPiano();
+                    this.paramCurveWindow1.RedrawPiano();
                 }
             }
         }
-
-        private void RollAction_EditLyrics_Click(object sender, EventArgs e)
+        private void RollAction_NotePaste_Click(object sender, EventArgs e)
+        {
+            PasteNotes();
+        }
+        public void EditLyrics()
         {
             Controller.Track_NoteView.EditNoteLyric();
+            this.pianoRollWindow1.RedrawPiano();
+            this.paramCurveWindow1.RedrawPiano();
+            Controller.RealaramNoteSelecting();
+        }
+        public void NoteDeletes()
+        {
+            Controller.Track_NoteView.NoteDelete();
+            this.pianoRollWindow1.RedrawPiano();
+            this.paramCurveWindow1.RedrawPiano();
+        }
+        private void RollAction_EditLyrics_Click(object sender, EventArgs e)
+        {
+            EditLyrics();
         }
 
         private void RollTool_NoteSelect_Click(object sender, EventArgs e)

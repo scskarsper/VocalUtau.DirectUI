@@ -34,7 +34,8 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
         {
             isCurrentEditing = value;
         }
-        private PartsObject PartsObject
+        [Browsable(false)]
+        public PartsObject PartsObject
         {
             get
             {
@@ -128,6 +129,14 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
             }
         }
 
+        [CategoryAttribute("段落信息"), DisplayName("段落时长")]
+        public TimeSpan WavPart_FileDuring
+        {
+            get
+            {
+                return new TimeSpan(0, 0, 0, 0, (int)(PartsObject.DuringTime * 1000));
+            }
+        }
         [CategoryAttribute("段落歌手属性"), DisplayName("歌手")]
         [TypeConverterAttribute(typeof(SingerItemConverter))] 
         public string Part_Singer

@@ -332,7 +332,7 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MinimumSize = new System.Drawing.Size(914, 656);
             this.Name = "PhonemeAtomCategoryWindow";
-            this.Text = "PhonemeAtomCategoryWindow";
+            this.Text = " ";
             this.Load += new System.EventHandler(this.PhonemeAtomCategoryWindow_Load);
             ((System.ComponentModel.ISupportInitialize)(this.ctl_pa_Start)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dynPainterBox)).EndInit();

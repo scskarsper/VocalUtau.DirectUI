@@ -10,6 +10,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Windows.Forms;
 using VocalUtau.DirectUI.Utils.AttributeUtils.Models;
+using VocalUtau.DirectUI.Utils.SingerUtils;
 using VocalUtau.Formats.Model.Utils;
 using VocalUtau.Formats.Model.VocalObject;
 using WeifenLuo.WinFormsUI.Docking;
@@ -18,9 +19,11 @@ namespace VocalUtau.DirectUI.Forms
 {
     public partial class AttributesWindow : DockContent
     {
+        SingerLyricSpliter LyricSpliter;
         ObjectAlloc<ProjectObject> ProjectBinder = new ObjectAlloc<ProjectObject>();
         ObjectAlloc<NoteObject> NoteBinder = new ObjectAlloc<NoteObject>();
         ObjectAlloc<PartsObject> PartsBinder = new ObjectAlloc<PartsObject>();
+        ObjectAlloc<WavePartsObject> WavePartsBinder = new ObjectAlloc<WavePartsObject>();
         public delegate void OnAttributeChangeHandler(PropertyValueChangedEventArgs e, ProjectObject oldObj);
         public event OnAttributeChangeHandler AttributeChange;
         object CurrentObject;
@@ -34,6 +37,10 @@ namespace VocalUtau.DirectUI.Forms
             this.Show(DockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
         }
 
+        public void SetupLyricSpliter(ref SingerLyricSpliter sls)
+        {
+            LyricSpliter = sls;
+        }
         public object Clone(object source)
         {
             BinaryFormatter Formatter = new BinaryFormatter(null, new StreamingContext(StreamingContextStates.Clone));
@@ -61,6 +68,16 @@ namespace VocalUtau.DirectUI.Forms
 
             this.PropertyViewer.SelectedObject = this.PropertyViewer.Tag;
         }
+        public void LoadWavPartsPtr(ref WavePartsObject PartsObj)
+        {
+            WavePartsBinder.ReAlloc(PartsObj);
+
+            WavePartAttributes pa = new WavePartAttributes(WavePartsBinder.IntPtr, ProjectBinder.IntPtr);
+            
+            this.PropertyViewer.Tag = pa;
+
+            this.PropertyViewer.SelectedObject = this.PropertyViewer.Tag;
+        }
         public void LoadNotesPtr(ref PartsObject PartsObj, ref NoteObject CurrentNote)
         {
             PartsBinder.ReAlloc(PartsObj);
@@ -68,6 +85,8 @@ namespace VocalUtau.DirectUI.Forms
             NoteBinder.ReAlloc(CurrentNote);
 
             NoteAttributes NA = new NoteAttributes(PartsBinder.IntPtr, NoteBinder.IntPtr, ProjectBinder.IntPtr);
+
+            NA.setLyricSpliter(LyricSpliter);
 
             NA.PhonemesChanged += NA_PhonemesChanged;
 
@@ -90,9 +109,15 @@ namespace VocalUtau.DirectUI.Forms
             if (AttributeChange != null) AttributeChange(null, Cache);
         }
 
+        public void GuiRefresh()
+        {
+            PropertyViewer.Refresh();
+        }
+
         private void PropertyViewer_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
             if (AttributeChange != null) AttributeChange(e,Cache);
+            PropertyViewer.Refresh();
             AddCache();
         }
 

@@ -50,6 +50,15 @@ namespace VocalUtau.DirectUI.Forms
                 VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.PartLocation pl = _Track_View.getSelectingParts();
                 if (pl != null) _Track_View.DeleteATrack(pl.TrackLocation);
             }
+            public void ImportAsPart(string file)
+            {
+                VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.PartLocation pl = _Track_View.getSelectingParts();
+                if (pl != null) _Track_View.ImportWavAsPart(pl.TrackLocation, file);
+            }
+            public void ImportAsTrack(string file)
+            {
+                _Track_View.ImportWavAsTrack(file);
+            }
             public void AllocView(IntPtr ObjectPtr)
             {
                 if (Alloced)
@@ -169,7 +178,21 @@ namespace VocalUtau.DirectUI.Forms
             Controller.ShowingEditorChanged += Controller_ShowingEditorChanged;
             Controller.SelectingPartChanged += Controller_SelectingPartChanged;
             Controller.SelectingWavePartChanged += Controller_SelectingWavePartChanged;
+            Controller.TrackerActionBegin += Controller_TrackerActionBegin;
+            Controller.TrackerActionEnd += Controller_TrackerActionEnd;
             this.trackerRollWindow1.PartsMouseClick += trackerRollWindow1_PartsMouseClick;
+        }
+
+        public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnPartsEventHandler TrackerActionEnd;
+        public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnPartsEventHandler TrackerActionBegin;
+        void Controller_TrackerActionEnd(TrackerView.PartsDragingType eventType)
+        {
+            if(TrackerActionEnd!=null)TrackerActionEnd(eventType);
+        }
+
+        void Controller_TrackerActionBegin(TrackerView.PartsDragingType eventType)
+        {
+            if (TrackerActionBegin != null) TrackerActionBegin(eventType);
         }
 
         void trackerRollWindow1_PartsMouseClick(object sender, Models.TrackerMouseEventArgs e)
@@ -177,17 +200,20 @@ namespace VocalUtau.DirectUI.Forms
             if (e.MouseEventArgs.Button == System.Windows.Forms.MouseButtons.Right)
             {
                 Point p=PointToScreen(new Point(e.MouseEventArgs.X, e.MouseEventArgs.Y));
-                if (Controller.Track_View.getSelectingParts() == null)
+                VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.PartLocation pl=Controller.Track_View.getSelectingParts();
+                if (pl == null)
                 {
                     track_DelectParts.Enabled = false;
                     track_DelTracks.Enabled = false;
                     track_AddParts.Enabled = false;
+                    track_ImportAsPart.Enabled = false;
                 }
                 else
                 {
                     track_DelectParts.Enabled = true;
                     track_DelTracks.Enabled = true;
                     track_AddParts.Enabled = true;
+                    track_ImportAsPart.Enabled = pl.TrackLocation.Type == TrackerView.TrackLocation.TrackType.Barker;
                 }
                 menu_TrackEditor.Show(p);
             }
@@ -246,6 +272,13 @@ namespace VocalUtau.DirectUI.Forms
             Controller.Track_View.reloadBaseTempo();
             ProjectObject Po = (ProjectObject)OAC.AllocedObject;
             this.Text = Po.ProjectName;
+            int MaxL=(int)Math.Ceiling(1920 + (double)Po.Time2Tick(Po.MaxLength));
+            if (ctl_Scroll_LeftPos.Value > MaxL)
+            {
+                ctl_Scroll_LeftPos.Value = MaxL;
+                trackerRollWindow1.setPianoStartTick(ctl_Scroll_LeftPos.Value);
+            }
+            ctl_Scroll_LeftPos.Maximum = MaxL;
             this.trackerRollWindow1.RedrawPiano();
         }
 
@@ -309,6 +342,28 @@ namespace VocalUtau.DirectUI.Forms
         private void track_DelectParts_Click(object sender, EventArgs e)
         {
             Controller.DeletePart();
+        }
+
+        private void track_ImportAsTrack_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Wav音频文件|*.wav|所有文件|*.*";
+            ofd.CheckFileExists = true;
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                Controller.ImportAsTrack(ofd.FileName);
+            }
+        }
+
+        private void track_ImportAsPart_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Wav音频文件|*.wav|所有文件|*.*";
+            ofd.CheckFileExists = true;
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                Controller.ImportAsPart(ofd.FileName);
+            }
         }
     }
 }

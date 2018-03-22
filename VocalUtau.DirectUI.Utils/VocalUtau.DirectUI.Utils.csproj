@@ -55,6 +55,7 @@
     <Compile Include="AttributeUtils\CategoryForms\PhonemeAttrModels.cs" />
     <Compile Include="AttributeUtils\Models\NoteAttributes.cs" />
     <Compile Include="AttributeUtils\Models\PartAttributes.cs" />
+    <Compile Include="AttributeUtils\Models\WavePartAttributes.cs" />
     <Compile Include="AttributeUtils\SingerTools\SingerAtomCategoryWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -62,6 +63,7 @@
       <DependentUpon>SingerAtomCategoryWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="AttributeUtils\SingerTools\SingerFinder.cs" />
+    <Compile Include="AttributeUtils\WavPartTools\WavPartEditors.cs" />
     <Compile Include="MathUtils\PitchMathUtils.cs" />
     <Compile Include="MathUtils\ControlMathUtils.cs" />
     <Compile Include="ParamUtils\PITParamView.cs" />
@@ -70,6 +72,7 @@
     <Compile Include="PianoUtils\NoteView.cs" />
     <Compile Include="PianoUtils\PitchView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SingerUtils\SingerLyricSpliter.cs" />
     <Compile Include="TrackerUtils\TrackerActionView.cs" />
     <Compile Include="TrackerUtils\TrackerView.cs" />
   </ItemGroup>

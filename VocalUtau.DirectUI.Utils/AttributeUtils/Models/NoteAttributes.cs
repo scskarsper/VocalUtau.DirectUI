@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using VocalUtau.DirectUI.Utils.SingerUtils;
 using VocalUtau.Formats.Model.VocalObject;
 
 namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
@@ -16,6 +17,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
         public event OnPhonemeChangedHandler PhonemesChanged;
 
         IntPtr notePtr = IntPtr.Zero;
+        SingerLyricSpliter LyricSpliter = null;
         public NoteAttributes(IntPtr PartsObjectPtr, IntPtr NotesObjectPtr, IntPtr ProjectObjectPtr)
             : base(PartsObjectPtr,ProjectObjectPtr)
         {
@@ -24,6 +26,10 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
         public void setNotesObjectPtr(IntPtr NotesObjectPtr)
         {
             this.notePtr = NotesObjectPtr;
+        }
+        public void setLyricSpliter(SingerLyricSpliter SpliterInstance)
+        {
+            this.LyricSpliter = SpliterInstance;
         }
         private NoteObject NoteObject
         {
@@ -48,7 +54,14 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
             }
             set
             {
-                NoteObject.Lyric=value;
+                if (NoteObject.Lyric != value)
+                {
+                    NoteObject.Lyric = value;
+                    if (this.LyricSpliter != null)
+                    {
+                        NoteObject.PhonemeAtoms = this.LyricSpliter.SetupPhonemes(base.PartsObject.SingerGUID, value);
+                    }
+                }
             }
         }
         [CategoryAttribute("音符信息"), DisplayName("音符起点")]
