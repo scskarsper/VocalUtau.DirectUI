@@ -26,7 +26,7 @@ namespace VocalUtau.DirectUI.Forms
            /* ProjectObject poj = new ProjectObject();
             poj.InitEmpty();*/
             
-            ProjectObject poj = bu.GetTest(false);
+            ProjectObject poj = bu.GetTest(true);
             PartsObject PO = poj.TrackerList[0].PartList[0];
 
             sw.ShowOnDock(this.MainDock);

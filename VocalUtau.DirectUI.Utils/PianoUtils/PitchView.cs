@@ -9,7 +9,9 @@ using VocalUtau.DirectUI;
 using VocalUtau.DirectUI.Models;
 using VocalUtau.DirectUI.Utils.ActionUtils;
 using VocalUtau.DirectUI.Utils.MathUtils;
+using VocalUtau.Formats.Model.BaseObject;
 using VocalUtau.Formats.Model.VocalObject;
+using VocalUtau.Formats.Model.VocalObject.ParamTranslater;
 
 namespace VocalUtau.DirectUI.Utils.PianoUtils
 {
@@ -132,12 +134,28 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                 return PartsObject.NoteList;
             }
         }
-        private List<PitchObject> PitchList
+      /*  private List<PitchObject> PitchBendsList
         {
             get
             {
                 if (PartsObject == null) return new List<PitchObject>();
                 return PartsObject.PitchBendsList;
+            }
+        }*/
+        /*
+        private List<PitchObject> PitchList
+        {
+            get
+            {
+                if (PartsObject == null) return new List<PitchObject>();
+                return PartsObject.PitchList;
+            }
+        }*/
+        public PitchCompiler PitchCompiler
+        {
+            get
+            {
+                return PartsObject.PitchCompiler;
             }
         }
 
@@ -218,10 +236,10 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
 
             switch (PitchDragingStatus)
             {
-                case PitchDragingType.DrawLine: replacePitchLine(PitchMathUtils.CalcLineSilk(PitchStP1, PitchEdP2)); break;
-                case PitchDragingType.DrawGraphJ: replacePitchLine(PitchMathUtils.CalcGraphJ(PitchStP1, PitchEdP2)); break;
-                case PitchDragingType.DrawGraphR: replacePitchLine(PitchMathUtils.CalcGraphR(PitchStP1, PitchEdP2)); break;
-                case PitchDragingType.DrawGraphS: replacePitchLine(PitchMathUtils.CalcGraphS(PitchStP1, PitchEdP2)); break;
+                case PitchDragingType.DrawLine: PartsObject.PitchCompiler.ReplaceRealPitchLine(PitchMathUtils.CalcLineSilk(PitchStP1, PitchEdP2)); break;
+                case PitchDragingType.DrawGraphJ: PartsObject.PitchCompiler.ReplaceRealPitchLine(PitchMathUtils.CalcGraphJ(PitchStP1, PitchEdP2)); break;
+                case PitchDragingType.DrawGraphR: PartsObject.PitchCompiler.ReplaceRealPitchLine(PitchMathUtils.CalcGraphR(PitchStP1, PitchEdP2)); break;
+                case PitchDragingType.DrawGraphS: PartsObject.PitchCompiler.ReplaceRealPitchLine(PitchMathUtils.CalcGraphS(PitchStP1, PitchEdP2)); break;
                 case PitchDragingType.EarseArea:
                     if (PitchStP1 != null && PitchTmpP0 != null)
                     {
@@ -262,13 +280,13 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         public void AddPitchs(long StartTick, List<PitchObject> Pitchs)
         {
             if (Pitchs.Count == 0) return;
-            List<PitchObject> PN = PitchList;
+      /*      List<PitchObject> PN = PitchBendsList;
             PitchActionUtils.earsePitchLine(ref PN, StartTick, Pitchs[Pitchs.Count - 1].Tick + StartTick);
             for (int i = 0; i < Pitchs.Count; i++)
             {
-                PitchList.Add(new PitchObject(Pitchs[i].Tick + StartTick,Pitchs[i].PitchValue.PitchValue));
+                PitchBendsList.Add(new PitchObject(Pitchs[i].Tick + StartTick,Pitchs[i].PitchValue.PitchValue));
             }
-            PitchList.Sort();
+            PitchBendsList.Sort();*/
         }
 
         //ShouldPrivate
@@ -322,7 +340,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         {
             long nt = MinTick > 0 ? MinTick : PianoWindow.MinShownTick;
             long mt = MaxTick>nt ? MaxTick : PianoWindow.MaxShownTick;
-
+                  
 
             List<KeyValuePair<long, long>> Partsy = new List<KeyValuePair<long, long>>();
             long st = -1;
@@ -355,36 +373,54 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             {
                 if (SE.Key < SE.Value)
                 {
-                    List<NoteObject> NL = NoteList;
-                    List<PitchObject> PN = PitchList;
-                    Ret.Add(PitchActionUtils.getShownPitchLine(ref NL, ref PN, SE.Key - (AntiBordTick / 2), SE.Value + (AntiBordTick/2), _ShowNoteSpace));
+                    List<PitchObject> PList = new List<PitchObject>();
+                    for (long i = TickSortList<PitchObject>.TickFormat(SE.Key); i <= TickSortList<PitchObject>.TickFormat(SE.Value); i=i+TickSortList<PitchObject>.TickStep)
+                    {
+                        PartsObject po = PartsObject;
+                        PList.Add(new PitchObject(i, po.PitchCompiler.getRealPitch(i)));
+                    }
+                    Ret.Add(PList);
                 }
             }
             return Ret.ToArray();
         }
+        
+        private void earsePitchLine(PitchView.BlockDia NoteDia,bool ModeV2=false)
+        {
+            long StartTick = -1;
+            long EndTick = -1;
+            for (long i = NoteDia.TickStart; i <= NoteDia.TickEnd; i++)
+            {
+                double curPv = PartsObject.PitchCompiler.getRealPitch(i);
+                int PN = (int)Math.Floor(curPv);
+                if (PN < NoteDia.BottomNoteNum || PN > NoteDia.TopNoteNum)
+                {
+                    //区域外
+                    if (StartTick > -1 && EndTick > StartTick)
+                    {
+                        PartsObject.PitchCompiler.ClearPitchLine(StartTick, EndTick);
+                        StartTick = -1;
+                        EndTick = -1;
+                    }
+                }
+                else
+                {
+                    //区域内
+                    if (StartTick < 0) StartTick = i;
+                    EndTick = i;
+                }
+            } 
+            if (StartTick > -1 && EndTick > StartTick)
+            {
+                PartsObject.PitchCompiler.ClearPitchLine(StartTick, EndTick);
+                StartTick = -1;
+                EndTick = -1;
+            }
+        }
 
-
-        public List<PitchObject> getShownPitchLine(long MinTick=-1,long MaxTick=-1)
+        public void ReleaseCache()
         {
-            if (MinTick < 0) MinTick = PianoWindow.MinShownTick;
-            MinTick = MinTick<AntiBordTick?0:PianoWindow.MinShownTick - AntiBordTick;
-            if(MaxTick<=MinTick)MaxTick = PianoWindow.MaxShownTick + AntiBordTick;
-            List<NoteObject> NL = NoteList;
-            List<PitchObject> PN = PitchList;
-            return PitchActionUtils.getShownPitchLine(ref NL, ref PN, MinTick, MaxTick, _ShowNoteSpace);
+            PartsObject.PitchCompiler.ClearCache();
         }
-        public void earsePitchLine(PitchView.BlockDia NoteDia,bool ModeV2=false)
-        {
-            List<NoteObject> NL = NoteList;
-            List<PitchObject> PN = PitchList;
-            PitchActionUtils.earsePitchLine(ref NL, ref PN, NoteDia,ModeV2);
-        }
-        public void replacePitchLine(List<PitchObject> newPitchLine)
-        {
-            List<NoteObject> NL = NoteList;
-            List<PitchObject> PN = PitchList;
-            PitchActionUtils.replacePitchLine(ref NL, ref PN, newPitchLine); 
-        }
-    
     }
 }

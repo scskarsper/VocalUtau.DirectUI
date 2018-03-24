@@ -8,7 +8,7 @@ using VocalUtau.Formats.Model.VocalObject;
 
 namespace VocalUtau.DirectUI.Utils.ActionUtils
 {
-    class ControlActionUtils
+    class ControlActionUtils_Old
     {
         public static List<ControlObject> getShownControlLine(ref List<ControlObject> ControlList, long MinTick = -1, long MaxTick = -1)
         {

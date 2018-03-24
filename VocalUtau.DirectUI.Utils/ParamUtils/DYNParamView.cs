@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using VocalUtau.DirectUI.Utils.ActionUtils;
 using VocalUtau.DirectUI.Utils.MathUtils;
 using VocalUtau.DirectUI.Utils.PianoUtils;
+using VocalUtau.Formats.Model.BaseObject;
 using VocalUtau.Formats.Model.VocalObject;
 
 namespace VocalUtau.DirectUI.Utils.ParamUtils
@@ -94,14 +95,6 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
                 return PartsObject.DynBaseValue;
             }
         }
-        private List<ControlObject> DynList
-        {
-            get
-            {
-                if (PartsObject == null) return new List<ControlObject>();
-                return PartsObject.DynList;
-            }
-        }
 
         public void hookParamWindow()
         {
@@ -170,7 +163,6 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
 
         public void replaceControlLine(List<ControlObject> newPitchLine)
         {
-            List<ControlObject> PN = DynList;
             for (int i = 0; i < newPitchLine.Count; i++)
             {
                 if (newPitchLine[i].Value < -100)
@@ -178,12 +170,11 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
                     newPitchLine[i].Value = -100;
                 }
             }
-            ControlActionUtils.replaceControlLine(ref PN, newPitchLine);
+            PartsObject.DynCompiler.ReplaceDynLine(newPitchLine);
         }
-        public void earseControlLine(ControlObject P1, ControlObject P2, bool isModeV2)
+        public void earseControlLine(ControlObject P1, ControlObject P2)
         {
-            List<ControlObject> PN = DynList;
-            ControlActionUtils.earseControlLine(ref PN, Math.Min(P1.Tick, P2.Tick), Math.Max(P1.Tick, P2.Tick), isModeV2);
+            PartsObject.DynCompiler.ClearDynLine(Math.Min(P1.Tick, P2.Tick), Math.Max(P1.Tick, P2.Tick));
         }
 
         void ParamWindow_ParamAreaMouseUp(object sender, ParamMouseEventArgs e)
@@ -198,7 +189,7 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
                 case PitchView.PitchDragingType.DrawGraphJ: replaceControlLine(ControlMathUtils.CalcGraphJ(DynStP1, DynEdP2)); break;
                 case PitchView.PitchDragingType.DrawGraphR: replaceControlLine(ControlMathUtils.CalcGraphR(DynStP1, DynEdP2)); break;
                 case PitchView.PitchDragingType.DrawGraphS: replaceControlLine(ControlMathUtils.CalcGraphS(DynStP1, DynEdP2)); break;
-                case PitchView.PitchDragingType.EarseArea: earseControlLine(DynStP1, DynEdP2,_EarseModeV2); break;
+                case PitchView.PitchDragingType.EarseArea: earseControlLine(DynStP1, DynEdP2); break;
                     
             }
             PitchView.PitchDragingType EDStatus = DynDragingStatus;
@@ -234,12 +225,15 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
         }
 
 
-        public List<ControlObject> getShownDynLine(long MinTick = -1, long MaxTick = -1)
+        public List<ControlObject> getShownPitchLine(long MinTick = -1, long MaxTick = -1)
         {
-            MinTick = MinTick < AntiBordTick ? 0 : ParamWindow.MinShownTick- AntiBordTick;
-            if (MaxTick <= MinTick) MaxTick = ParamWindow.MaxShownTick + AntiBordTick;
-            List<ControlObject> DL = DynList;
-            List<ControlObject> ret = ControlActionUtils.getShownControlLine(ref DL, MinTick, MaxTick);
+            if (MinTick < 0) MinTick = ParamWindow.MinShownTick;
+            if (MaxTick <= MinTick) MaxTick = ParamWindow.MaxShownTick;
+            List<ControlObject> ret = new List<ControlObject>();
+            for (long i = TickSortList<ControlObject>.TickFormat(MinTick); i < TickSortList<ControlObject>.TickFormat(MaxTick); i = i + TickSortList<ControlObject>.TickStep)
+            {
+                ret.Add(new ControlObject(i, PartsObject.DynCompiler.getDynValue(i)));
+            }
             return ret;
         }
         private void ParamWindow_TrackPaint(object sender, VocalUtau.DirectUI.DrawUtils.ParamAreaDrawUtils utils)
@@ -250,7 +244,7 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
                 utils.FillSelect(DynStP1.Tick, DynTmpP0.Tick,Color.DarkSalmon);
             }
 
-            utils.FillDynLine(getShownDynLine(ParamWindow.MinShownTick,ParamWindow.MaxShownTick),DynBase,(100*Zoom), Color.Green, AntiBordTick);
+            utils.FillDynLine(getShownPitchLine(),DynBase,(100*Zoom), Color.Green, AntiBordTick);
 
             switch (DynDragingStatus)
             {

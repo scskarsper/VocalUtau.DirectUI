@@ -141,6 +141,10 @@ namespace VocalUtau.DirectUI.Forms
                 if (TickPosChange != null) TickPosChange(Tick, Time);
             }
 
+            public void ReleaseRenderCache()
+            {
+                this.Track_PitchView.ReleaseCache();
+            }
             #region
             void Param_PitchView_PitchActionEnd(PitchView.PitchDragingType eventType)
             {
@@ -675,6 +679,7 @@ namespace VocalUtau.DirectUI.Forms
         {
             pianoRollWindow1.setPianoStartTick(ctl_Scroll_LeftPos.Value);
             paramCurveWindow1.setPianoStartTick(ctl_Scroll_LeftPos.Value);
+            Controller.ReleaseRenderCache();
         }
 
         private void ctl_Track_PianoWidth_Scroll(object sender, EventArgs e)

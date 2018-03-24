@@ -8,7 +8,7 @@ using VocalUtau.Formats.Model.VocalObject;
 
 namespace VocalUtau.DirectUI.Utils.ActionUtils
 {
-    class PitchActionUtils
+    class PitchActionUtils_Drop
     {
         public static List<PitchObject> getShownPitchLine(ref List<NoteObject> NoteList, ref List<PitchObject> PitchList, long MinTick, long MaxTick, bool ShowNoteSpace=true)
         {

@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using VocalUtau.DirectUI.Utils.ActionUtils;
 using VocalUtau.DirectUI.Utils.MathUtils;
 using VocalUtau.DirectUI.Utils.PianoUtils;
+using VocalUtau.Formats.Model.BaseObject;
 using VocalUtau.Formats.Model.VocalObject;
 
 namespace VocalUtau.DirectUI.Utils.ParamUtils
@@ -86,14 +87,15 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
                 return ret;
             }
         }
-        private List<PitchObject> PitchList
+      /*  private List<PitchObject> PitchBendsList
         {
             get
             {
                 if (PartsObject == null) return new List<PitchObject>();
-                return PartsObject.PitchBendsList;
+                //HANLT
+                return new List<PitchObject>();// PartsObject.PitchBendsList;
             }
-        }
+        }*/
 
         public void hookParamWindow()
         {
@@ -162,13 +164,15 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
 
         public void replacePitchLine(List<PitchObject> newPitchLine)
         {
-            List<PitchObject> PN = PitchList;
-            PitchActionUtils.replacePitchLine(ref PN, newPitchLine);
+           // List<PitchObject> PN = PitchBendsList;
+           // PitchActionUtils.replacePitchLine(ref PN, newPitchLine);
+            PartsObject.PitchCompiler.ReplacePitchLine(newPitchLine);
         }
         public void earsePitchLine(PitchObject P1,PitchObject P2,bool isModeV2)
         {
-            List<PitchObject> PN = PitchList;
-            PitchActionUtils.earsePitchLine(ref PN, Math.Min(P1.Tick, P2.Tick), Math.Max(P1.Tick, P2.Tick), isModeV2);
+           // List<PitchObject> PN = PitchBendsList;
+           // PitchActionUtils.earsePitchLine(ref PN, Math.Min(P1.Tick, P2.Tick), Math.Max(P1.Tick, P2.Tick), isModeV2);
+            PartsObject.PitchCompiler.ClearPitchLine(Math.Min(P1.Tick, P2.Tick), Math.Max(P1.Tick, P2.Tick));
         }
 
         void ParamWindow_ParamAreaMouseUp(object sender, ParamMouseEventArgs e)
@@ -222,10 +226,13 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
         public List<PitchObject> getShownPitchLine(long MinTick = -1, long MaxTick = -1)
         {
             if (MinTick < 0) MinTick = ParamWindow.MinShownTick;
-            MinTick = MinTick < AntiBordTick ? 0 : ParamWindow.MinShownTick- AntiBordTick;
-            if (MaxTick <= MinTick) MaxTick = ParamWindow.MaxShownTick + AntiBordTick;
-            List<PitchObject> PO = PitchList;
-            return PitchActionUtils.getShownPitchLine(ref PO, MinTick, MaxTick);
+            if (MaxTick <= MinTick) MaxTick = ParamWindow.MaxShownTick;
+            List<PitchObject> ret = new List<PitchObject>();
+            for (long i = TickSortList<PitchObject>.TickFormat(MinTick); i < TickSortList<PitchObject>.TickFormat(MaxTick); i=i+TickSortList<PitchObject>.TickStep)
+            {
+                ret.Add(new PitchObject(i,PartsObject.PitchCompiler.getPitch(i)));
+            }
+            return ret;
         }
         private void ParamWindow_TrackPaint(object sender, VocalUtau.DirectUI.DrawUtils.ParamAreaDrawUtils utils)
         {

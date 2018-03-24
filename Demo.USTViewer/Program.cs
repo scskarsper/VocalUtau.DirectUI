@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using VocalUtau.DirectUI.Forms;
+using VocalUtau.Formats.Model.VocalObject;
 
 namespace Demo.USTViewer
 {

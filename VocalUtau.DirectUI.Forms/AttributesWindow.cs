@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Windows.Forms;
 using VocalUtau.DirectUI.Utils.AttributeUtils.Models;
@@ -43,8 +44,10 @@ namespace VocalUtau.DirectUI.Forms
         }
         public object Clone(object source)
         {
+            return source;
             BinaryFormatter Formatter = new BinaryFormatter(null, new StreamingContext(StreamingContextStates.Clone));
             MemoryStream stream = new MemoryStream();
+            //The internal array cannot expand to greater than Int32.MaxValue elements.
             Formatter.Serialize(stream, source);
             stream.Position = 0;
             object clonedObj = Formatter.Deserialize(stream);
@@ -124,6 +127,11 @@ namespace VocalUtau.DirectUI.Forms
         private void PropertyViewer_SelectedGridItemChanged(object sender, SelectedGridItemChangedEventArgs e)
         {
             AddCache();
+        }
+
+        private void MemoryCleaner_Tick(object sender, EventArgs e)
+        {
+            GC.Collect(0, GCCollectionMode.Forced);
         }
 
     }

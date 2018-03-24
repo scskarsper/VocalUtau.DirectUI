@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using VocalUtau.DirectUI.Forms;
 using VocalUtau.Formats.Model.USTs.Original;
 using VocalUtau.Formats.Model.VocalObject;
+using VocalUtau.Formats.Model.VocalObject.ParamTranslater;
 
 namespace Demo.USTViewer
 {
@@ -125,9 +126,10 @@ namespace Demo.USTViewer
             for (long i = 1; i <= pro.TickLength; i += 32)//
             {
                 sg = sg * -1;
-                pro.PitchBendsList.Add(new PitchObject(i, sg * 0.5));
+                pro.PitchList.Add(new PitchObject(i, sg * 0.5));
             }
 
+            pro.PitchCompiler.FixedPitch();
             string abc = ProjectObject.Serializer.Serialize(poj);
 
             return poj;

@@ -28,7 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.PropertyViewer = new System.Windows.Forms.PropertyGrid();
+            this.MemoryCleaner = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // PropertyViewer
@@ -46,6 +48,12 @@
             this.PropertyViewer.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.PropertyViewer_PropertyValueChanged);
             this.PropertyViewer.SelectedGridItemChanged += new System.Windows.Forms.SelectedGridItemChangedEventHandler(this.PropertyViewer_SelectedGridItemChanged);
             // 
+            // MemoryCleaner
+            // 
+            this.MemoryCleaner.Enabled = true;
+            this.MemoryCleaner.Interval = 10000;
+            this.MemoryCleaner.Tick += new System.EventHandler(this.MemoryCleaner_Tick);
+            // 
             // AttributesWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -62,5 +70,6 @@
         #endregion
 
         private System.Windows.Forms.PropertyGrid PropertyViewer;
+        private System.Windows.Forms.Timer MemoryCleaner;
     }
 }

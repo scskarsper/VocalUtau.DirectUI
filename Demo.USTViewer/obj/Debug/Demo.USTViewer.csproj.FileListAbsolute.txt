@@ -41,3 +41,4 @@ D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\bin\Debug\VocalUtau.Di
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\obj\Debug\VocalUtau.DirectUI.Forms.MainWindow.resources
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\obj\Debug\Demo.USTViewer.Form2.resources
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\bin\Debug\WeifenLuo.WinFormsUI.Docking.dll
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\bin\Debug\ICSharpCode.SharpZipLib.dll
