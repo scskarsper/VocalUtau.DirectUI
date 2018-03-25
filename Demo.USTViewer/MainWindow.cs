@@ -86,7 +86,7 @@ namespace VocalUtau.DirectUI.Forms
             }
             try
             {
-                ProjectObject OOP = DPO.DeserializeFromZipFile(bu.GetCacheFile(), bfi);
+                ProjectObject OOP = DPO.DeserializeFromFile(bu.GetCacheFile(), bfi, ObjectSerializer<ProjectObject>.SerializeType.JSON, true);
                 LoadProject(ref OOP);
             }
             catch (Exception ew)

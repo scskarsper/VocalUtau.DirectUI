@@ -93,7 +93,7 @@ namespace Demo.USTViewer
                 ProjectObject POJB = LoadUST(files);
                 POJB.BasicData.SavePassword = "TestPassword";
                 POJB.BasicData.IntroduceText = "使用规约\r\n这里是一个工程的简短介绍。本工程禁止二次配布、修改等。\r\n密码:霍金诞辰";
-                ProjectObject.Serializer.SerializeToZipFile(POJB, files[0] + ".uvz");
+                ProjectObject.Serializer.SerializeToFile(POJB, files[0] + ".uvz",ObjectSerializer<ProjectObject>.SerializeType.JSON, true);
                 return POJB;
             }
             try
@@ -101,7 +101,7 @@ namespace Demo.USTViewer
                 ObjectDeserializer<ProjectObject> DPO = new ObjectDeserializer<ProjectObject>();
                 BasicFileInformation bfi=DPO.ReadBasicInformation(files[0] + ".uvz");
                 bfi.SavePassword = "TestPassword";
-                ProjectObject OOP = DPO.DeserializeFromZipFile(files[0] + ".uvz",bfi);
+                ProjectObject OOP = DPO.DeserializeFromFile(files[0] + ".uvz",bfi,ObjectSerializer<ProjectObject>.SerializeType.JSON, true);
                 return OOP;
             }
             catch
