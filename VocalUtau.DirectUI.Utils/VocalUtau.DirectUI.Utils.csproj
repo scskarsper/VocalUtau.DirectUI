@@ -43,8 +43,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbilityUtils\UndoAbleUtils.cs" />
-    <Compile Include="ActionUtils\PitchActionUtils.cs" />
-    <Compile Include="ActionUtils\ControlActionUtils.cs" />
     <Compile Include="AttributeUtils\CategoryForms\PhonemeAtomCategoryWindow.cs">
       <SubType>Form</SubType>
     </Compile>

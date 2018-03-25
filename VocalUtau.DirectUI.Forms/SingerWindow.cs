@@ -373,7 +373,7 @@ namespace VocalUtau.DirectUI.Forms
                 {
                     PNV = NV.getSelectNotes(true);
                     if (PNV.Count <= 0) return false;
-                    PPV = NV.getSelectPitchs(true);
+                    PPV = NV.getSelectRealPitchs(true);
                     if (NoteCopyMemoryChanged != null) NoteCopyMemoryChanged(isCopyed);
                     return true;
                 }
@@ -395,7 +395,7 @@ namespace VocalUtau.DirectUI.Forms
                     }
                     else
                     {
-                        PV.AddPitchs(StartTick, PPV);
+                        PV.AddRealPitchs(StartTick, PPV);
                         if (NoteCopyMemoryChanged != null) NoteCopyMemoryChanged(isCopyed);
                         return true;
                     }

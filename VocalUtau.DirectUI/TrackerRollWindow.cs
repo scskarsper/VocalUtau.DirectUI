@@ -181,7 +181,8 @@ namespace VocalUtau.DirectUI
         bool isDrawing = false;
         private void d2DPainterBox1_D2DPaint(object sender, BalthasarLib.D2DPainter.D2DPaintEventArgs e)
         {
-            if (isDrawing) return;
+            if (isDrawing) 
+                return;
             isDrawing = true;
             try
             {

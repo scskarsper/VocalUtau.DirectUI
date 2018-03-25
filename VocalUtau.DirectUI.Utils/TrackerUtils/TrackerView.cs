@@ -1119,7 +1119,6 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
         void TrackerWindow_TGridePaint(object sender, DrawUtils.TrackerGridesDrawUtils utils)
         {
             utils.DrawTracks(this.TrackerList, this.BackerList, new DrawUtils.TrackerGridesDrawUtils.OneGridePaintHandler(SingleGridePaint));
-            GC.Collect();
         }
     }
 }

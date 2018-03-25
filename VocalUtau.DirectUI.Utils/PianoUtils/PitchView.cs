@@ -7,7 +7,6 @@ using System.Text;
 using System.Windows.Forms;
 using VocalUtau.DirectUI;
 using VocalUtau.DirectUI.Models;
-using VocalUtau.DirectUI.Utils.ActionUtils;
 using VocalUtau.DirectUI.Utils.MathUtils;
 using VocalUtau.Formats.Model.BaseObject;
 using VocalUtau.Formats.Model.VocalObject;
@@ -277,9 +276,15 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         }
 
         
-        public void AddPitchs(long StartTick, List<PitchObject> Pitchs)
+        public void AddRealPitchs(long StartTick, List<PitchObject> Pitchs)
         {
             if (Pitchs.Count == 0) return;
+            List<PitchObject> rmt = new List<PitchObject>();
+            for (int i = 0; i < Pitchs.Count; i++)
+            {
+                rmt.Add(new PitchObject(Pitchs[i].Tick + StartTick, Pitchs[i].PitchValue.PitchValue));
+            }
+            PartsObject.PitchCompiler.ReplaceRealPitchLine(rmt);
       /*      List<PitchObject> PN = PitchBendsList;
             PitchActionUtils.earsePitchLine(ref PN, StartTick, Pitchs[Pitchs.Count - 1].Tick + StartTick);
             for (int i = 0; i < Pitchs.Count; i++)

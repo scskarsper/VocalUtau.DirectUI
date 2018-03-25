@@ -91,13 +91,17 @@ namespace Demo.USTViewer
             if (renew)
             {
                 ProjectObject POJB = LoadUST(files);
-                ProjectObject.Serializer.SerializeToZipFile(POJB, files[0] + ".json");
+                POJB.BasicData.SavePassword = "TestPassword";
+                POJB.BasicData.IntroduceText = "使用规约\r\n这里是一个工程的简短介绍。本工程禁止二次配布、修改等。\r\n密码:霍金诞辰";
+                ProjectObject.Serializer.SerializeToZipFile(POJB, files[0] + ".uvz");
                 return POJB;
             }
             try
             {
                 ObjectDeserializer<ProjectObject> DPO = new ObjectDeserializer<ProjectObject>();
-                ProjectObject OOP = DPO.DeserializeFromZipFile(files[0] + ".json");
+                BasicFileInformation bfi=DPO.ReadBasicInformation(files[0] + ".uvz");
+                bfi.SavePassword = "TestPassword";
+                ProjectObject OOP = DPO.DeserializeFromZipFile(files[0] + ".uvz",bfi);
                 return OOP;
             }
             catch
@@ -112,6 +116,10 @@ namespace Demo.USTViewer
                                     @"D:\VocalUtau\VocalUtau.DebugExampleFiles\DemoUSTS\Sakurane2.Tracks\Track-4b158252-eb7f-4223-b7b0-d78f32e044ec.ust"
                                 },renew);
             return poj;
+        }
+        public string GetCacheFile()
+        {
+            return @"D:\VocalUtau\VocalUtau.DebugExampleFiles\DemoUSTS\Sakurane2.Tracks\Track-fc0b6027-d7fb-4c82-8ca0-6bc1e54cdfb2.ust.uvz";
         }
     }
 }

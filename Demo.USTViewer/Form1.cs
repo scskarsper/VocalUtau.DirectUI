@@ -386,7 +386,7 @@ namespace Demo.USTViewer
         private void toolStripButton8_Click(object sender, EventArgs e)
         {
             PNV = NV.getSelectNotes(true);
-            PPV = NV.getSelectPitchs(true);
+            PPV = NV.getSelectRealPitchs(true);
             toolStripButton8.BackColor = System.Drawing.SystemColors.Control;
             if (PNV.Count > 0) toolStripButton8.BackColor = System.Drawing.SystemColors.ControlDark;
         }
@@ -400,7 +400,7 @@ namespace Demo.USTViewer
             if (!R) MessageBox.Show("Paste Error");
             else
             {
-                PV.AddPitchs(AV.TickPos, PPV);
+                PV.AddRealPitchs(AV.TickPos, PPV);
             }
         }
 

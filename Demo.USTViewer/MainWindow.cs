@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Demo.USTViewer;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -26,7 +27,7 @@ namespace VocalUtau.DirectUI.Forms
            /* ProjectObject poj = new ProjectObject();
             poj.InitEmpty();*/
             
-            ProjectObject poj = bu.GetTest(true);
+            ProjectObject poj = bu.GetTest(false);
             PartsObject PO = poj.TrackerList[0].PartList[0];
 
             sw.ShowOnDock(this.MainDock);
@@ -39,11 +40,16 @@ namespace VocalUtau.DirectUI.Forms
             tw.TotalTimePosChange += tw_TotalTimePosChange;
             sw.TotalTimePosChange += sw_TotalTimePosChange;
 
+            LoadProject(ref poj);
+        }
+
+        void LoadProject(ref ProjectObject poj)
+        {
             sw.LoadProjectObject(ref poj);
             aw.LoadProjectObject(ref poj);
             tw.LoadProjectObject(ref poj);
         }
-        
+
         void tw_SelectingPartChanged(PartsObject PartObject, bool isEditing)
         {
             aw.LoadPartsPtr(ref PartObject,isEditing);
@@ -63,6 +69,36 @@ namespace VocalUtau.DirectUI.Forms
         {
             sw.LoadParts(ref PartObject);
             tw.RealarmTickPosition();
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            Demo.USTViewer.BarkUST bu = new Demo.USTViewer.BarkUST();
+            ObjectDeserializer<ProjectObject> DPO = new ObjectDeserializer<ProjectObject>();
+            BasicFileInformation bfi = DPO.ReadBasicInformation(bu.GetCacheFile());
+            if (bfi.SavePassword.Length > 0 || bfi.IntroduceText.Trim().Length > 0)
+            {
+                IntroduceSwap ISW = new IntroduceSwap(bfi);
+                if (ISW.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+            }
+            try
+            {
+                ProjectObject OOP = DPO.DeserializeFromZipFile(bu.GetCacheFile(), bfi);
+                LoadProject(ref OOP);
+            }
+            catch (Exception ew)
+            {
+                if (ew.Message == "Password Error or File Broken")
+                {
+                    MessageBox.Show("密码错误!");
+                }else
+                {
+                    MessageBox.Show("未知错误!");
+                }
+            }
         }
 
     }
