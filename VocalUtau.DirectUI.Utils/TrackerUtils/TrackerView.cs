@@ -758,7 +758,7 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
             else if (trackLocate.Type == TrackLocation.TrackType.Barker)
             {
                 BackerObject bo=BackerList[(int)trackLocate.TrackID];
-                if(BackerList.Count>1)
+                if(BackerList.Count>0)
                 {
                     if (TrackerActionBegin != null) TrackerActionBegin(PartsDragingType.TrackDelete);
                     string name = bo.Name;
@@ -767,10 +767,6 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
                         BackerList.RemoveAt((int)trackLocate.TrackID);
                         if (TrackerActionEnd != null) TrackerActionEnd(PartsDragingType.TrackDelete);
                     }
-                }
-                else
-                {
-                    MessageBox.Show("工程中至少要有一条伴奏声轨！");
                 }
             }
         }

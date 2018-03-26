@@ -379,7 +379,8 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             long RL = LeftTick+Notes[0].Tick;
             long RR = LeftTick+Notes[Notes.Count - 1].Tick + Notes[Notes.Count - 1].Length;
             bool isAvaliable = true;
-            for (int i = 0; i < NoteList.Count; i++)
+            int Sfx = PartsObject.NoteCompiler.FindTickIndex(RL, 0, NoteList.Count);
+            for (int i = Sfx; i < NoteList.Count; i++)
             {
                 NoteObject PN = NoteList[i];
                 if (PN.Tick > RR) break;
@@ -407,6 +408,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         {
             long mt = PianoWindow.MaxShownTick;
             long nt = PianoWindow.MinShownTick;
+            int Sfx = PartsObject.NoteCompiler.FindTickIndex(nt, 0, NoteList.Count);
             for (int i = 0; i < NoteList.Count; i++)
             {
                 NoteObject PN = NoteList[i];
@@ -552,8 +554,8 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
 
                             List<NoteObject> PO=PartsObject.NoteList;
 
-                            int FSIdx=VocalUtau.Formats.Model.VocalObject.ParamTranslater.FastFinder.FindNoteTickIndex(AStartTick,ref PO,0,PO.Count); 
-                            int FEIdx=VocalUtau.Formats.Model.VocalObject.ParamTranslater.FastFinder.FindNoteTickIndex(AEndTick,ref PO,FSIdx,PO.Count);
+                            int FSIdx = PartsObject.NoteCompiler.FindTickIndex(AStartTick, 0, PO.Count);
+                            int FEIdx = PartsObject.NoteCompiler.FindTickIndex(AEndTick, FSIdx, PO.Count);
                             StartPX = Math.Min(StartPX, FSIdx);
                             EndPX = Math.Max(EndPX, FEIdx);
                             StartPX = Math.Max(0, StartPX);
@@ -620,11 +622,9 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                             {
                                 int StartPX = First;
                                 int EndPX = Last;
-
-                                List<NoteObject> PO = PartsObject.NoteList;
-
-                                int FSIdx = VocalUtau.Formats.Model.VocalObject.ParamTranslater.FastFinder.FindNoteTickIndex(AStartTick, ref PO, 0, PO.Count);
-                                int FEIdx = VocalUtau.Formats.Model.VocalObject.ParamTranslater.FastFinder.FindNoteTickIndex(AEndTick, ref PO, FSIdx, PO.Count) + 1;
+                                
+                                int FSIdx = PartsObject.NoteCompiler.FindTickIndex(AStartTick, 0, PartsObject.NoteList.Count);
+                                int FEIdx = PartsObject.NoteCompiler.FindTickIndex(AEndTick,FSIdx, PartsObject.NoteList.Count) + 1;
                                 StartPX = Math.Min(StartPX, FSIdx);
                                 EndPX = Math.Max(EndPX, FEIdx);
                                 StartPX = Math.Max(0, StartPX);
@@ -673,7 +673,8 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                     long nt = NoteDias[0].TickStart;
                     if (e.Tick >= nt && e.Tick <= mt)
                     {
-                        for (int i = 0; i < NoteList.Count; i++)
+                        int Sfx=PartsObject.NoteCompiler.FindTickIndex(nt,0,NoteList.Count);
+                        for (int i = Sfx; i < NoteList.Count; i++)
                         {
                             NoteObject PN = NoteList[i];
                             if (PN.Tick >= mt) break;
@@ -777,7 +778,8 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                 long nt = PianoWindow.MinShownTick;
                 if (e.Tick >= nt && e.Tick <= mt)
                 {
-                    for (int i = 0; i < NoteList.Count; i++)
+                    int Sfx = PartsObject.NoteCompiler.FindTickIndex(nt, 0, NoteList.Count);
+                    for (int i = Sfx; i < NoteList.Count; i++)
                     {
                         PianoWindow.ParentForm.Cursor = Cursors.Arrow;
                         NoteObject PN = NoteList[i];

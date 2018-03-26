@@ -29,3 +29,5 @@ D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Utils\obj\Debug\Vo
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Utils\obj\Debug\VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools.SingerAtomCategoryWindow.resources
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Utils\bin\Debug\NAudio.dll
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Utils\bin\Debug\ICSharpCode.SharpZipLib.dll
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Utils\bin\Debug\DeepCloner.dll
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Utils\bin\Debug\DeepCloner.xml

@@ -187,6 +187,7 @@ namespace VocalUtau.DirectUI.Forms
         public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnPartsEventHandler TrackerActionBegin;
         void Controller_TrackerActionEnd(TrackerView.PartsDragingType eventType)
         {
+            this.trackerRollWindow1.RedrawPiano();
             if(TrackerActionEnd!=null)TrackerActionEnd(eventType);
         }
 
@@ -270,7 +271,7 @@ namespace VocalUtau.DirectUI.Forms
         public void GuiRefresh()
         {
             Controller.Track_View.reloadBaseTempo();
-            ProjectObject Po = (ProjectObject)OAC.AllocedObject;
+            ProjectObject Po = OAC.AllocedSource;
             this.Text = Po.ProjectName;
             int MaxL=(int)Math.Ceiling(1920 + (double)Po.Time2Tick(Po.MaxLength));
             if (ctl_Scroll_LeftPos.Value > MaxL)

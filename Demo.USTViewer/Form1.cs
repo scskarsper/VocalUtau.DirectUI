@@ -111,7 +111,7 @@ namespace Demo.USTViewer
         {
             if (eventType == NoteView.NoteDragingType.AreaSelect) return;
             if (eventType == NoteView.NoteDragingType.None) return;
-            UAU.RegisterPoint((PartsObject)OAC.AllocedObject);
+            UAU.RegisterPoint(OAC.AllocedSource);
         }
 
         void NV_NoteActionEnd(NoteView.NoteDragingType eventType, bool Callback = false)
@@ -141,19 +141,19 @@ namespace Demo.USTViewer
         void DynV_DynActionBegin(PitchView.PitchDragingType eventType)
         {
             if (eventType == PitchView.PitchDragingType.None) return;
-            UAU.RegisterPoint((PartsObject)OAC.AllocedObject);
+            UAU.RegisterPoint(OAC.AllocedSource);
         }
 
         void PitV_PitchActionBegin(PitchView.PitchDragingType eventType)
         {
             if (eventType == PitchView.PitchDragingType.None) return;
-            UAU.RegisterPoint((PartsObject)OAC.AllocedObject);
+            UAU.RegisterPoint(OAC.AllocedSource);
         }
 
         void PV_PitchActionBegin(PitchView.PitchDragingType eventType)
         {
             if (eventType == PitchView.PitchDragingType.None) return;
-            UAU.RegisterPoint((PartsObject)OAC.AllocedObject);
+            UAU.RegisterPoint(OAC.AllocedSource);
         }
 
 
@@ -443,7 +443,7 @@ namespace Demo.USTViewer
 
         private void toolStripButton10_Click(object sender, EventArgs e)
         {
-            UAU.RegisterPoint((PartsObject)OAC.AllocedObject);
+            UAU.RegisterPoint(OAC.AllocedSource);
             UAU.AddRepeatPoint(UAU.LastUndoRepo);
             KeyValuePair<PartsObject, string> PU = UAU.PeekUndo();
             if (PU.Key!=null)
@@ -468,7 +468,7 @@ namespace Demo.USTViewer
 
         private void toolStripButton11_Click(object sender, EventArgs e)
         {
-            UAU.RegisterPoint((PartsObject)OAC.AllocedObject);
+            UAU.RegisterPoint(OAC.AllocedSource);
             UAU.AddUndoPoint(UAU.LastRepeatRepo);
             KeyValuePair<PartsObject, string> PU = UAU.PeekRepeat();
             if (PU.Key != null)

@@ -38,13 +38,7 @@ namespace VocalUtau.DirectUI.Utils.AbilityUtils
 
         private object Clone(object Obj)
         {
-            BinaryFormatter Formatter = new BinaryFormatter(null, new StreamingContext(StreamingContextStates.Clone));
-            MemoryStream stream = new MemoryStream();
-            Formatter.Serialize(stream, Obj);
-            stream.Position = 0;
-            object clonedObj = Formatter.Deserialize(stream);
-            stream.Close();
-            return clonedObj;
+            return Force.DeepCloner.DeepClonerExtensions.DeepClone<object>(Obj);
         }
         public void RegisterPoint(T Object)
         {

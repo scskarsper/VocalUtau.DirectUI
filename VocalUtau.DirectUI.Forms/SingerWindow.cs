@@ -435,6 +435,20 @@ namespace VocalUtau.DirectUI.Forms
             {
                 this.AttributeWindow.GuiRefresh();
             }
+            if (eventType == DirectUI.Utils.PianoUtils.NoteView.NoteDragingType.NoteMove ||
+                eventType == DirectUI.Utils.PianoUtils.NoteView.NoteDragingType.NoteAdd ||
+                eventType == DirectUI.Utils.PianoUtils.NoteView.NoteDragingType.NoteDelete ||
+                eventType == DirectUI.Utils.PianoUtils.NoteView.NoteDragingType.NoteLength)
+            {
+                int MaxL=(int)(OAC.AllocedSource.TickLength);
+                if (ctl_Scroll_LeftPos.Value > MaxL)
+                {
+                    ctl_Scroll_LeftPos.Value = MaxL;
+                    this.pianoRollWindow1.setPianoStartTick(ctl_Scroll_LeftPos.Value);
+                    this.paramCurveWindow1.setPianoStartTick(ctl_Scroll_LeftPos.Value);
+                }
+                ctl_Scroll_LeftPos.Maximum = MaxL;
+            }
         }
 
         void Controller_NoteCopyMemoryChanged(bool isCopyed)
@@ -520,14 +534,14 @@ namespace VocalUtau.DirectUI.Forms
         {
             if (AttributeWindow != null)
             {
-                PartsObject PO = (PartsObject)OAC.AllocedObject;
+                PartsObject PO = OAC.AllocedSource;
                 if (SelectedNoteIndex < 0)
                 {
                     AttributeWindow.LoadPartsPtr(ref PO);
                 }
                 else
                 {
-                    List<NoteObject> NoteList = ((PartsObject)OAC.AllocedObject).NoteList;
+                    List<NoteObject> NoteList = OAC.AllocedSource.NoteList;
                     if (NoteList.Count > SelectedNoteIndex)
                     {
                         NoteObject NoteObj = NoteList[SelectedNoteIndex];
@@ -551,13 +565,13 @@ namespace VocalUtau.DirectUI.Forms
 
         void Controller_TickPosChange(long Tick, double Time)
         {
-            if (TotalTimePosChange != null) TotalTimePosChange(Time+((PartsObject)OAC.AllocedObject).getStartTime());
+            if (TotalTimePosChange != null) TotalTimePosChange(Time + OAC.AllocedSource.getStartTime());
         }
 
         public void setCurrentTimePos(double Time)
         {
-            double StartTime = ((PartsObject)OAC.AllocedObject).getStartTime();
-            double EndTime = StartTime + ((PartsObject)OAC.AllocedObject).getDuringTime();
+            double StartTime = OAC.AllocedSource.getStartTime();
+            double EndTime = StartTime + OAC.AllocedSource.getDuringTime();
             double CurrTime = Time - StartTime;
             if (Time > EndTime) CurrTime = -1;
             if (Time < StartTime) CurrTime = -1;
@@ -565,7 +579,7 @@ namespace VocalUtau.DirectUI.Forms
             long CurTick=Controller.getTickPos();
             long PreStartTick=CurTick-(this.pianoRollWindow1.MaxShownTick-this.pianoRollWindow1.MinShownTick)/2;
             if(PreStartTick<0)PreStartTick=0;
-            if (PreStartTick > ((PartsObject)OAC.AllocedObject).TickLength) return;
+            if (PreStartTick > OAC.AllocedSource.TickLength) return;
             if (CurTick < this.pianoRollWindow1.MinShownTick || CurTick > this.pianoRollWindow1.MaxShownTick)
             {
                 ctl_Scroll_LeftPos.Value = (int)PreStartTick;
@@ -589,7 +603,7 @@ namespace VocalUtau.DirectUI.Forms
             this.pianoRollWindow1.RedrawPiano();
             try
             {
-                this.Text = ((PartsObject)OAC.AllocedObject).PartName;
+                this.Text = OAC.AllocedSource.PartName;
                 setupSingerIcon();
             }
             catch { ;}
@@ -652,8 +666,8 @@ namespace VocalUtau.DirectUI.Forms
             {
                 return;
             }
-            ProjectObject po = (ProjectObject)ProjectBeeper.AllocedObject;
-            PartsObject pt = (PartsObject)OAC.AllocedObject;
+            ProjectObject po = ProjectBeeper.AllocedSource;
+            PartsObject pt = OAC.AllocedSource;
             string avatar = "";
             if (po.SingerList.Count > 0) avatar = po.SingerList[0].Avatar;
             foreach (SingerObject so in po.SingerList)

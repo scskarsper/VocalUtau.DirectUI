@@ -43,3 +43,5 @@ D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\obj\Debug\Demo.USTView
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\bin\Debug\WeifenLuo.WinFormsUI.Docking.dll
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\bin\Debug\ICSharpCode.SharpZipLib.dll
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\obj\Debug\Demo.USTViewer.IntroduceSwap.resources
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\bin\Debug\DeepCloner.dll
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\bin\Debug\DeepCloner.xml
