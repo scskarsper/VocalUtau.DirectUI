@@ -26,7 +26,6 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
             {
                 List<NoteAtomObject> so = ((PhonemeEditorModel)value).Plist;
                 List<string> ovo = new List<string>();
-                string Phoneme = "";
                 foreach (NoteAtomObject NAO in so)
                 {
                     ovo.Add(NAO.PhonemeAtom);

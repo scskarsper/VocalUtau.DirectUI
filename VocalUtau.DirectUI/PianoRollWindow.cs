@@ -21,8 +21,6 @@ namespace VocalUtau.DirectUI
         #region
         RollConfigures rconf = new RollConfigures();
         PianoProperties pprops;
-        uint MaxShownNote;
-        uint MinShownNote;
         double ShownNoteCount;
         double ShownTickCount;
         #endregion

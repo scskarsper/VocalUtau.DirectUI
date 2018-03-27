@@ -27,7 +27,6 @@ namespace VocalUtau.DirectUI.Forms
         ObjectAlloc<WavePartsObject> WavePartsBinder = new ObjectAlloc<WavePartsObject>();
         public delegate void OnAttributeChangeHandler(PropertyValueChangedEventArgs e, ProjectObject oldObj);
         public event OnAttributeChangeHandler AttributeChange;
-        object CurrentObject;
 
         public AttributesWindow()
         {

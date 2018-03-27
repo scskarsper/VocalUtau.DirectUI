@@ -58,7 +58,6 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
 
         public string Value2String(double value)
         {
-            if (value == null) return "(默认)";
             if (value == double.NaN) return "(默认)";
             if (double.IsNaN(value)) return "(默认)";
             return value.ToString();
@@ -108,7 +107,6 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
             set { BaseObj.StartPoint = String2Value(value); }
         }
 
-        double _Velocity;
         [CategoryAttribute("自定义发音属性"), DisplayName("发音速度(Velocity)")]
         public string Velocity
         {
@@ -124,7 +122,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
             get { return Value2String(BaseObj.PreUtterance); }
             set { BaseObj.PreUtterance = String2Value(value); }
         }
-        [CategoryAttribute("自定义过度属性"), DisplayName("交叠区域(PreUtterance)")]
+        [CategoryAttribute("自定义过度属性"), DisplayName("交叠区域(Overlap)")]
         public string Overlap
         {
             get { return Value2String(BaseObj.Overlap); }

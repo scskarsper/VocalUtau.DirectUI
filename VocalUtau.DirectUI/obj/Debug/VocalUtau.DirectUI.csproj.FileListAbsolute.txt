@@ -25,3 +25,5 @@ D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI\bin\Debug\NAudio.d
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI\bin\Debug\ICSharpCode.SharpZipLib.dll
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI\bin\Debug\DeepCloner.dll
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI\bin\Debug\DeepCloner.xml
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI\bin\Debug\NUniversalCharDet.dll
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI\bin\Debug\NUniversalCharDet.pdb

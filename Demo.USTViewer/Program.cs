@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using VocalUtau.DirectUI.Forms;
+using VocalUtau.Formats.Model.Database.VocalDatabase;
 using VocalUtau.Formats.Model.VocalObject;
 
 namespace Demo.USTViewer
