@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using VocalUtau.Formats.Model.Database.VocalDatabase;
+using VocalUtau.Formats.Model.Utils;
 using VocalUtau.Formats.Model.VocalObject;
 
 namespace VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools
@@ -15,6 +17,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools
     public partial class SingerAtomCategoryWindow : Form
     {
         IntPtr ProjectObjectPtr;
+        string SystemSingerTag="(系统)";
         public SingerAtomCategoryWindow(IntPtr ProjectObjectPtr)
         {
             InitializeComponent();
@@ -50,7 +53,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools
                 {
                     defidx = i;
                 }
-                list_Singer.Items.Add(ProjectObject.SingerList[i].VocalName);
+                list_Singer.Items.Add(ProjectObject.SingerList[i].VocalName + (ProjectObject.SingerList[i].IsSystemSinger?SystemSingerTag:""));
             }
             if (ProjectObject.SingerList.Count <= defidx && ProjectObject.SingerList.Count > 0) defidx = 0;
             if (ProjectObject.SingerList.Count > defidx)
@@ -151,6 +154,11 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools
                 try
                 {
                     string singerName = list_Singer.Items[list_Singer.SelectedIndex].ToString();
+                    int lst = singerName.LastIndexOf(SystemSingerTag);
+                    if (lst != -1)
+                    {
+                        singerName = singerName.Substring(0, lst);
+                    }
                     for (int i = 0; i < ProjectObject.SingerList.Count; i++)
                     {
                         if (ProjectObject.SingerList[i].VocalName.Trim() == singerName.Trim())
@@ -164,7 +172,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools
                             btn_DelSinger.Enabled = true;
                             try
                             {
-                                UtauPic.Load(ProjectObject.SingerList[i].Avatar);
+                                UtauPic.Image = Image.FromFile(PathUtils.AbsolutePath(ProjectObject.SingerList[i].getRealSingerFolder(), ProjectObject.SingerList[i].Avatar));
                             }
                             catch { ;}
                         }
@@ -193,14 +201,14 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.CheckFileExists = true;
             ofd.DefaultExt = ".txt";
-            ofd.Filter = "UTAU角色描述文件|character.txt;vocaludb.index";
-            ofd.FileName = "character.txt";
+            ofd.Filter = "UTAU角色描述文件|character.txt;voicedbi.dat";
+            ofd.FileName = "voicedbi.dat";
             ofd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory + "\\VoiceDir";
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 if (System.IO.File.Exists(ofd.FileName))
                 {
-                    txt_Dir.Text = (new System.IO.DirectoryInfo(ofd.FileName)).Parent.FullName.Replace(AppDomain.CurrentDomain.BaseDirectory,"");
+                    txt_Dir.Text = PathUtils.RelativePath(AppDomain.CurrentDomain.BaseDirectory, (new System.IO.FileInfo(ofd.FileName)).Directory.FullName);
                 }
             }
         }
@@ -217,7 +225,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools
             {
                 if (System.IO.File.Exists(ofd.FileName))
                 {
-                    txt_Resampler.Text = ofd.FileName.Replace(AppDomain.CurrentDomain.BaseDirectory,"");
+                    txt_Resampler.Text = PathUtils.RelativePath(AppDomain.CurrentDomain.BaseDirectory, ofd.FileName);
                 }
             }
         }
@@ -228,9 +236,12 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools
             {
                 try
                 {
-                    CharacterAtom charatom = new CharacterAtom();
-                    if (!charatom.IsLoaded) charatom.ReadAvatarFromText(txt_Dir.Text + "\\character.txt");
-                    UtauPic.Image = Image.FromFile(charatom.Avatar);
+                    CharacterAtom charatom = VocalUtau.Formats.Model.USTs.Otos.CharacterSerializer.DeSerialize(txt_Dir.Text + "\\character.txt");
+                    if (this.txt_Name.Text.Trim() == "")
+                    {
+                        this.txt_Name.Text = charatom.Dbname;
+                    }
+                    UtauPic.Image = Image.FromFile(PathUtils.AbsolutePath(PathUtils.AbsolutePath(txt_Dir.Text),charatom.Avatar));
                 }
                 catch { ;}
             }

@@ -1,3 +1,2 @@
-"%~dp0\git.exe" add -A
-"%~dp0\git.exe" commit -m "%1"
-"%~dp0\git.exe" push
+"%~dp0\git.exe" fetch --all
+"%~dp0\git.exe" reset --hard origin/masterss

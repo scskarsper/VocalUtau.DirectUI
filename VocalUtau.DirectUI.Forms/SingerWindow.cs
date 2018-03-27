@@ -669,12 +669,12 @@ namespace VocalUtau.DirectUI.Forms
             ProjectObject po = ProjectBeeper.AllocedSource;
             PartsObject pt = OAC.AllocedSource;
             string avatar = "";
-            if (po.SingerList.Count > 0) avatar = po.SingerList[0].Avatar;
+            if (po.SingerList.Count > 0) avatar = PathUtils.AbsolutePath(po.SingerList[0].getRealSingerFolder(),po.SingerList[0].Avatar);
             foreach (SingerObject so in po.SingerList)
             {
                 if(so.getGuid() == pt.SingerGUID)
                 {
-                    avatar = so.Avatar;
+                    avatar = PathUtils.AbsolutePath(so.getRealSingerFolder(), so.Avatar);
                     break;
                 }
             }

@@ -45,3 +45,4 @@ D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\bin\Debug\ICSharpCode.
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\obj\Debug\Demo.USTViewer.IntroduceSwap.resources
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\bin\Debug\DeepCloner.dll
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\bin\Debug\DeepCloner.xml
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\Demo.USTViewer\bin\Debug\NUniversalCharDet.dll
