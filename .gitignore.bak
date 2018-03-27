@@ -52,14 +52,3 @@ Mkfile.old
 dkms.conf
 *.cache
 *.Cache
-
-
-!/packages/*.dll
-!DeepCloner.dll
-!WeifenLuo.WinFormsUI.Docking.dll
-!NAudio.dll
-!ICSharpCode.SharpZipLib.dll
-!BalthasarLib.D2DPainter.dll
-!SharpDX.Direct2D1.dll
-!SharpDX.dll
-!SharpDX.DXGI.dll
