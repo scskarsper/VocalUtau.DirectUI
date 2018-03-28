@@ -59,7 +59,8 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
                     NoteObject.Lyric = value;
                     if (this.LyricSpliter != null)
                     {
-                        NoteObject.PhonemeAtoms = this.LyricSpliter.SetupPhonemes(base.PartsObject.SingerGUID, value);
+                        PartsObject po=base.PartsObject;
+                        this.LyricSpliter.SetupPhonemes(ref po, NoteObject);
                     }
                 }
             }
@@ -132,6 +133,18 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
             {
                 NoteObject.PhonemeAtoms = value.Plist;
                 if (PhonemesChanged != null) PhonemesChanged();
+            }
+        }
+        [CategoryAttribute("音符信息"), DisplayName("锁定发音部件")]
+        public bool NotePhonemeLock
+        {
+            get
+            {
+                return NoteObject.LockPhoneme;
+            }
+            set
+            {
+                NoteObject.LockPhoneme = value;
             }
         }
     }

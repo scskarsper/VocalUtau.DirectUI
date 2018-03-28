@@ -130,10 +130,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\VocalUtau.Formats\VocalUtau.Formats.csproj">
-      <Project>{9ea2955f-3919-4939-bb75-0b38f4e6182d}</Project>
-      <Name>VocalUtau.Formats</Name>
-    </ProjectReference>
     <ProjectReference Include="..\VocalUtau.DirectUI.Forms\VocalUtau.DirectUI.Forms.csproj">
       <Project>{eb4142f3-fa96-45d9-a817-0b0b9604541b}</Project>
       <Name>VocalUtau.DirectUI.Forms</Name>

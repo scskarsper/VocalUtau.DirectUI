@@ -172,7 +172,8 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                             NoteList[BeginIndex + i].Lyric = NLyric[i];
                             if (this.LyricSpliter != null)
                             {
-                                NoteList[BeginIndex + i].PhonemeAtoms = this.LyricSpliter.SetupPhonemes(PartsObject.SingerGUID, NLyric[i]);
+                                PartsObject po = PartsObject;
+                                this.LyricSpliter.SetupPhonemes(ref po, NoteList[BeginIndex + i]);
                             }
                         }
                     }

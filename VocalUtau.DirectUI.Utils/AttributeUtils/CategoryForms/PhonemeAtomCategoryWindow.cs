@@ -277,7 +277,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
         }
         private void btn_OK_Click(object sender, EventArgs e)
         {
-
+            
         }
 
         private void pnl_Phoneme_Resize(object sender, EventArgs e)

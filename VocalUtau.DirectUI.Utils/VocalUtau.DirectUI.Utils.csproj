@@ -74,12 +74,13 @@
     <Compile Include="PianoUtils\NoteView.cs" />
     <Compile Include="PianoUtils\PitchView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SingerUtils\SingerIndexer.cs" />
     <Compile Include="SingerUtils\SingerLyricSpliter.cs" />
     <Compile Include="TrackerUtils\TrackerActionView.cs" />
     <Compile Include="TrackerUtils\TrackerView.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\VocalUtau.Formats\VocalUtau.Formats.csproj">
+    <ProjectReference Include="..\..\VocalUtau.Formats\VocalUtau.Formats\VocalUtau.Formats.csproj">
       <Project>{9ea2955f-3919-4939-bb75-0b38f4e6182d}</Project>
       <Name>VocalUtau.Formats</Name>
     </ProjectReference>

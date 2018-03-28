@@ -50,6 +50,20 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools
             }
             return ret;
         }
+        public static string getSingerDir(string SingerGUID, IntPtr ProjectPtr)
+        {
+            string ret = "";
+            ProjectObject poj = getProjectObject(ProjectPtr);
+            for (int i = 0; i < poj.SingerList.Count; i++)
+            {
+                if (ret == "") ret = poj.SingerList[i].getRealSingerFolder();
+                if (poj.SingerList[i].getGuid() == SingerGUID)
+                {
+                    return poj.SingerList[i].getRealSingerFolder();
+                }
+            }
+            return ret;
+        }
     }
 
     public class SingerItemConverter : StringConverter

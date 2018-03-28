@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools;
+using VocalUtau.Formats.Model.Database;
 using VocalUtau.Formats.Model.Utils;
 using VocalUtau.Formats.Model.VocalObject;
 
@@ -10,9 +12,11 @@ namespace VocalUtau.DirectUI.Utils.SingerUtils
 {
     public class SingerLyricSpliter
     {
+        SingerIndexer Indexer;
         ObjectAlloc<ProjectObject> ProjectBeeper = new ObjectAlloc<ProjectObject>();
-        public SingerLyricSpliter(ref ProjectObject proj)
+        public SingerLyricSpliter(ref ProjectObject proj,SingerIndexer Indexer)
         {
+            this.Indexer = Indexer;
             ProjectBeeper.ReAlloc(proj);
         }
         public void LoadProjectObject(ref ProjectObject proj)
@@ -33,19 +37,25 @@ namespace VocalUtau.DirectUI.Utils.SingerUtils
                 return ret;
             }
         }
-        public List<NoteAtomObject> SetupPhonemes(string SingerGUID, string Lyric)
+        public void SetupPhonemes(ref PartsObject parts, NoteObject curObj)
         {
-            List<NoteAtomObject> ret = new List<NoteAtomObject>();
-            Lyric = Lyric.Replace("ang", "ang|ng_R");
-            Lyric = Lyric.Replace("eng", "eng|ng_R");
-            Lyric = Lyric.Replace("ong", "ong|ng_R");
-            Lyric = Lyric.Replace("ing", "ing|ng_R");
-            string[] LyricArr = Lyric.Split('|');
-            for (int i = 0; i < LyricArr.Length; i++)
+            //VocalUtau.Program.GlobalPackage
+            string singerGUID = parts.SingerGUID;
+            string folder=SingerFinder.getSingerDir(singerGUID, ProjectBeeper.IntPtr);
+            VocalIndexObject vio=Indexer.getIndex(folder);
+            if (vio == null)
             {
-                ret.Add(new NoteAtomObject(LyricArr[i]));
+                if (!curObj.LockPhoneme)
+                {
+                    curObj.PhonemeAtoms.Clear();
+                    curObj.PhonemeAtoms.Add(new NoteAtomObject());
+                    curObj.PhonemeAtoms[0].AtomLength = 0;
+                    curObj.PhonemeAtoms[0].PhonemeAtom = curObj.Lyric;
+                }
+            }else
+            {
+                vio.SplitDictionary.UpdateLyrics(ref parts, curObj);
             }
-            return ret;
         }
     }
 }
