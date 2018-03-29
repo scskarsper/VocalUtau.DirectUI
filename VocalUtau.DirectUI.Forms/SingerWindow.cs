@@ -68,12 +68,12 @@ namespace VocalUtau.DirectUI.Forms
                     Global_ActionView.setPartsObjectPtr(ObjectPtr);
                     Param_PitchView.setPartsObjectPtr(ObjectPtr);
                     Param_DynamicView.setPartsObjectPtr(ObjectPtr);
-                    Track_NoteView.setLyricSpliter(LyricSpliters);
+                    Track_NoteView.setSingerDataFinder(SingerDataFinders);
                 }
                 else
                 {
                     Track_NoteView = new NoteView(ObjectPtr, this.PianoWindow);
-                    Track_NoteView.setLyricSpliter(LyricSpliters);
+                    Track_NoteView.setSingerDataFinder(SingerDataFinders);
                     Track_PitchView = new PitchView(ObjectPtr, this.PianoWindow);
                     Param_PitchView = new PITParamView(ObjectPtr, this.ParamWindow);
                     Param_DynamicView = new DYNParamView(ObjectPtr, this.ParamWindow);
@@ -222,7 +222,7 @@ namespace VocalUtau.DirectUI.Forms
             public ActionView Global_ActionView;
             public DYNParamView Param_DynamicView;
             public PITParamView Param_PitchView;
-            SingerLyricSpliter LyricSpliters;
+            SingerDataFinder SingerDataFinders;
             public void SwitchParamView(ParamViewType type)
             {
                 if (type == ParamViewType.Pitch)
@@ -301,12 +301,12 @@ namespace VocalUtau.DirectUI.Forms
                 }
             }
 
-            public void ResetLyricSpliter(ref SingerLyricSpliter LyricSpliter)
+            public void ResetSingerDataFinder(ref SingerDataFinder SingerDataFinder)
             {
-                this.LyricSpliters = LyricSpliter;
+                this.SingerDataFinders = SingerDataFinder;
                 if (Track_NoteView != null)
                 {
-                    Track_NoteView.setLyricSpliter(LyricSpliters);
+                    Track_NoteView.setSingerDataFinder(SingerDataFinders);
                 }
             }
 
@@ -626,9 +626,9 @@ namespace VocalUtau.DirectUI.Forms
         {
             this.Show(DockPanel, WeifenLuo.WinFormsUI.Docking.DockState.Document);
         }
-        public void SetupLyricSpliter(ref SingerLyricSpliter sls)
+        public void SetupSingerDataFinder(ref SingerDataFinder sls)
         {
-            this.Controller.ResetLyricSpliter(ref sls);
+            this.Controller.ResetSingerDataFinder(ref sls);
         }
         public void LoadProjectObject(ref ProjectObject proj)
         {

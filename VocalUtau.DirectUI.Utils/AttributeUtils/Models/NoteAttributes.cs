@@ -17,7 +17,6 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
         public event OnPhonemeChangedHandler PhonemesChanged;
 
         IntPtr notePtr = IntPtr.Zero;
-        SingerLyricSpliter LyricSpliter = null;
         public NoteAttributes(IntPtr PartsObjectPtr, IntPtr NotesObjectPtr, IntPtr ProjectObjectPtr)
             : base(PartsObjectPtr,ProjectObjectPtr)
         {
@@ -26,10 +25,6 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
         public void setNotesObjectPtr(IntPtr NotesObjectPtr)
         {
             this.notePtr = NotesObjectPtr;
-        }
-        public void setLyricSpliter(SingerLyricSpliter SpliterInstance)
-        {
-            this.LyricSpliter = SpliterInstance;
         }
         private NoteObject NoteObject
         {
@@ -57,10 +52,10 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
                 if (NoteObject.Lyric != value)
                 {
                     NoteObject.Lyric = value;
-                    if (this.LyricSpliter != null)
+                    if (base.SingerDataFinder != null)
                     {
-                        PartsObject po=base.PartsObject;
-                        this.LyricSpliter.SetupPhonemes(ref po, NoteObject);
+                        PartsObject po = PartsObject;
+                        base.SingerDataFinder.GetPhonemesDictionary(base.PartsObject).UpdateLyrics(ref po,NoteObject);//.SetupPhonemes(ref po, NoteObject);
                     }
                 }
             }

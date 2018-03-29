@@ -20,7 +20,7 @@ namespace VocalUtau.DirectUI.Forms
 {
     public partial class AttributesWindow : DockContent
     {
-        SingerLyricSpliter LyricSpliter;
+        SingerDataFinder SingerDataFinder;
         ObjectAlloc<ProjectObject> ProjectBinder = new ObjectAlloc<ProjectObject>();
         ObjectAlloc<NoteObject> NoteBinder = new ObjectAlloc<NoteObject>();
         ObjectAlloc<PartsObject> PartsBinder = new ObjectAlloc<PartsObject>();
@@ -37,9 +37,9 @@ namespace VocalUtau.DirectUI.Forms
             this.Show(DockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
         }
 
-        public void SetupLyricSpliter(ref SingerLyricSpliter sls)
+        public void SetupSingerDataFinder(ref SingerDataFinder sls)
         {
-            LyricSpliter = sls;
+            SingerDataFinder = sls;
         }
         public object Clone(object source)
         {
@@ -66,6 +66,8 @@ namespace VocalUtau.DirectUI.Forms
 
             pa.setIsCurrent(isCurrentEditing);
 
+            pa.setSingerDataFinder(SingerDataFinder);
+
             this.PropertyViewer.Tag = pa;
 
             this.PropertyViewer.SelectedObject = this.PropertyViewer.Tag;
@@ -88,7 +90,7 @@ namespace VocalUtau.DirectUI.Forms
 
             NoteAttributes NA = new NoteAttributes(PartsBinder.IntPtr, NoteBinder.IntPtr, ProjectBinder.IntPtr);
 
-            NA.setLyricSpliter(LyricSpliter);
+            NA.setSingerDataFinder(SingerDataFinder);
 
             NA.PhonemesChanged += NA_PhonemesChanged;
 

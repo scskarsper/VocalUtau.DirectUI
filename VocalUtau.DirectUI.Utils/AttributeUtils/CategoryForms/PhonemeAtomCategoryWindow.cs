@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using VocalUtau.DirectUI.Utils.SingerUtils;
 using VocalUtau.Formats.Model.VocalObject;
 
 namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
@@ -224,49 +225,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
                 ListValue[ListValue.Count - 1].AtomLength = 0;
             }
             //计算每单元长度
-            List<long> TickArray = new List<long>();
-            long autoCount = 0;
-            long noSetLength = pmodel.Length;
-            for (int i = 0; i < ListValue.Count; i++)
-            {
-                NoteAtomObject nao = ListValue[i];
-                if (nao.AtomLength <= 0)
-                {
-                    TickArray.Add(0);
-                    autoCount++;
-                }
-                else
-                {
-                    if (nao.LengthIsPercent)
-                    {
-                        long len = (long)(pmodel.Length * (double)nao.AtomLength / 100);
-                        TickArray.Add(len);
-                        noSetLength = noSetLength - len;
-                    }
-                    else
-                    {
-                        TickArray.Add(nao.AtomLength);
-                        noSetLength = noSetLength - nao.AtomLength;
-                    }
-                }
-            }
-            long setAtom = (long)((double)noSetLength / (double)autoCount);
-            for (int i = 0; i < TickArray.Count; i++)
-            {
-                if (TickArray[i] == 0)
-                {
-                    if (autoCount > 1)
-                    {
-                        TickArray[i] = setAtom;
-                        noSetLength = noSetLength - setAtom;
-                        autoCount--;
-                    }
-                    else
-                    {
-                        TickArray[i] = noSetLength;
-                    }
-                }
-            }
+            List<long> TickArray = PhonemeSplitTools.SplitedTickList(pmodel.Length, ListValue);
             this.pnl_Phoneme.Tag = TickArray;
         }
         void Atom_Click(object sender, EventArgs e)
@@ -296,9 +255,11 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms
             long Tl1 = ctl_pa_Start.Value - st1;
             long tEnd = pmodel.Length;
             long st2 = getStartTick(CurrentIndex + 1);
+            long MaxNoteLen = pmodel.Length / TickArray.Count;
             if (CurrentIndex + 1 < ListValue.Count) tEnd = st2;
             long Tl2 = tEnd - ctl_pa_Start.Value;
             long MinTickNote=10;
+            if (MinTickNote > MaxNoteLen) MinTickNote = MaxNoteLen;
             try
             {
                 if (ListValue[CurrentIndex - 1].AtomLength > 0 && Tl1 < MinTickNote)

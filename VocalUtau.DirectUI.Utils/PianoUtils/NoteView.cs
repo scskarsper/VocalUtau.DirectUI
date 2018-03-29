@@ -38,7 +38,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
 
         IntPtr PartsObjectPtr = IntPtr.Zero;
         PianoRollWindow PianoWindow;
-        SingerLyricSpliter LyricSpliter=null;
+        SingerDataFinder SingerDataFinder=null;
         
         long _TickStepTick = 1;
 
@@ -62,9 +62,9 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         {
             this.PianoWindow = PianoWindow;
         }
-        public void setLyricSpliter(SingerLyricSpliter SpliterInstance)
+        public void setSingerDataFinder(SingerDataFinder SpliterInstance)
         {
-            this.LyricSpliter = SpliterInstance;
+            this.SingerDataFinder = SpliterInstance;
         }
         public void hookPianoWindow()
         {
@@ -94,17 +94,27 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                 NoteSelectIndexs.Sort();
                 int First = NoteSelectIndexs[0];
                 int Last = NoteSelectIndexs[NoteSelectIndexs.Count-1];
-                for (int i = 0; i < NoteSelectIndexs.Count; i++)
+                for (int i = Last; i >= First; i--)
                 {
-                    NoteList.RemoveAt(NoteSelectIndexs[i] - i);
-                    Last--;
+                    NoteList.RemoveAt(i);
                 }
-                if (First <= Last)
-                {
-                    //PartsObject.PitchCompiler.BasePitch_Delete(First,Last);
-                    PartsObject.PitchCompiler.SetupBasePitch(First, Last);
-                }
+                int Sp = First - 1;
+                int Se = First;
+                if (Sp < 0) Sp = 0;
                 ClearSelect();
+                PartsObject.PitchCompiler.SetupBasePitch_Aysnc(new Formats.Model.VocalObject.ParamTranslater.PitchCompiler.AsyncWorkCallbackHandler((F, L) =>
+                {
+                    this.PianoWindow.Invoke(new Action(() => { this.PianoWindow.RedrawPiano(); }));
+                }), Sp, Se);
+                if (this.SingerDataFinder != null)
+                {
+                    PartsObject po = PartsObject;
+                    int Lp = Se;
+                    if (Sp > 0) Lp = Sp;
+                    this.SingerDataFinder.GetPhonemesDictionary(PartsObject).UpdateLyrics_Aysnc(new Formats.Model.Database.VocalDatabase.SplitDictionary.AsyncWorkCallbackHandler((P,F,L)=>{
+                        
+                    }), ref po, Lp, Lp); ;
+                }
                 if (NoteActionEnd != null) NoteActionEnd(NoteDragingType.NoteDelete);
             }
         }
@@ -167,13 +177,14 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                     string[] NLyric = Lyric2.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
                     for (int i = 0; i < NLyric.Length; i++)
                     {
+                        if ((BeginIndex + i) >= NoteList.Count) break;
                         if (NoteList[BeginIndex + i].Lyric != NLyric[i])
                         {
                             NoteList[BeginIndex + i].Lyric = NLyric[i];
-                            if (this.LyricSpliter != null)
+                            if (this.SingerDataFinder != null)
                             {
                                 PartsObject po = PartsObject;
-                                this.LyricSpliter.SetupPhonemes(ref po, NoteList[BeginIndex + i]);
+                                this.SingerDataFinder.GetPhonemesDictionary(PartsObject).UpdateLyrics(ref po, BeginIndex + i);
                             }
                         }
                     }
@@ -510,6 +521,14 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                         {
                             this.PianoWindow.Invoke(new Action(() => { this.PianoWindow.RedrawPiano(); }));
                         }), StartPX, EndPX);
+                        if (this.SingerDataFinder != null)
+                        {
+                            PartsObject po = PartsObject;
+                            this.SingerDataFinder.GetPhonemesDictionary(PartsObject).UpdateLyrics_Aysnc(new Formats.Model.Database.VocalDatabase.SplitDictionary.AsyncWorkCallbackHandler((P, F, L) =>
+                            {
+
+                            }), ref po, CurrentNoteIndex, CurrentNoteIndex); ;
+                        }
                     }
                     NoteDias.Clear();
 
@@ -566,6 +585,15 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                             {
                                 this.PianoWindow.Invoke(new Action(() => { this.PianoWindow.RedrawPiano(); }));
                             }), StartPX, EndPX);
+
+                            if (this.SingerDataFinder != null)
+                            {
+                                PartsObject po = PartsObject;
+                                this.SingerDataFinder.GetPhonemesDictionary(PartsObject).UpdateLyrics_Aysnc(new Formats.Model.Database.VocalDatabase.SplitDictionary.AsyncWorkCallbackHandler((P, F, L) =>
+                                {
+
+                                }), ref po, ONI , ONI); ;
+                            }
                         }
                     }
                     else
@@ -596,25 +624,10 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                                 SelectingNoteCache[i].Tick = SelectingNoteCache[i].Tick - TickDert;
                             }
                         }
-                        /*
-                        for (int i = 0; i < NoteSelectIndexs.Count; i++)
-                        {
-                            uint NewNoteNumber = (uint)(NoteList[NoteSelectIndexs[i]].PitchValue.NoteNumber - NoteDert);
-                            if (NoteList[NoteSelectIndexs[i]].PitchValue.NoteNumber != NewNoteNumber)
-                            {
-                                NoteList[NoteSelectIndexs[i]].PitchValue = new PitchAtomObject(NewNoteNumber, NoteList[NoteSelectIndexs[i]].PitchValue.PitchWheel);
-                            }
-                            if (Math.Abs(TickDert) > minTickChange)
-                            {
-                                NoteList[NoteSelectIndexs[i]].Tick = NoteList[NoteSelectIndexs[i]].Tick - TickDert;
-                            }
-                        }*/
                         if (Math.Abs(TickDert) > minTickChange) NoteList.Sort();
                         long AStartTick = Math.Min(oldStartTick, OldNoteSt.Tick);
                         long AEndTick = Math.Max(oldEndTick, LastNoteEd.Tick + LastNoteEd.Length);
 
-                       /* int First = Math.Min(NoteSelectIndexs[0], NoteList.IndexOf(OldNoteSt));
-                        int Last = Math.Max(NoteSelectIndexs[NoteSelectIndexs.Count - 1],NoteList.IndexOf(LastNoteEd));*/
                         int First = Math.Min(NoteList.IndexOf(SelectingNoteCache[0]), NoteList.IndexOf(OldNoteSt));
                         int Last = Math.Max(NoteList.IndexOf(SelectingNoteCache[SelectingNoteCache.Count - 1]), NoteList.IndexOf(LastNoteEd));
                         if (First <= Last)
@@ -635,6 +648,15 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                                 {
                                     this.PianoWindow.Invoke(new Action(() => { this.PianoWindow.RedrawPiano(); }));
                                 }), StartPX, EndPX);
+
+                                if (this.SingerDataFinder != null)
+                                {
+                                    PartsObject po = PartsObject;
+                                    this.SingerDataFinder.GetPhonemesDictionary(PartsObject).UpdateOutboundsLyric_Aysnc(new Formats.Model.Database.VocalDatabase.SplitDictionary.AsyncWorkCallbackHandler((P, F, L) =>
+                                    {
+
+                                    }), ref po, StartPX, EndPX); ;
+                                }
                             }
                         }
                     }
@@ -661,7 +683,15 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                         PartsObject.PitchCompiler.SetupBasePitch_Aysnc(new Formats.Model.VocalObject.ParamTranslater.PitchCompiler.AsyncWorkCallbackHandler((F, L) =>
                         {
                             this.PianoWindow.Invoke(new Action(() => { this.PianoWindow.RedrawPiano(); }));
-                        }), NIndex,NIndex);
+                        }), NIndex, NIndex);
+                        if (this.SingerDataFinder != null)
+                        {
+                            PartsObject po = PartsObject;
+                            this.SingerDataFinder.GetPhonemesDictionary(PartsObject).UpdateLyrics_Aysnc(new Formats.Model.Database.VocalDatabase.SplitDictionary.AsyncWorkCallbackHandler((P, F, L) =>
+                            {
+
+                            }), ref po, NIndex, NIndex); ;
+                        }
                     }else
                     {
                         NoteDragingWork = NoteDragingType.AreaSelect;

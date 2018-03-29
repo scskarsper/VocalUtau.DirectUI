@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools;
+using VocalUtau.DirectUI.Utils.SingerUtils;
 using VocalUtau.Formats.Model.VocalObject;
 
 namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
@@ -34,6 +35,12 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
         {
             isCurrentEditing = value;
         }
+        internal SingerDataFinder SingerDataFinder = null;
+        public void setSingerDataFinder(SingerDataFinder SpliterInstance)
+        {
+            this.SingerDataFinder = SpliterInstance;
+        }
+
         [Browsable(false)]
         public PartsObject PartsObject
         {
@@ -142,7 +149,19 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
         public string Part_Singer
         {
             get { return SingerFinder.getSingerName(PartsObject.SingerGUID,ProjectObjectPtr); }
-            set { if (value == "添加/删除歌手...") { SingerAtomCategoryWindow sacw = new SingerAtomCategoryWindow(ProjectObjectPtr); sacw.ShowDialog(); } else PartsObject.SingerGUID = SingerFinder.getSingerGuid(value, ProjectObjectPtr); }
+            set {
+                if (value == "添加/删除歌手...") { SingerAtomCategoryWindow sacw = new SingerAtomCategoryWindow(ProjectObjectPtr); sacw.ShowDialog(); }
+                else
+                {
+                    string newGuid = SingerFinder.getSingerGuid(value, ProjectObjectPtr);
+                    if (newGuid != PartsObject.SingerGUID)
+                    {
+                        PartsObject.SingerGUID = SingerFinder.getSingerGuid(value, ProjectObjectPtr);
+                        PartsObject po=PartsObject;
+                        this.SingerDataFinder.GetPhonemesDictionary(po).UpdateLyrics(ref po, -1, -1);
+                    }
+                }
+            }
         }
 
         [CategoryAttribute("段落歌手属性"), DisplayName("自定义预处理标记(Flags)")]

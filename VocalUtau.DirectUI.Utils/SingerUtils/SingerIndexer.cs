@@ -29,14 +29,19 @@ namespace VocalUtau.DirectUI.Utils.SingerUtils
                 {
                     return SingerIndexerCache[RealFolder];
                 }
+                else
+                {
+                    SingerIndexerCache.Add(RealFolder, new VocalIndexObject());
+                    return SingerIndexerCache[RealFolder];
+                }
             }
-            return null;
         }
         public void LoadSinger(string RealFolder)
         {
             if (!SingerIndexerCache.ContainsKey(RealFolder))
             {
-                VocalIndexObject vio = VocalIndexObject.Deseralize(RealFolder);
+                VocalIndexObject vio = VocalIndexObject.Deseralize(RealFolder); 
+                SingerIndexerCache.Add(RealFolder,vio);
             }
         }
     }

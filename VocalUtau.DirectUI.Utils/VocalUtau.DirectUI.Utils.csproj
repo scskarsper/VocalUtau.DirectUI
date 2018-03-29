@@ -55,6 +55,7 @@
     </Compile>
     <Compile Include="AttributeUtils\CategoryForms\PhonemeAtomCategoryModelEditor.cs" />
     <Compile Include="AttributeUtils\CategoryForms\PhonemeAttrModels.cs" />
+    <Compile Include="SingerUtils\PhonemeSplitTools.cs" />
     <Compile Include="AttributeUtils\Models\NoteAttributes.cs" />
     <Compile Include="AttributeUtils\Models\PartAttributes.cs" />
     <Compile Include="AttributeUtils\Models\WavePartAttributes.cs" />
@@ -75,7 +76,7 @@
     <Compile Include="PianoUtils\PitchView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SingerUtils\SingerIndexer.cs" />
-    <Compile Include="SingerUtils\SingerLyricSpliter.cs" />
+    <Compile Include="SingerUtils\SingerDataFinder.cs" />
     <Compile Include="TrackerUtils\TrackerActionView.cs" />
     <Compile Include="TrackerUtils\TrackerView.cs" />
   </ItemGroup>
