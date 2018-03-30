@@ -36,6 +36,20 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.SingerTools
             }
             return ret;
         }
+        public static SingerObject getSingerObject(string SingerGUID, IntPtr ProjectPtr)
+        {
+            SingerObject ret = null;
+            ProjectObject poj = getProjectObject(ProjectPtr);
+            for (int i = 0; i < poj.SingerList.Count; i++)
+            {
+                if (ret == null) ret = poj.SingerList[i];
+                if (poj.SingerList[i].getGuid() == SingerGUID)
+                {
+                    return poj.SingerList[i];
+                }
+            }
+            return ret;
+        }
         public static string getSingerGuid(string SingerName, IntPtr ProjectPtr)
         {
             string ret = "";

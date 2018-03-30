@@ -54,6 +54,11 @@ namespace VocalUtau.DirectUI.Utils.SingerUtils
             VocalIndexObject vio = Indexer.getIndex(folder);
             return vio;
         }
+        public SingerObject GetSingerObject(PartsObject parts)
+        {
+            string singerGUID = parts.SingerGUID;
+            return SingerFinder.getSingerObject(singerGUID, ProjectBeeper.IntPtr);
+        }
         public string GetSingerFolder(PartsObject parts)
         {
             //VocalUtau.Program.GlobalPackage
