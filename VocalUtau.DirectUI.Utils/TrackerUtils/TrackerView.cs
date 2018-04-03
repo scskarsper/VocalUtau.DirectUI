@@ -15,6 +15,9 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
         public delegate void OnSelectingPartChangeHandler(PartsObject PartObject,bool isEditing);
         public delegate void OnSelectingWavPartChangeHandler(WavePartsObject PartObject);
         public delegate void OnPartsEventHandler(PartsDragingType eventType);
+        public delegate void OnTrackNormalizeHandler();
+        public event OnTrackNormalizeHandler BeforeTrackNormalize;
+        public event OnTrackNormalizeHandler AfterTrackNormalize;
         public event OnPartsEventHandler TrackerActionEnd;
         public event OnPartsEventHandler TrackerActionBegin;
         public event OnShowingEditorChangeHandler ShowingEditorChanged;
@@ -1115,6 +1118,19 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
         void TrackerWindow_TGridePaint(object sender, DrawUtils.TrackerGridesDrawUtils utils)
         {
             utils.DrawTracks(this.TrackerList, this.BackerList, new DrawUtils.TrackerGridesDrawUtils.OneGridePaintHandler(SingleGridePaint));
+        }
+
+        public void NormalizeTrack()
+        {
+            if (BeforeTrackNormalize != null) BeforeTrackNormalize();
+            System.Threading.Tasks.Parallel.For(0, TrackerList.Count, (i) => {
+                for (int j = 0; j < TrackerList[i].PartList.Count; j++)
+                {
+                    TrackerList[i].PartList[j].NoteCompiler.OrderList();
+                }
+                TrackerList[i].OrderList();
+            });
+            if (AfterTrackNormalize != null) AfterTrackNormalize();
         }
     }
 }

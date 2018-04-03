@@ -28,21 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.ctl_Scroll_LeftPos = new System.Windows.Forms.HScrollBar();
             this.ctl_Track_PianoWidth = new System.Windows.Forms.TrackBar();
             this.ctl_Track_TrackHeight = new System.Windows.Forms.TrackBar();
-            this.menu_TrackEditor = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.menu_TrackEditor = new System.Windows.Forms.ContextMenuStrip();
             this.track_AddNewTrack = new System.Windows.Forms.ToolStripMenuItem();
             this.track_AddNewBackerTrack = new System.Windows.Forms.ToolStripMenuItem();
-            this.track_DelTracks = new System.Windows.Forms.ToolStripMenuItem();
-            this.track_AddParts = new System.Windows.Forms.ToolStripMenuItem();
-            this.track_DelectParts = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.track_AddParts = new System.Windows.Forms.ToolStripMenuItem();
             this.track_ImportWav = new System.Windows.Forms.ToolStripMenuItem();
             this.track_ImportAsTrack = new System.Windows.Forms.ToolStripMenuItem();
             this.track_ImportAsPart = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.track_DelTracks = new System.Windows.Forms.ToolStripMenuItem();
+            this.track_DelectParts = new System.Windows.Forms.ToolStripMenuItem();
             this.trackerRollWindow1 = new VocalUtau.DirectUI.TrackerRollWindow();
             ((System.ComponentModel.ISupportInitialize)(this.ctl_Track_PianoWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ctl_Track_TrackHeight)).BeginInit();
@@ -108,6 +107,7 @@
             this.track_DelectParts});
             this.menu_TrackEditor.Name = "menu_TrackEditor";
             this.menu_TrackEditor.Size = new System.Drawing.Size(214, 182);
+            this.menu_TrackEditor.Opening += new System.ComponentModel.CancelEventHandler(this.menu_TrackEditor_Opening);
             // 
             // track_AddNewTrack
             // 
@@ -123,12 +123,10 @@
             this.track_AddNewBackerTrack.Text = "添加新伴奏轨";
             this.track_AddNewBackerTrack.Click += new System.EventHandler(this.track_AddNewBackerTrack_Click);
             // 
-            // track_DelTracks
+            // toolStripSeparator2
             // 
-            this.track_DelTracks.Name = "track_DelTracks";
-            this.track_DelTracks.Size = new System.Drawing.Size(213, 24);
-            this.track_DelTracks.Text = "删除选中的轨道";
-            this.track_DelTracks.Click += new System.EventHandler(this.track_DelTracks_Click);
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(210, 6);
             // 
             // track_AddParts
             // 
@@ -136,23 +134,6 @@
             this.track_AddParts.Size = new System.Drawing.Size(213, 24);
             this.track_AddParts.Text = "在选中轨道添加区块";
             this.track_AddParts.Click += new System.EventHandler(this.track_AddParts_Click);
-            // 
-            // track_DelectParts
-            // 
-            this.track_DelectParts.Name = "track_DelectParts";
-            this.track_DelectParts.Size = new System.Drawing.Size(213, 24);
-            this.track_DelectParts.Text = "删除选中区块";
-            this.track_DelectParts.Click += new System.EventHandler(this.track_DelectParts_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(210, 6);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(210, 6);
             // 
             // track_ImportWav
             // 
@@ -176,6 +157,25 @@
             this.track_ImportAsPart.Size = new System.Drawing.Size(243, 24);
             this.track_ImportAsPart.Text = "在当前轨道末尾导入伴奏";
             this.track_ImportAsPart.Click += new System.EventHandler(this.track_ImportAsPart_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(210, 6);
+            // 
+            // track_DelTracks
+            // 
+            this.track_DelTracks.Name = "track_DelTracks";
+            this.track_DelTracks.Size = new System.Drawing.Size(213, 24);
+            this.track_DelTracks.Text = "删除选中的轨道";
+            this.track_DelTracks.Click += new System.EventHandler(this.track_DelTracks_Click);
+            // 
+            // track_DelectParts
+            // 
+            this.track_DelectParts.Name = "track_DelectParts";
+            this.track_DelectParts.Size = new System.Drawing.Size(213, 24);
+            this.track_DelectParts.Text = "删除选中区块";
+            this.track_DelectParts.Click += new System.EventHandler(this.track_DelectParts_Click);
             // 
             // trackerRollWindow1
             // 

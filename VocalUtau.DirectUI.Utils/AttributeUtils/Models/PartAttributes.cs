@@ -164,6 +164,19 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
             }
         }
 
+        [CategoryAttribute("段落歌手属性"), DisplayName("默认自动拆音")]
+        public bool Part_UseLyricDictionary
+        {
+            get { return PartsObject.UseLyricDicitonary; }
+            set
+            {
+                bool isChanged = PartsObject.UseLyricDicitonary != value;
+                PartsObject.UseLyricDicitonary = value;
+                PartsObject po = PartsObject;
+                this.SingerDataFinder.GetPhonemesDictionary(po).UpdateLyrics(ref po, -1, -1);
+            }
+        }
+
         [CategoryAttribute("段落歌手属性"), DisplayName("自定义预处理标记(Flags)")]
         public string Part_Flags
         {

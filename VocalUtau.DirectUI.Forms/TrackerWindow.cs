@@ -20,12 +20,16 @@ namespace VocalUtau.DirectUI.Forms
         public event OnTotalTimePosChangeHandler TotalTimePosChange;
         public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnSelectingPartChangeHandler SelectingPartChanged;
         public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnSelectingWavPartChangeHandler SelectingWavePartChanged;
+        public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnTrackNormalizeHandler BeforeTrackNormalize;
+        public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnTrackNormalizeHandler AfterTrackNormalize;
         public class ViewController
         {   
             bool Alloced = false;
             TrackerRollWindow TrackerWindow;
             public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnSelectingPartChangeHandler SelectingPartChanged;
             public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnSelectingWavPartChangeHandler SelectingWavePartChanged;
+            public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnTrackNormalizeHandler BeforeTrackNormalize;
+            public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnTrackNormalizeHandler AfterTrackNormalize;
             
             public ViewController(ref TrackerRollWindow TrackerWin)
             {
@@ -76,6 +80,8 @@ namespace VocalUtau.DirectUI.Forms
                     _Action_View.TickPosChange += _Action_View_TickPosChange;
                     _Track_View.SelectingPartChanged += _Track_View_SelectingPartChanged;
                     _Track_View.SelectingWavePartChanged += _Track_View_SelectingWavePartChanged;
+                    _Track_View.BeforeTrackNormalize += _Track_View_BeforeTrackNormalize;
+                    _Track_View.AfterTrackNormalize += _Track_View_AfterTrackNormalize;
                     _Track_View.HandleEvents = true;
                     Alloced = true;
                     _Track_View.ResetShowingParts();
@@ -85,6 +91,21 @@ namespace VocalUtau.DirectUI.Forms
                     this.TrackerWindow.RedrawPiano();
                 }
                 catch { ;}
+            }
+
+            void _Track_View_AfterTrackNormalize()
+            {
+                if (AfterTrackNormalize != null) AfterTrackNormalize();
+            }
+
+            void _Track_View_BeforeTrackNormalize()
+            {
+                if (BeforeTrackNormalize != null) BeforeTrackNormalize();
+            }
+
+            public void NormalizeTracks()
+            {
+                _Track_View.NormalizeTrack();
             }
 
             void _Track_View_SelectingWavePartChanged(WavePartsObject PartObject)
@@ -180,7 +201,19 @@ namespace VocalUtau.DirectUI.Forms
             Controller.SelectingWavePartChanged += Controller_SelectingWavePartChanged;
             Controller.TrackerActionBegin += Controller_TrackerActionBegin;
             Controller.TrackerActionEnd += Controller_TrackerActionEnd;
+            Controller.BeforeTrackNormalize += Controller_BeforeTrackNormalize;
+            Controller.AfterTrackNormalize += Controller_AfterTrackNormalize;
             this.trackerRollWindow1.PartsMouseClick += trackerRollWindow1_PartsMouseClick;
+        }
+
+        void Controller_AfterTrackNormalize()
+        {
+            if (AfterTrackNormalize != null) AfterTrackNormalize();
+        }
+
+        void Controller_BeforeTrackNormalize()
+        {
+            if (BeforeTrackNormalize != null) BeforeTrackNormalize();
         }
 
         public event VocalUtau.DirectUI.Utils.TrackerUtils.TrackerView.OnPartsEventHandler TrackerActionEnd;
@@ -365,6 +398,11 @@ namespace VocalUtau.DirectUI.Forms
             {
                 Controller.ImportAsPart(ofd.FileName);
             }
+        }
+
+        private void menu_TrackEditor_Opening(object sender, CancelEventArgs e)
+        {
+
         }
     }
 }
