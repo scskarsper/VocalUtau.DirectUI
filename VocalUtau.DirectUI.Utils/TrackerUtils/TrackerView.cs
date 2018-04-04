@@ -1120,13 +1120,16 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
             utils.DrawTracks(this.TrackerList, this.BackerList, new DrawUtils.TrackerGridesDrawUtils.OneGridePaintHandler(SingleGridePaint));
         }
 
-        public void NormalizeTrack()
+        public void NormalizeTrack(bool withParts=true)
         {
             if (BeforeTrackNormalize != null) BeforeTrackNormalize();
             System.Threading.Tasks.Parallel.For(0, TrackerList.Count, (i) => {
-                for (int j = 0; j < TrackerList[i].PartList.Count; j++)
+                if (withParts)
                 {
-                    TrackerList[i].PartList[j].NoteCompiler.OrderList();
+                    for (int j = 0; j < TrackerList[i].PartList.Count; j++)
+                    {
+                        TrackerList[i].PartList[j].NoteCompiler.OrderList();
+                    }
                 }
                 TrackerList[i].OrderList();
             });

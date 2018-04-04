@@ -105,6 +105,10 @@ namespace VocalUtau.DirectUI.Forms
 
             public void NormalizeTracks()
             {
+                _Track_View.NormalizeTrack(false);
+            }
+            public void NormalizeTracksAndParts()
+            {
                 _Track_View.NormalizeTrack();
             }
 
