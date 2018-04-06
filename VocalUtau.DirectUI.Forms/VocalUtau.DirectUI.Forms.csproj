@@ -57,6 +57,12 @@
     <Compile Include="AttributesWindow.Designer.cs">
       <DependentUpon>AttributesWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="PlayerWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerWindow.Designer.cs">
+      <DependentUpon>PlayerWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SingerWindow.cs">
       <SubType>Form</SubType>
@@ -75,6 +81,9 @@
     <EmbeddedResource Include="AttributesWindow.resx">
       <DependentUpon>AttributesWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="PlayerWindow.resx">
+      <DependentUpon>PlayerWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SingerWindow.resx">
       <DependentUpon>SingerWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -83,9 +92,17 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\VocalUtau.Calculators\VocalUtau.Calculators\VocalUtau.Calculators.csproj">
+      <Project>{ec62095f-b97c-4c45-999a-6213ef3009e9}</Project>
+      <Name>VocalUtau.Calculators</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\VocalUtau.Formats\VocalUtau.Formats\VocalUtau.Formats.csproj">
       <Project>{9ea2955f-3919-4939-bb75-0b38f4e6182d}</Project>
       <Name>VocalUtau.Formats</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VocalUtau.WavTools\VocalUtau.WavTools.csproj">
+      <Project>{b7ee4878-4670-49b5-a94a-8c0dfda02b6f}</Project>
+      <Name>VocalUtau.WavTools</Name>
     </ProjectReference>
     <ProjectReference Include="..\VocalUtau.DirectUI.Utils\VocalUtau.DirectUI.Utils.csproj">
       <Project>{10feb9fa-9308-42aa-b5fb-dac652508095}</Project>

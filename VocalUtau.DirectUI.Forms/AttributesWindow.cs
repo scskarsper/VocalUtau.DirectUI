@@ -28,9 +28,12 @@ namespace VocalUtau.DirectUI.Forms
         public delegate void OnAttributeChangeHandler(PropertyValueChangedEventArgs e, ProjectObject oldObj);
         public event OnAttributeChangeHandler AttributeChange;
 
+        public DockPanel DockerPanel;
+
         public AttributesWindow()
         {
             InitializeComponent();
+            DockerPanel = this.PlayerPanel;
         }
         public void ShowOnDock(DockPanel DockPanel)
         {
@@ -133,6 +136,11 @@ namespace VocalUtau.DirectUI.Forms
         private void MemoryCleaner_Tick(object sender, EventArgs e)
         {
             GC.Collect(0, GCCollectionMode.Forced);
+        }
+
+        private void PlayerPanel_ActiveContentChanged(object sender, EventArgs e)
+        {
+
         }
 
     }
