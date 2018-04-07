@@ -28,14 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.BufferFillTimer = new System.Windows.Forms.Timer(this.components);
             this.BufferBfb = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
-            // 
-            // BufferFillTimer
-            // 
-            this.BufferFillTimer.Tick += new System.EventHandler(this.BufferFillTimer_Tick);
             // 
             // BufferBfb
             // 
@@ -63,7 +57,6 @@
 
         #endregion
 
-        private System.Windows.Forms.Timer BufferFillTimer;
         private System.Windows.Forms.ProgressBar BufferBfb;
     }
 }
