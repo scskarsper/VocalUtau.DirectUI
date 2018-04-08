@@ -26,17 +26,14 @@ namespace VocalUtau.DirectUI.Forms
         public PlayerWindow()
         {
             InitializeComponent();
-            _RendPlayer = new Dictionary<int, CachePlayer>();
             _CommandList = new Dictionary<int, List<NoteListCalculator.NotePreRender>>();
         }
 
-        Dictionary<int, CachePlayer> _RendPlayer;
         Dictionary<int, List<NoteListCalculator.NotePreRender>> _CommandList;
 
         public void AddPlayTrack(int idx, List<NoteListCalculator.NotePreRender> lst)
         {
             _CommandList.Add(idx, lst);
-            _RendPlayer.Add(idx, new CachePlayer());
         }
         public void RendingTrack(int idx)
         {
@@ -44,12 +41,10 @@ namespace VocalUtau.DirectUI.Forms
             {
                 int Index = (int)idxobj;
                 List<NoteListCalculator.NotePreRender> lst = _CommandList[Index];
-                CachePlayer Player = _RendPlayer[Index];
 
                 string temp = System.Environment.GetEnvironmentVariable("TEMP");
                 DirectoryInfo info = new DirectoryInfo(temp);
                 DirectoryInfo baseDir = info.CreateSubdirectory("hymn1");
-                Player.StartRending(baseDir, lst);
             },idx);
         }
 
@@ -72,10 +67,6 @@ namespace VocalUtau.DirectUI.Forms
         }
         public void PlayAll()
         {
-            for (int i = 0; i < _RendPlayer.Count; i++)
-            {
-                _RendPlayer[i].Play();
-            }
         }
 
         private void BufferBfb_Click(object sender, EventArgs e)
