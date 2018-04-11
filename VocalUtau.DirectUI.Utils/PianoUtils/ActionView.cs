@@ -124,7 +124,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         }
         void ParamWindow_ParamAreaMouseMove(object sender, ParamMouseEventArgs e)
         {
-            this.ParamWindow.ParentForm.Activate();
+         //   this.ParamWindow.ParentForm.Activate();
             this.ParamWindow.Focus();
             HookPiano = false;
             if (e.Tick < PianoWindow.MinShownTick || e.Tick > PianoWindow.MaxShownTick)
@@ -141,7 +141,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         long MouseTick = 0;
         void PianoWindow_TrackMouseMove(object sender, PianoMouseEventArgs e)
         {
-            this.PianoWindow.ParentForm.Activate();
+        //    this.PianoWindow.ParentForm.Activate();
             this.PianoWindow.Focus();
             HookParam = false; 
             if (e.Tick < PianoWindow.MinShownTick || e.Tick > PianoWindow.MaxShownTick)
