@@ -165,6 +165,16 @@ namespace VocalUtau.DirectUI.Forms
                     TrackerWindow.RedrawPiano();
                 }
             }
+
+            public double getTimePos()
+            {
+                try
+                {
+                    return _Action_View.TimePos;
+                }
+                catch { return 0; }
+            }
+
             #region
             TrackerView _Track_View;
             TrackerActionView _Action_View;
@@ -329,6 +339,10 @@ namespace VocalUtau.DirectUI.Forms
         {
             Controller.setTimePos(Time);
         }
+        public double getCurrentTimePos()
+        {
+            return Controller.getTimePos();
+        }
         public void LoadProjectObject(ref ProjectObject projects)
         {
             OAC.ReAlloc(projects);
@@ -385,7 +399,7 @@ namespace VocalUtau.DirectUI.Forms
         private void track_ImportAsTrack_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Wav音频文件|*.wav|所有文件|*.*";
+            ofd.Filter = "Wav音频文件|*.wav|MP3音频文件|*.MP3|所有文件|*.*";
             ofd.CheckFileExists = true;
             if (ofd.ShowDialog() == DialogResult.OK)
             {
@@ -396,7 +410,7 @@ namespace VocalUtau.DirectUI.Forms
         private void track_ImportAsPart_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Wav音频文件|*.wav|所有文件|*.*";
+            ofd.Filter = "Wav音频文件|*.wav|MP3音频文件|*.MP3|所有文件|*.*";
             ofd.CheckFileExists = true;
             if (ofd.ShowDialog() == DialogResult.OK)
             {

@@ -1133,6 +1133,10 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
                 }
                 TrackerList[i].OrderList();
             });
+            System.Threading.Tasks.Parallel.For(0, BackerList.Count, (i) =>
+            {
+                BackerList[i].OrderList();
+            }); 
             if (AfterTrackNormalize != null) AfterTrackNormalize();
         }
     }
