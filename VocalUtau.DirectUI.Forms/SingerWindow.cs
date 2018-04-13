@@ -350,6 +350,22 @@ namespace VocalUtau.DirectUI.Forms
                     ParamWindow.RedrawPiano();
                 }
             }
+            public void SetPartsPlayPosition(double Time)
+            {
+                if (Global_ActionView.PlayTimePos != Time)
+                {
+                    Global_ActionView.PlayTimePos = Time;
+                    if (Time > 0)
+                    {
+                        if (Global_ActionView.PlayTickPos < PianoWindow.MinShownTick || Global_ActionView.PlayTickPos > PianoWindow.MaxShownTick)
+                        {
+                            PianoWindow.setPianoStartTick(Global_ActionView.PlayTickPos);
+                            ParamWindow.setPianoStartTick(Global_ActionView.PlayTickPos);
+                        }
+                    }
+                    PianoWindow.RedrawPiano();
+                }
+            }
             public long getTickPos()
             {
                 return Global_ActionView.TickPos;
@@ -461,6 +477,53 @@ namespace VocalUtau.DirectUI.Forms
             if (NoteSelectListChange != null) NoteSelectListChange(SelectedIndexs);
         }
 
+        public void setMouseEnable(bool Enable)
+        {
+            try
+            {
+                this.Invoke(new Action(() =>
+                {
+                    this.pianoRollWindow1.DisableMouse = !Enable;
+                    this.paramCurveWindow1.DisableMouse = !Enable;
+                    this.ctl_Scroll_LeftPos.Enabled = Enable;
+                }));
+            }
+            catch { ;}
+        }
+
+        public void SetPlayPosition(double Time)
+        {
+            if (OAC.AllocedObject is PartsObject)
+            {
+                PartsObject po = (PartsObject)OAC.AllocedObject;
+                double pos=po.StartTime;
+                double poe=po.DuringTime+pos;
+                if (Time > pos && Time < poe)
+                {
+                    Controller.SetPartsPlayPosition(Time-pos);
+                    try
+                    {
+                        this.Invoke(new Action(() =>
+                        {
+                            long tp = Controller.Global_ActionView.PlayTickPos;
+                            if (tp < ctl_Scroll_LeftPos.Maximum)
+                            {
+                                ctl_Scroll_LeftPos.Value = (int)tp;
+                            }
+                            else
+                            {
+                                ctl_Scroll_LeftPos.Value = ctl_Scroll_LeftPos.Maximum;
+                            }
+                        }));
+                    }
+                    catch { ;}
+                }
+                else
+                {
+                    Controller.SetPartsPlayPosition(-1);
+                }
+            }
+        }
         void ResetComponent()
         {
             this.btn_SelectCurve.Location = new System.Drawing.Point(-1, 93);
@@ -691,8 +754,10 @@ namespace VocalUtau.DirectUI.Forms
         #region
         private void ctl_Scroll_LeftPos_Scroll(object sender, ScrollEventArgs e)
         {
-            pianoRollWindow1.setPianoStartTick(ctl_Scroll_LeftPos.Value);
-            paramCurveWindow1.setPianoStartTick(ctl_Scroll_LeftPos.Value);
+            if (!pianoRollWindow1.DisableMouse)
+                pianoRollWindow1.setPianoStartTick(ctl_Scroll_LeftPos.Value);
+            if (!paramCurveWindow1.DisableMouse)
+                paramCurveWindow1.setPianoStartTick(ctl_Scroll_LeftPos.Value);
             Controller.ReleaseRenderCache();
         }
 

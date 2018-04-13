@@ -12,7 +12,8 @@ namespace VocalUtau.DirectUI
 {
     public partial class ParamCurveWindow : UserControl
     {
-        
+
+        public bool DisableMouse { get; set; }
         /// <summary>
         /// 私有属性
         /// </summary>
@@ -261,6 +262,7 @@ namespace VocalUtau.DirectUI
         bool isMMoving = false;
         private void d2DPainterBox1_MouseMove(object sender, MouseEventArgs e)
         {
+            if (DisableMouse) return;
             if (isMMoving) return;
             isMMoving = true;
             d2DPainterBox1.Refresh();
@@ -297,6 +299,7 @@ namespace VocalUtau.DirectUI
         bool isMDown = false;
         private void d2DPainterBox1_MouseDown(object sender, MouseEventArgs e)
         {
+            if (DisableMouse) return;
             if (isMDown) return;
             isMDown = true;
             pme_cache = RiseMouseHandle(sender, e,
@@ -308,6 +311,7 @@ namespace VocalUtau.DirectUI
         bool isMUp = false;
         private void d2DPainterBox1_MouseUp(object sender, MouseEventArgs e)
         {
+            if (DisableMouse) return;
             if (isMUp) return;
             isMUp = true;
             pme_cache = RiseMouseHandle(sender, e,
@@ -318,6 +322,7 @@ namespace VocalUtau.DirectUI
         }
         private void d2DPainterBox1_MouseClick(object sender, MouseEventArgs e)
         {
+          //  if (DisableMouse) return;
             pme_cache = RiseMouseHandle(sender, e,
                 ParamAreaMouseClick,
                 ParamBtnsMouseClick);
@@ -325,6 +330,7 @@ namespace VocalUtau.DirectUI
         }
         private void d2DPainterBox1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+         //   if (DisableMouse) return;
             pme_cache = RiseMouseHandle(sender, e,
                 ParamAreaMouseDoubleClick,
                 ParamBtnsMouseDoubleClick);
@@ -332,11 +338,13 @@ namespace VocalUtau.DirectUI
         }
         private void d2DPainterBox1_MouseEnter(object sender, EventArgs e)
         {
+            if (DisableMouse) return;
             this.OnMouseEnter(e);
             pme_sendEnterEvent = true;
         }
         private void d2DPainterBox1_MouseLeave(object sender, EventArgs e)
         {
+            if (DisableMouse) return;
             EventHandler Handle = null;
             switch (pme_cache.Area)
             {

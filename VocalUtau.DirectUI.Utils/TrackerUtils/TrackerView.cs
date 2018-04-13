@@ -155,6 +155,17 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
             }
             return false;
         }
+        public double BaseTempo
+        {
+            get
+            {
+                return ProjectObject.BaseTempo;
+            }
+            set
+            {
+                ProjectObject.BaseTempo = value;
+            }
+        }
         public void reloadBaseTempo()
         {
             TrackerWindow.TrackerProps.Tempo = ProjectObject.BaseTempo;

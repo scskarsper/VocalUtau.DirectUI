@@ -15,6 +15,7 @@ namespace VocalUtau.DirectUI.Forms
 {
     public partial class TrackerWindow : DockContent
     {
+            
         public AttributesWindow AttributeWindow = null;
         public delegate void OnTotalTimePosChangeHandler(double Time);
         public event OnTotalTimePosChangeHandler TotalTimePosChange;
@@ -166,6 +167,19 @@ namespace VocalUtau.DirectUI.Forms
                 }
             }
 
+            public void SetPlayPosition(double Time)
+            {
+                if (_Action_View.PlayTimePos != Time)
+                {
+                    _Action_View.PlayTimePos = Time;
+                    if (Time != 0)
+                    {
+                        _Action_View.KeepTickPosShown(_Action_View.PlayTickPos);
+                    }
+                    TrackerWindow.RedrawPiano();
+                }
+            }
+
             public double getTimePos()
             {
                 try
@@ -219,7 +233,17 @@ namespace VocalUtau.DirectUI.Forms
             Controller.AfterTrackNormalize += Controller_AfterTrackNormalize;
             this.trackerRollWindow1.PartsMouseClick += trackerRollWindow1_PartsMouseClick;
         }
-
+        public void setMouseEnable(bool Enable)
+        {
+            try
+            {
+                this.Invoke(new Action(()=>{
+                    this.trackerRollWindow1.DisableMouse = !Enable;
+                    this.ctl_Scroll_LeftPos.Enabled = Enable;
+                }));
+            }
+            catch { ;}
+        }
         void Controller_AfterTrackNormalize()
         {
             if (AfterTrackNormalize != null) AfterTrackNormalize();
@@ -305,6 +329,30 @@ namespace VocalUtau.DirectUI.Forms
             if (ShowingEditorChanged != null) ShowingEditorChanged(PartObject);
         }
 
+        public void SetPlayPosition(double Time)
+        {
+            Controller.SetPlayPosition(Time);
+            try
+            {
+                this.Invoke(new Action(() =>
+                {
+                    if (Time != 0)
+                    {
+                        long tp = Controller.Action_View.PlayTickPos;
+                        if (tp < ctl_Scroll_LeftPos.Maximum)
+                        {
+                            ctl_Scroll_LeftPos.Value = (int)tp;
+                        }
+                        else
+                        {
+                            ctl_Scroll_LeftPos.Value = ctl_Scroll_LeftPos.Maximum;
+                        }
+                    }
+                }));
+            }
+            catch { ;}
+        }
+
         private void TrackerWindow_Load(object sender, EventArgs e)
         {
 
@@ -318,6 +366,7 @@ namespace VocalUtau.DirectUI.Forms
         public void GuiRefresh()
         {
             Controller.Track_View.reloadBaseTempo();
+            Controller.Action_View.BaseTempo = Controller.Track_View.BaseTempo;
             ProjectObject Po = OAC.AllocedSource;
             this.Text = Po.ProjectName;
             int MaxL=(int)Math.Ceiling(1920 + (double)Po.Time2Tick(Po.MaxLength));
@@ -353,6 +402,7 @@ namespace VocalUtau.DirectUI.Forms
 
         private void ctl_Scroll_LeftPos_Scroll(object sender, ScrollEventArgs e)
         {
+            if(!trackerRollWindow1.DisableMouse)
             trackerRollWindow1.setPianoStartTick(ctl_Scroll_LeftPos.Value);
         }
 

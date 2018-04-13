@@ -34,6 +34,26 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             }
         }
 
+        long _PlayTickPos = -1;
+
+        public long PlayTickPos
+        {
+            get { return _PlayTickPos; }
+            set { _PlayTickPos = value; }
+        }
+
+        public double PlayTimePos
+        {
+            get
+            {
+                return MidiMathUtils.Tick2Time(_PlayTickPos, PartsObject.Tempo);
+            }
+            set
+            {
+                _PlayTickPos = MidiMathUtils.Time2Tick(value, PartsObject.Tempo);
+            }
+        }
+
         PianoRollWindow PianoWindow;
         ParamCurveWindow ParamWindow;
 
@@ -219,6 +239,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
         }
         Color CurPost = Color.LightBlue;
         Color MousePost = Color.LightPink;
+        Color PlayPost = Color.LightGreen;
         bool ShownMousePost = false;
         void ParamWindow_ParamAreaPaint(object sender, DrawUtils.ParamAreaDrawUtils utils)
         {
@@ -226,7 +247,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             {
                 utils.DrawXLine(_TickPos, CurPost);
             }
-            if (HookParam || HookPiano)
+            if (!ParamWindow.DisableMouse && (HookParam || HookPiano))
             {
                 if (MouseTick >= ParamWindow.MinShownTick && MouseTick <= ParamWindow.MaxShownTick)
                 {
@@ -243,15 +264,20 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             {
                 utils.DrawXLine(_TickPos, CurPost);
             }
-            if (HookParam || HookPiano)
+            if (_PlayTickPos >= ParamWindow.MinShownTick && _PlayTickPos <= ParamWindow.MaxShownTick)
             {
-                if (MouseTick >= ParamWindow.MinShownTick && MouseTick <= ParamWindow.MaxShownTick)
+                utils.DrawXLine(_PlayTickPos, PlayPost);
+            }
+            if (!PianoWindow.DisableMouse && (HookParam || HookPiano))
+            {
+                if (MouseTick >= PianoWindow.MinShownTick && MouseTick <= PianoWindow.MaxShownTick)
                 {
                     ShownMousePost = true;
                     utils.DrawXLine(MouseTick, MousePost);
                     if (HookPiano) ParamWindow.RedrawPiano();
                 }
             }
+
         }
 
         void PianoWindow_TrackPaint(object sender, DrawUtils.TrackDrawUtils utils)
@@ -260,11 +286,16 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
             {
                 utils.DrawMask(PartsObject.TickLength, PianoWindow.MaxShownTick);
             }
+            if (_PlayTickPos >= ParamWindow.MinShownTick && _PlayTickPos <= ParamWindow.MaxShownTick)
+            {
+                utils.DrawXLine(_PlayTickPos, PlayPost);
+            }
             if (_TickPos >= PianoWindow.MinShownTick && _TickPos <= PianoWindow.MaxShownTick)
             {
                 utils.DrawXLine(_TickPos, CurPost);
             }
-            if (HookParam || HookPiano)
+
+            if (!PianoWindow.DisableMouse && (HookParam || HookPiano))
             {
                 if (MouseTick >= PianoWindow.MinShownTick && MouseTick <= PianoWindow.MaxShownTick)
                 {

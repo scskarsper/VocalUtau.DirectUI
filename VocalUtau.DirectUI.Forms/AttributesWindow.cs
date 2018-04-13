@@ -27,13 +27,10 @@ namespace VocalUtau.DirectUI.Forms
         ObjectAlloc<WavePartsObject> WavePartsBinder = new ObjectAlloc<WavePartsObject>();
         public delegate void OnAttributeChangeHandler(PropertyValueChangedEventArgs e, ProjectObject oldObj);
         public event OnAttributeChangeHandler AttributeChange;
-
-        public DockPanel DockerPanel;
-
+        
         public AttributesWindow()
         {
             InitializeComponent();
-            DockerPanel = this.PlayerPanel;
         }
         public void ShowOnDock(DockPanel DockPanel)
         {
@@ -142,6 +139,48 @@ namespace VocalUtau.DirectUI.Forms
         {
 
         }
-
+        public void CurrentPosTime(TimeSpan Ts)
+        {
+            this.Invoke(new Action(() =>
+            {
+                lbl_PosCurrent.Text = String.Format("{0:00}:{1:00}.{2:000}", Ts.TotalMinutes, Ts.Seconds, Ts.Milliseconds > 0 ? Ts.Milliseconds : 0);
+            }));
+        }
+        public void CurrentRenderTime(TimeSpan Ts)
+        {
+            this.Invoke(new Action(() =>
+            {
+                lbl_RenderCurrent.Text = String.Format("{0:00}:{1:00}.{2:000}", Ts.TotalMinutes, Ts.Seconds, Ts.Milliseconds > 0 ? Ts.Milliseconds : 0);
+            }));
+        }
+        public void TotalRenderTime(TimeSpan Ts)
+        {
+            this.Invoke(new Action(() =>
+            {
+                lbl_RenderTotal.Text = String.Format("{0:00}:{1:00}.{2:000}", Ts.TotalMinutes, Ts.Seconds, Ts.Milliseconds > 0 ? Ts.Milliseconds : 0);
+            }));
+        }
+        public enum RenderStatus
+        {
+            Ready,
+            Buffing,
+            Playing,
+            Paused,
+            Stop
+        }
+        public void SetRenderStatus(RenderStatus Status)
+        {
+            this.Invoke(new Action(() =>
+            {
+                switch (Status)
+                {
+                    case RenderStatus.Ready: lbl_RenderStatus.Text = "准备就绪"; break;
+                    case RenderStatus.Buffing: lbl_RenderStatus.Text = "正在缓冲"; break;
+                    case RenderStatus.Playing: lbl_RenderStatus.Text = "正在播放"; break;
+                    case RenderStatus.Paused: lbl_RenderStatus.Text = "播放暂停"; break;
+                    case RenderStatus.Stop: lbl_RenderStatus.Text = "正在停止"; break;
+                }
+            }));
+        }
     }
 }

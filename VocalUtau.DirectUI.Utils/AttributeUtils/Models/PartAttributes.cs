@@ -204,6 +204,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
             get { return ProjectObject.BaseTempo; }
             set
             {
+                //设置更改曲速不成功：DEBUGISSUE 2018413
                 if(ProjectObject.BaseTempo != value)
                 {
                     ProjectObject.BaseTempo = value;

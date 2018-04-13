@@ -16,10 +16,30 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
         public event OnTickPosChangeHandler TickPosChange;
         long _TickPos = -1;
 
+        long _PlayTickPos = -1;
+
+        public long PlayTickPos
+        {
+            get { return _PlayTickPos; }
+            set { _PlayTickPos = value; }
+        }
+
         public long TickPos
         {
             get { return _TickPos; }
             set { _TickPos = value; }
+        }
+
+        public double BaseTempo
+        {
+            get
+            {
+                return ProjectObject.BaseTempo;
+            }
+            set
+            {
+                ProjectObject.BaseTempo = value;
+            }
         }
 
         bool HookTracker = false;
@@ -33,6 +53,25 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
             {
                 _TickPos = MidiMathUtils.Time2Tick(value, ProjectObject.BaseTempo);
             }
+        }
+        public double PlayTimePos
+        {
+            get
+            {
+                return MidiMathUtils.Tick2Time(_PlayTickPos, ProjectObject.BaseTempo);
+            }
+            set
+            {
+                _PlayTickPos = MidiMathUtils.Time2Tick(value, ProjectObject.BaseTempo);
+            }
+        }
+        public void KeepTickPosShown(long TickPos)
+        {
+            if (TickPos < TrackerWindow.MinShownTick || TickPos > TrackerWindow.MaxShownTick)
+            {
+                TrackerWindow.setPianoStartTick(TickPos);
+            }
+//        TrackerWindow.MinShownTick || e.Tick > TrackerWindow.MaxShownTick
         }
 
         IntPtr ProjectObjectPtr = IntPtr.Zero;
@@ -181,6 +220,7 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
 
         Color CurPost = Color.LightBlue;
         Color MousePost = Color.LightPink;
+        Color PlayPost = Color.LightGreen;
         bool ShownMousePost = false;
         void TrackerWindow_TitlePaint(object sender, DrawUtils.TrackerTitlesDrawUtils utils)
         {
@@ -190,7 +230,11 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
                 {
                     utils.DrawXLine(_TickPos, CurPost);
                 }
-                if (HookTracker)
+                if (_PlayTickPos >= TrackerWindow.MinShownTick && _PlayTickPos <= TrackerWindow.MaxShownTick)
+                {
+                    utils.DrawXLine(_PlayTickPos, PlayPost);
+                }
+                if (HookTracker && !TrackerWindow.DisableMouse)
                 {
                     if (MouseTick >= TrackerWindow.MinShownTick && MouseTick <= TrackerWindow.MaxShownTick)
                     {
@@ -210,7 +254,11 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
                 {
                     utils.DrawXLine(_TickPos, CurPost);
                 }
-                if (HookTracker)
+                if (_PlayTickPos >= TrackerWindow.MinShownTick && _PlayTickPos <= TrackerWindow.MaxShownTick)
+                {
+                    utils.DrawXLine(_PlayTickPos, PlayPost);
+                }
+                if (HookTracker && !TrackerWindow.DisableMouse)
                 {
                     if (MouseTick >= TrackerWindow.MinShownTick && MouseTick <= TrackerWindow.MaxShownTick)
                     {
