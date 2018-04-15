@@ -140,14 +140,22 @@ namespace VocalUtau.DirectUI
         public TrackerRollWindow()
         {
             InitializeComponent();
+            FpsCreater.Interval = 1000 / GlobalStatic.StaticFps;
+            FpsCreater.Enabled = true;
+            FpsCreater.Tick += FpsCreater_Tick;
             pprops = new TrackerProperties(rconf);
             pprops.TopTrackId = 0;
             InitGUI();
         }
+
+        void FpsCreater_Tick(object sender, EventArgs e)
+        {
+            PaintFPS();
+        }
         public void RedrawPiano()
         {
-
-            d2DPainterBox1.Refresh();
+            updateFps = true;
+//            d2DPainterBox1.Refresh();
         }
         public void setScrollBarMax(uint Value)
         {
@@ -180,17 +188,31 @@ namespace VocalUtau.DirectUI
         /// </summary>
         #region
         bool isDrawing = false;
+        bool updateFps = false;
+        Timer FpsCreater = new Timer();
+        private void PaintFPS()
+        {
+            if (updateFps)
+            {
+                d2DPainterBox1.Refresh();
+                updateFps = false;
+            }
+        }
+        public override void Refresh()
+        {
+            updateFps = true;
+        }
         private void d2DPainterBox1_D2DPaint(object sender, BalthasarLib.D2DPainter.D2DPaintEventArgs e)
         {
-            if (isDrawing) 
+            if (isDrawing)
                 return;
             isDrawing = true;
             try
             {
-                PianoRollPoint sp = pprops.getPianoStartPoint();
-                DrawTrackPartsArea(sender, e, sp);
-                DrawTrackGrideArea(sender, e);
-                DrawTrackTitleArea(sender, e, sp);
+                    PianoRollPoint sp = pprops.getPianoStartPoint();
+                    DrawTrackPartsArea(sender, e, sp);
+                    DrawTrackGrideArea(sender, e);
+                    DrawTrackTitleArea(sender, e, sp);
             }
             catch { ;}
             isDrawing = false;

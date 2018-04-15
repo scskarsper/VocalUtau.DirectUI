@@ -88,16 +88,30 @@ namespace VocalUtau.DirectUI
         /// 基础逻辑-公有
         /// </summary>
         #region
+        
         public ParamCurveWindow()
         {
             InitializeComponent();
+            FpsCreater.Interval = 1000 / GlobalStatic.StaticFps;
+            FpsCreater.Tick += FpsCreater_Tick;
+            FpsCreater.Enabled = true;
             pprops = new PianoProperties(rconf);
             InitGUI();
         }
-        public void RedrawPiano()
+        void FpsCreater_Tick(object sender, EventArgs e)
         {
-
-            d2DPainterBox1.Refresh();
+            PaintFPS();
+        }
+        public void RedrawPiano(bool force=false)
+        {
+            updateFps = true;
+            if (force)
+            {
+                FpsCreater.Enabled = false;
+                FpsCreater.Enabled = true;
+                PaintFPS();
+            }
+            //            d2DPainterBox1.Refresh();
         }
         #endregion
 
@@ -119,6 +133,20 @@ namespace VocalUtau.DirectUI
         /// </summary>
         #region
         bool isDrawing = false;
+        bool updateFps = false;
+        Timer FpsCreater = new Timer();
+        private void PaintFPS()
+        {
+            if (updateFps)
+            {
+                d2DPainterBox1.Refresh();
+                updateFps = false;
+            }
+        }
+        public override void Refresh()
+        {
+            updateFps = true;
+        }
         private void d2DPainterBox1_D2DPaint(object sender, BalthasarLib.D2DPainter.D2DPaintEventArgs e)
         {
             if (isDrawing) return;

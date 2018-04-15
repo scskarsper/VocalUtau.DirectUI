@@ -32,4 +32,3 @@ D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\bin\Debug\Vo
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\bin\Debug\VocalUtau.WavTools.pdb
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\bin\Debug\VocalUtau.Wavtools.Render.exe
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\bin\Debug\VocalUtau.Wavtools.Render.pdb
-D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\bin\Debug\NUniversalCharDet.pdb

@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configures\GlobalStatic.cs" />
     <Compile Include="Configures\Trackers\TrackerConfigures.cs" />
     <Compile Include="Configures\Trackers\TrackerProperties.cs" />
     <Compile Include="DrawUtils\PianoParams\RollDrawUtils.cs" />

@@ -253,7 +253,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                 {
                     ShownMousePost = true;
                     utils.DrawXLine(MouseTick, MousePost);
-                    if (HookParam) PianoWindow.RedrawPiano();
+                    if (HookParam) PianoWindow.RedrawPiano(true);
                 }
             }
         }
@@ -274,7 +274,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                 {
                     ShownMousePost = true;
                     utils.DrawXLine(MouseTick, MousePost);
-                    if (HookPiano) ParamWindow.RedrawPiano();
+                    if (HookPiano) ParamWindow.RedrawPiano(true);
                 }
             }
 
@@ -301,7 +301,7 @@ namespace VocalUtau.DirectUI.Utils.PianoUtils
                 {
                     ShownMousePost = true;
                     utils.DrawXLine(MouseTick, MousePost);
-                    if (HookPiano) ParamWindow.RedrawPiano();
+                    if (HookPiano) ParamWindow.RedrawPiano(true);
                 }
             }
 
