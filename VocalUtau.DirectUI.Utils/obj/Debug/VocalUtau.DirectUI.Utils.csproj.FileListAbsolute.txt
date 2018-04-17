@@ -32,3 +32,4 @@ D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Utils\bin\Debug\IC
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Utils\bin\Debug\DeepCloner.dll
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Utils\bin\Debug\DeepCloner.xml
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Utils\bin\Debug\NUniversalCharDet.dll
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Utils\bin\Debug\NUniversalCharDet.pdb

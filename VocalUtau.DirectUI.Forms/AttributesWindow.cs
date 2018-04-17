@@ -57,6 +57,7 @@ namespace VocalUtau.DirectUI.Forms
         public void LoadProjectObject(ref ProjectObject projects)
         {
             ProjectBinder.ReAlloc(projects);
+            tbVolume.Value = projects.GlobalVolume;
         }
         public void LoadPartsPtr(ref PartsObject PartsObj,bool isCurrentEditing=true)
         {
@@ -181,6 +182,30 @@ namespace VocalUtau.DirectUI.Forms
                     case RenderStatus.Stop: lbl_RenderStatus.Text = "正在停止"; break;
                 }
             }));
+        }
+
+        private void tbVolume_Scroll(object sender, EventArgs e)
+        {
+        }
+
+        public delegate void OnGlobalVolumeChange(int NewVolume);
+        public event OnGlobalVolumeChange GlobalVolumeChanged;
+        public delegate void OnChannelVolumeChange(int ChannelID,int NewVolume);
+        public event OnChannelVolumeChange ChannelVolumeChanged;
+        private void tbVolume_ValueChanged(object sender, EventArgs e)
+        {
+            if (ProjectBinder.AllocedObject is ProjectObject)
+            {
+                ProjectObject po = (ProjectObject)ProjectBinder.AllocedObject;
+                if (po.GlobalVolume != tbVolume.Value)
+                {
+                    po.GlobalVolume = tbVolume.Value;
+                    if (GlobalVolumeChanged != null)
+                    {
+                        GlobalVolumeChanged(po.GlobalVolume);
+                    }
+                }
+            }
         }
     }
 }
