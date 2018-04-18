@@ -40,7 +40,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.lbl_RenderCurrent = new System.Windows.Forms.Label();
             this.lbl_PosCurrent = new System.Windows.Forms.Label();
-            this.btnMuteUnmute = new System.Windows.Forms.Button();
+            this.btnMixerWin = new System.Windows.Forms.Button();
             this.tbVolume = new System.Windows.Forms.TrackBar();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbVolume)).BeginInit();
@@ -78,7 +78,7 @@
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.lbl_RenderCurrent);
             this.groupBox2.Controls.Add(this.lbl_PosCurrent);
-            this.groupBox2.Controls.Add(this.btnMuteUnmute);
+            this.groupBox2.Controls.Add(this.btnMixerWin);
             this.groupBox2.Controls.Add(this.tbVolume);
             this.groupBox2.Location = new System.Drawing.Point(3, 227);
             this.groupBox2.Name = "groupBox2";
@@ -159,16 +159,17 @@
             this.lbl_PosCurrent.TabIndex = 0;
             this.lbl_PosCurrent.Text = "00:00:000";
             // 
-            // btnMuteUnmute
+            // btnMixerWin
             // 
-            this.btnMuteUnmute.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.btnMuteUnmute.Font = new System.Drawing.Font("Wingdings", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-            this.btnMuteUnmute.Location = new System.Drawing.Point(16, 89);
-            this.btnMuteUnmute.Name = "btnMuteUnmute";
-            this.btnMuteUnmute.Size = new System.Drawing.Size(32, 32);
-            this.btnMuteUnmute.TabIndex = 7;
-            this.btnMuteUnmute.Text = ">";
-            this.btnMuteUnmute.UseVisualStyleBackColor = true;
+            this.btnMixerWin.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.btnMixerWin.Font = new System.Drawing.Font("Wingdings", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
+            this.btnMixerWin.Location = new System.Drawing.Point(16, 89);
+            this.btnMixerWin.Name = "btnMixerWin";
+            this.btnMixerWin.Size = new System.Drawing.Size(32, 32);
+            this.btnMixerWin.TabIndex = 7;
+            this.btnMixerWin.Text = ">";
+            this.btnMixerWin.UseVisualStyleBackColor = true;
+            this.btnMixerWin.Click += new System.EventHandler(this.btnMixerWin_Click);
             // 
             // tbVolume
             // 
@@ -180,7 +181,6 @@
             this.tbVolume.TabIndex = 6;
             this.tbVolume.TickStyle = System.Windows.Forms.TickStyle.None;
             this.tbVolume.Value = 100;
-            this.tbVolume.Scroll += new System.EventHandler(this.tbVolume_Scroll);
             this.tbVolume.ValueChanged += new System.EventHandler(this.tbVolume_ValueChanged);
             // 
             // AttributesWindow
@@ -213,7 +213,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lbl_RenderCurrent;
         private System.Windows.Forms.Label lbl_PosCurrent;
-        private System.Windows.Forms.Button btnMuteUnmute;
+        private System.Windows.Forms.Button btnMixerWin;
         private System.Windows.Forms.TrackBar tbVolume;
     }
 }

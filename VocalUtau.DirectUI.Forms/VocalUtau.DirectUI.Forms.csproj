@@ -57,18 +57,23 @@
     <Compile Include="AttributesWindow.Designer.cs">
       <DependentUpon>AttributesWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerWindow.Designer.cs">
-      <DependentUpon>PlayerWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="SingerWindow.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="SingerWindow.Designer.cs">
       <DependentUpon>SingerWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SoundMixer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SoundMixer.Designer.cs">
+      <DependentUpon>SoundMixer.cs</DependentUpon>
     </Compile>
     <Compile Include="TrackerWindow.cs">
       <SubType>Form</SubType>
@@ -76,19 +81,32 @@
     <Compile Include="TrackerWindow.Designer.cs">
       <DependentUpon>TrackerWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControles\VolumeMixer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControles\VolumeMixer.Designer.cs">
+      <DependentUpon>VolumeMixer.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AttributesWindow.resx">
       <DependentUpon>AttributesWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerWindow.resx">
-      <DependentUpon>PlayerWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="SingerWindow.resx">
       <DependentUpon>SingerWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="SoundMixer.resx">
+      <DependentUpon>SoundMixer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TrackerWindow.resx">
       <DependentUpon>TrackerWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControles\VolumeMixer.resx">
+      <DependentUpon>VolumeMixer.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -157,7 +157,7 @@ namespace VocalUtau.DirectUI.Utils.TrackerUtils
         void TrackerWindow_PartsMouseMove(object sender, Models.TrackerMouseEventArgs e)
         {
          //   this.TrackerWindow.ParentForm.Activate();
-            this.TrackerWindow.Focus();
+        //    this.TrackerWindow.Focus();
             if (e.Tick < TrackerWindow.MinShownTick || e.Tick > TrackerWindow.MaxShownTick)
             {
                 HookTracker = false;

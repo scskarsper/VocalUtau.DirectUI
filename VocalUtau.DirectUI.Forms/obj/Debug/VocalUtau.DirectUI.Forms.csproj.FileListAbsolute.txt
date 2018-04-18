@@ -25,7 +25,6 @@ D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\bin\Debug\IC
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\bin\Debug\DeepCloner.dll
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\bin\Debug\DeepCloner.xml
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\bin\Debug\NUniversalCharDet.dll
-D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\obj\Debug\VocalUtau.DirectUI.Forms.PlayerWindow.resources
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\bin\Debug\VocalUtau.Calculators.dll
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\bin\Debug\VocalUtau.WavTools.dll
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\bin\Debug\VocalUtau.Calculators.pdb
@@ -33,3 +32,6 @@ D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\bin\Debug\Vo
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\bin\Debug\VocalUtau.Wavtools.Render.exe
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\bin\Debug\VocalUtau.Wavtools.Render.pdb
 D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\bin\Debug\NUniversalCharDet.pdb
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\obj\Debug\VocalUtau.DirectUI.Forms.SoundMixer.resources
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\obj\Debug\VocalUtau.DirectUI.Forms.Properties.Resources.resources
+D:\VocalUtau\IncludeLib\VocalUtau.DirectUI\VocalUtau.DirectUI.Forms\obj\Debug\VocalUtau.DirectUI.Forms.UserControles.VolumeMixer.resources

@@ -57,7 +57,14 @@ namespace VocalUtau.DirectUI.Forms
         public void LoadProjectObject(ref ProjectObject projects)
         {
             ProjectBinder.ReAlloc(projects);
-            tbVolume.Value = projects.GlobalVolume;
+            if (projects.GlobalVolume < 100)
+            {
+                tbVolume.Value = projects.GlobalVolume;
+            }
+            else
+            {
+                tbVolume.Value = 100;
+            }
         }
         public void LoadPartsPtr(ref PartsObject PartsObj,bool isCurrentEditing=true)
         {
@@ -183,11 +190,7 @@ namespace VocalUtau.DirectUI.Forms
                 }
             }));
         }
-
-        private void tbVolume_Scroll(object sender, EventArgs e)
-        {
-        }
-
+        
         public delegate void OnGlobalVolumeChange(int NewVolume);
         public event OnGlobalVolumeChange GlobalVolumeChanged;
         public delegate void OnChannelVolumeChange(int ChannelID,int NewVolume);
@@ -203,6 +206,56 @@ namespace VocalUtau.DirectUI.Forms
                     if (GlobalVolumeChanged != null)
                     {
                         GlobalVolumeChanged(po.GlobalVolume);
+                    }
+                }
+            }
+        }
+
+        private void btnMixerWin_Click(object sender, EventArgs e)
+        {
+            SoundMixer sm = new SoundMixer(ProjectBinder);
+            sm.ChannelVolumeChanged += sm_ChannelVolumeChanged;
+            sm.GlobalVolumeChanged += sm_GlobalVolumeChanged;
+            sm.Show();
+        }
+
+        void sm_GlobalVolumeChanged(int NewVolume)
+        {
+            ProjectObject po = (ProjectObject)ProjectBinder.AllocedObject;
+            if (po.GlobalVolume != NewVolume)
+            {
+                po.GlobalVolume = NewVolume;
+                if (GlobalVolumeChanged != null)
+                {
+                    GlobalVolumeChanged(NewVolume);
+                }
+            }
+        }
+
+        void sm_ChannelVolumeChanged(int ChannelID, int NewVolume)
+        {
+            double floatV = NewVolume / 100.0;
+            ProjectObject po = (ProjectObject)ProjectBinder.AllocedObject;
+            if (ChannelID < po.TrackerList.Count)
+            {
+                if (po.TrackerList[ChannelID].getVolume() != floatV)
+                {
+                    po.TrackerList[ChannelID].setVolume(floatV);
+                    if (ChannelVolumeChanged != null)
+                    {
+                        ChannelVolumeChanged(ChannelID, NewVolume);
+                    }
+                }
+            }
+            else
+            {
+                int Id = ChannelID - po.TrackerList.Count;
+                if (po.TrackerList[Id].getVolume() != floatV)
+                {
+                    po.TrackerList[Id].setVolume(floatV);
+                    if (ChannelVolumeChanged != null)
+                    {
+                        ChannelVolumeChanged(ChannelID, NewVolume);
                     }
                 }
             }
