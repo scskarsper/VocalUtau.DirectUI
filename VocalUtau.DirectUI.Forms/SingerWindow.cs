@@ -508,7 +508,11 @@ namespace VocalUtau.DirectUI.Forms
                             long tp = Controller.Global_ActionView.PlayTickPos;
                             if (tp < ctl_Scroll_LeftPos.Maximum)
                             {
-                                ctl_Scroll_LeftPos.Value = (int)tp;
+                                try
+                                {
+                                    ctl_Scroll_LeftPos.Value = (int)tp;
+                                }
+                                catch { ;}
                             }
                             else
                             {

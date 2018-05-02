@@ -48,8 +48,8 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
             }
         }
         PitchView.PitchDragingType DynDragingStatus = PitchView.PitchDragingType.None;
-        ControlObject DynStP1 = null;
-        ControlObject DynTmpP0 = null;
+        TickControlObject DynStP1 = null;
+        TickControlObject DynTmpP0 = null;
         double CurValue = 0;
 
         bool _HandleEvents = false;
@@ -149,7 +149,7 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
                 return;
             }
             if (e.Tick == DynStP1.Tick) return;
-            DynTmpP0 = new ControlObject(e.Tick, e.TallPercent * 100 * Zoom - DynBase);
+            DynTmpP0 = new TickControlObject(e.Tick, e.TallPercent * 100 * Zoom - DynBase);
             if (_DynToolsStatus == PitchView.PitchDragingType.None)
             {
                 ParamWindow.ParentForm.Cursor = Cursors.Arrow;
@@ -160,7 +160,7 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
             }
         }
 
-        public void replaceControlLine(List<ControlObject> newPitchLine)
+        public void replaceControlLine(List<TickControlObject> newPitchLine)
         {
             for (int i = 0; i < newPitchLine.Count; i++)
             {
@@ -171,7 +171,7 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
             }
             PartsObject.DynCompiler.ReplaceDynLine(newPitchLine);
         }
-        public void earseControlLine(ControlObject P1, ControlObject P2)
+        public void earseControlLine(TickControlObject P1, TickControlObject P2)
         {
             PartsObject.DynCompiler.ClearDynLine(Math.Min(P1.Tick, P2.Tick), Math.Max(P1.Tick, P2.Tick));
         }
@@ -180,7 +180,7 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
         {
             if (!_HandleEvents) return;
             if (DynDragingStatus == PitchView.PitchDragingType.None) return;
-            ControlObject DynEdP2 = new ControlObject(e.Tick, e.TallPercent * 100 * Zoom - DynBase);
+            TickControlObject DynEdP2 = new TickControlObject(e.Tick, e.TallPercent * 100 * Zoom - DynBase);
 
             switch (DynDragingStatus)
             {
@@ -218,20 +218,20 @@ namespace VocalUtau.DirectUI.Utils.ParamUtils
             if (_DynToolsStatus == PitchView.PitchDragingType.None) return;
             if (DynDragingStatus != PitchView.PitchDragingType.None) return;
             if (e.MouseEventArgs.Button != MouseButtons.Left) return;
-            DynStP1 = new ControlObject(e.Tick, e.TallPercent*100*Zoom - 100);
+            DynStP1 = new TickControlObject(e.Tick, e.TallPercent*100*Zoom - 100);
             DynDragingStatus = _DynToolsStatus;
             if (DynActionBegin != null) DynActionBegin(DynDragingStatus);
         }
 
 
-        public List<ControlObject> getShownPitchLine(long MinTick = -1, long MaxTick = -1)
+        public List<TickControlObject> getShownPitchLine(long MinTick = -1, long MaxTick = -1)
         {
             if (MinTick < 0) MinTick = ParamWindow.MinShownTick;
             if (MaxTick <= MinTick) MaxTick = ParamWindow.MaxShownTick;
-            List<ControlObject> ret = new List<ControlObject>();
-            for (long i = TickSortList<ControlObject>.TickFormat(MinTick); i < TickSortList<ControlObject>.TickFormat(MaxTick); i = i + TickSortList<ControlObject>.TickStep)
+            List<TickControlObject> ret = new List<TickControlObject>();
+            for (long i = TickSortList<TickControlObject>.TickFormat(MinTick); i < TickSortList<TickControlObject>.TickFormat(MaxTick); i = i + TickSortList<TickControlObject>.TickStep)
             {
-                ret.Add(new ControlObject(i, PartsObject.DynCompiler.getDynValue(i)));
+                ret.Add(new TickControlObject(i, PartsObject.DynCompiler.getDynValue(i)));
             }
             return ret;
         }

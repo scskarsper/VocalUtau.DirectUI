@@ -177,7 +177,7 @@ namespace VocalUtau.DirectUI.DrawUtils
             g.FillPathGeometrySink(PArr, AreaColor);
         }
 
-        public void DrawDynLine(List<ControlObject> SortedDynPointSilk, int DynBase, double MaxValue, Color LineColor, float LineWidth = 1, System.Drawing.Drawing2D.DashStyle LineStyle = System.Drawing.Drawing2D.DashStyle.Solid, ulong AntiBordTick = 480)
+        public void DrawDynLine(List<TickControlObject> SortedDynPointSilk, int DynBase, double MaxValue, Color LineColor, float LineWidth = 1, System.Drawing.Drawing2D.DashStyle LineStyle = System.Drawing.Drawing2D.DashStyle.Solid, ulong AntiBordTick = 480)
         {
             D2DGraphics g = baseEvent.D2DGraphics;
 
@@ -204,7 +204,7 @@ namespace VocalUtau.DirectUI.DrawUtils
 
             if (PixelSilkLine.Count > 1) g.DrawPathGeometrySink(PixelSilkLine, LineColor, LineWidth, LineStyle, false);
         }
-        public void FillDynLine(List<ControlObject> SortedDynPointSilk, int DynBase, double MaxValue, Color AreaColor, ulong AntiBordTick = 480)
+        public void FillDynLine(List<TickControlObject> SortedDynPointSilk, int DynBase, double MaxValue, Color AreaColor, ulong AntiBordTick = 480)
         {
             D2DGraphics g = baseEvent.D2DGraphics;
 

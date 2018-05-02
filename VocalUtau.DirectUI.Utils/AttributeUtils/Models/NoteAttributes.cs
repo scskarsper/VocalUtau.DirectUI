@@ -96,7 +96,7 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
                 NoteObject.PitchValue = new PitchAtomObject(value);
             }
         }
-        [CategoryAttribute("音符信息"), DisplayName("颤音比例")]
+        [CategoryAttribute("颤音信息"), DisplayName("颤音比例")]
         public int Note_VerbPrecent
         {
             get
@@ -108,11 +108,61 @@ namespace VocalUtau.DirectUI.Utils.AttributeUtils.Models
                 double Rev=(double)value/100;
                 if(Rev<=1 && Rev>=0)
                 {
-                    NoteObject.VerbPrecent = Rev;
+                    if (NoteObject.VerbPrecent != Rev)
+                    {
+                        NoteObject.VerbChanged = true;
+                        NoteObject.VerbPrecent = Rev;
+                        int NI=PartsObject.NoteList.IndexOf(NoteObject);
+                        PartsObject.PitchCompiler.SetupBasePitch(NI, NI);
+                    }
                 }
             }
         }
 
+        [CategoryAttribute("颤音信息"), DisplayName("颤音周期")]
+        public double Note_VerbCycle
+        {
+            get
+            {
+                return (int)(NoteObject.VerbCycle[0].Value);
+            }
+            set
+            {
+                double Rev = (double)value;
+                if (Rev > 32)
+                {
+                    if (NoteObject.VerbCycle[0].Value != Rev)
+                    {
+                        NoteObject.VerbChanged = true;
+                        NoteObject.VerbCycle[0].Value = Rev;
+                        int NI = PartsObject.NoteList.IndexOf(NoteObject);
+                        PartsObject.PitchCompiler.SetupBasePitch(NI, NI);
+                    }
+                }
+            }
+        }
+        [CategoryAttribute("颤音信息"), DisplayName("颤音幅度")]
+        public int Note_VerbRange
+        {
+            get
+            {
+                return (int)(NoteObject.VerbRange[0].Value);
+            }
+            set
+            {
+                double Rev = (double)value;
+                if (Rev > 0)
+                {
+                    if (NoteObject.VerbRange[0].Value != Rev)
+                    {
+                        NoteObject.VerbChanged = true;
+                        NoteObject.VerbRange[0].Value = Rev;
+                        int NI = PartsObject.NoteList.IndexOf(NoteObject);
+                        PartsObject.PitchCompiler.SetupBasePitch(NI, NI);
+                    }
+                }
+            }
+        }
         //http://blog.csdn.net/luyifeiniu/article/details/5426960
         [CategoryAttribute("音符信息"), DisplayName("发音部件")]           
         [TypeConverterAttribute(typeof(VocalUtau.DirectUI.Utils.AttributeUtils.CategoryForms.PhonemeAtomListConverter)),  
